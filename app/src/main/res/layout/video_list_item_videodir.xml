@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/itemVisibleFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/default_selector_recycler_item"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <com.liuzhenlin.circularcheckbox.CircularCheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            app:color_ring_checked="@color/colorAccent"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/image_videodir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_default_thumb"
+            android:contentDescription="@string/videodirThumbnail" />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/text_videodirName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="未命名"
+                android:textSize="@dimen/listitem_first_level_text_size"
+                android:textColor="@android:color/black"
+                android:singleLine="true"
+                android:textAlignment="viewStart"
+                android:gravity="start"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/text_videodirSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_videodirName"
+                android:layout_marginTop="5dp"
+                android:text="100.00MB"
+                android:textSize="@dimen/listitem_second_level_text_size"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/text_videoCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/text_videodirSize"
+                android:layout_toRightOf="@id/text_videodirSize"
+                android:layout_toEndOf="@id/text_videodirSize"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:text="共2个视频"
+                android:textSize="@dimen/listitem_second_level_text_size"
+                tools:ignore="HardcodedText" />
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            app:srcCompat="@drawable/ic_chevron_end_lightgray_24dp"
+            android:contentDescription="@string/unfold" />
+    </LinearLayout>
+
+    <include layout="@layout/item_menu_video_list" />
+</LinearLayout>

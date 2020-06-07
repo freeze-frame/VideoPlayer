@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/actionbar"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/actionbarHeight"
+    android:background="@drawable/bg_actionbar"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:srcCompat="@drawable/ic_chevron_start_white_40dp"
+        style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
+        android:contentDescription="@string/back" />
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:text="@string/cancel"
+        android:textSize="@dimen/subtitle_text_size"
+        android:textColor="@android:color/white"
+        style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
+        android:text="未命名"
+        android:textSize="@dimen/title_text_size"
+        android:textColor="@android:color/white"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center_horizontal"
+        tools:ignore="HardcodedText">
+
+        <requestFocus />
+    </TextView>
+
+    <Button
+        android:id="@+id/btn_selectAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/selectAll"
+        android:textSize="@dimen/subtitle_text_size"
+        android:textColor="@android:color/white"
+        style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
+        android:visibility="gone" />
+</LinearLayout>

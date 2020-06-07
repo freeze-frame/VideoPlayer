@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:background="@color/bg_popup_dark"
+    android:clickable="true"
+    tools:ignore="KeyboardInaccessibleWidget">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingStart="20dp"
+        android:paddingRight="0dp"
+        android:paddingEnd="0dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:orientation="vertical">
+
+        <!-- row 1 -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/btn_stretchVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="0dp"
+            android:paddingStart="0dp"
+            android:paddingRight="20dp"
+            android:paddingEnd="20dp"
+            android:text="@string/stretchVideoToFitFullscreen"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/widget_small_text_size"
+            android:textAlignment="viewStart"
+            android:gravity="start|center_vertical"
+            android:thumb="@drawable/selector_switch_thumb"
+            app:track="@drawable/selector_switch_track"
+            app:switchPadding="15dp" />
+
+        <!-- row 2 -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/btn_loopSingleVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="0dp"
+            android:paddingStart="0dp"
+            android:paddingRight="20dp"
+            android:paddingEnd="20dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/singleVideoLoopPlayback"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/widget_small_text_size"
+            android:textAlignment="viewStart"
+            android:gravity="start|center_vertical"
+            android:thumb="@drawable/selector_switch_thumb"
+            app:track="@drawable/selector_switch_track"
+            app:switchPadding="15dp" />
+
+        <!-- row 3 -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/btn_allowAudioToPlayInBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="0dp"
+            android:paddingStart="0dp"
+            android:paddingRight="20dp"
+            android:paddingEnd="20dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/allowAudioToPlayInBackground"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/widget_small_text_size"
+            android:textAlignment="viewStart"
+            android:gravity="start|center_vertical"
+            android:thumb="@drawable/selector_switch_thumb"
+            app:track="@drawable/selector_switch_track"
+            app:switchPadding="15dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- row 4 column 1 -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/timedOff"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/widget_small_text_size"
+                android:textAlignment="viewStart"
+                android:gravity="start" />
+
+            <!-- row 4 column 2 -->
+            <HorizontalScrollView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginLeft="15dp"
+                android:scrollbars="none"
+                android:overScrollMode="never">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_whenThisEpisodeEnds"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginRight="25dp"
+                        android:text="@string/whenThisEpisodeEnds"
+                        android:textColor="@color/color_selector_white_color_accent"
+                        android:textSize="@dimen/widget_small_text_size" />
+
+                    <TextView
+                        android:id="@+id/text_30Minutes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginRight="25dp"
+                        android:text="@string/_30Minutes"
+                        android:textColor="@color/color_selector_white_color_accent"
+                        android:textSize="@dimen/widget_small_text_size" />
+
+                    <TextView
+                        android:id="@+id/text_anHour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginRight="25dp"
+                        android:text="@string/anHour"
+                        android:textColor="@color/color_selector_white_color_accent"
+                        android:textSize="@dimen/widget_small_text_size" />
+
+                    <TextView
+                        android:id="@+id/text_90Minutes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginRight="25dp"
+                        android:text="@string/_90Minutes"
+                        android:textColor="@color/color_selector_white_color_accent"
+                        android:textSize="@dimen/widget_small_text_size" />
+
+                    <TextView
+                        android:id="@+id/text_2Hours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginRight="25dp"
+                        android:text="@string/_2Hours"
+                        android:textColor="@color/color_selector_white_color_accent"
+                        android:textSize="@dimen/widget_small_text_size" />
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <!-- row 5 column 1 -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/playerEngine"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/widget_small_text_size"
+                android:textAlignment="viewStart"
+                android:gravity="start" />
+
+            <!-- row 5 column 2 -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:paddingStart="0dp"
+                android:paddingLeft="0dp"
+                android:paddingEnd="20dp"
+                android:paddingRight="20dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginLeft="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_mediaplayer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/android_mediaplayer"
+                    android:textColor="@color/color_selector_white_color_accent"
+                    android:textSize="@dimen/widget_small_text_size"
+                    android:textAlignment="viewStart"
+                    android:gravity="start" />
+
+                <TextView
+                    android:id="@+id/text_exoplayer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/google_exoplayer"
+                    android:textColor="@color/color_selector_white_color_accent"
+                    android:textSize="@dimen/widget_small_text_size"
+                    android:textAlignment="viewStart"
+                    android:gravity="start" />
+
+                <TextView
+                    android:id="@+id/text_ijkplayer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/bilibili_ijkplayer"
+                    android:textColor="@color/color_selector_white_color_accent"
+                    android:textSize="@dimen/widget_small_text_size"
+                    android:textAlignment="viewStart"
+                    android:gravity="start" />
+
+                <TextView
+                    android:id="@+id/text_vlcplayer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/vlc_mediaplayer"
+                    android:textColor="@color/color_selector_white_color_accent"
+                    android:textSize="@dimen/widget_small_text_size"
+                    android:textAlignment="viewStart"
+                    android:gravity="start"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

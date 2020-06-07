@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="close">Close</string>
+    <string name="back">Back</string>
+    <string name="share">Share</string>
+    <string name="clickToShare">Click to Share</string>
+    <string name="more">More</string>
+    <string name="brightnessProgress">Brightness: %.0f%%</string>
+    <string name="brightnessFollowsSystem">Brightness: follows the system</string>
+    <string name="volumeProgress">Volume: %.0f%%</string>
+    <string name="progress_duration" translatable="false">%s/%s</string>
+    <string name="lock">Lock</string>
+    <string name="unlock">Unlock</string>
+    <string name="videoThumbnail">Video Thumbnail</string>
+    <string name="captureVideoPhoto">Capture a Video Photo</string>
+    <string name="capturedVideoPhoto">Captured Video Photo</string>
+    <string name="saveScreenshotFailed">Save screenshot failed</string>
+    <string name="clipVideo">Clip Video</string>
+    <string name="cutoutShortVideo">Short Video</string>
+    <string name="cutoutGif">GIF</string>
+    <string name="clipForward">Clip Forward</string>
+    <string name="clipBackwards">Clip Backwards</string>
+    <string name="videoclipPlaybackProgress">Playback Progress of the Video Clip</string>
+    <string name="canTakeUpToXSecondsXSecondsSelected">
+        You can take up to %d seconds. %d seconds is selected.</string>
+    <string name="gifClippingIsNotYetSupported">GIF clipping is not yet supported!</string>
+    <string name="shortVideoHasBeenSavedTo">Short video \"%s\" has been saved to \"%s\"</string>
+    <string name="gifHasBeenSavedTo">GIF \"%s\" has been saved to \"%s\"</string>
+    <string name="seconds"> seconds </string>
+    <string name="clippingFailed">Clipping failed</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="fastForward">Fast Forward</string>
+    <string name="fastRewind">Fast Rewind</string>
+    <string name="skipPrevious">Skip to Previous</string>
+    <string name="skipNext">Skip to Next</string>
+    <string name="minimize">Minimize</string>
+    <string name="fullscreen">Fullscreen</string>
+    <string name="playlist">Playlist</string>
+    <string name="stretchVideoToFitFullscreen">Stretch Video to Fit Fullscreen</string>
+    <string name="singleVideoLoopPlayback">Single Video Loop Playback</string>
+    <string name="allowAudioToPlayInBackground">Allow Audio to Play in Background</string>
+    <string name="timedOff">Timed Off:</string>
+    <string name="whenThisEpisodeEnds">when this episode ends</string>
+    <string name="_30Minutes">30 minutes</string>
+    <string name="anHour">an hour</string>
+    <string name="_90Minutes">90 minutes</string>
+    <string name="_2Hours">2 hours</string>
+    <string name="playerEngine">Player Engine:</string>
+    <string name="android_mediaplayer" translatable="false">Android MediaPlayer</string>
+    <string name="google_exoplayer" translatable="false">Google ExoPlayer</string>
+    <string name="bilibili_ijkplayer" translatable="false">bilibili IjkPlayer</string>
+    <string name="vlc_mediaplayer">VLC MediaPlayer (recommended)</string>
+    <string name="videoIsLoading">Video is loading…</string>
+    <string name="failedToLoadThisVideo">Failed to load this video!</string>
+    <string name="loadTimeout">Load timeout</string>
+    <string name="videoInThisFormatIsNotSupported">Video in this format is not supported!</string>
+    <string name="unknownErrorOccurredWhenVideoIsPlaying">
+        Unknown error occurs while the video is playing!</string>
+    <string name="undo">Undo</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="playbackControlNotificationChannelId" translatable="false">
+        %s__playback_control_notification_channel</string>
+    <string name="playbackControlNotificationChannelName">Playback Control</string>
+    <string name="selectTracks">Select Tracks</string>
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="subtitle">Subtitle</string>
+    <!-- An option in a track selection list (e.g. a list view that allows the user to choose
+         between multiple media tracks) to indicate that no track should be selected.
+         Examples: When playing a video, if this option is selected for audio, playback will proceed
+                   without sound. If this option is selected for video, playback will proceed
+                   without visual output. -->
+    <string name="track_selection_none">None</string>
+    <!-- Name of a media track about which nothing is known. -->
+    <string name="track_unknown">Unknown</string>
+    <!-- Resolution of a video track. -->
+    <string name="track_resolution" translatable="false"><xliff:g id="width" example="1024">%1$d</xliff:g> × <xliff:g id="height" example="768">%2$d</xliff:g></string>
+    <!-- Describes the frame rate of a video track in frames per second. -->
+    <string name="track_frameRate" translatable="false"><xliff:g id="frameRate" example="25">%1$s<!--.2f--></xliff:g> fps</string>
+    <!-- Describes the sample rate of a audio track in kilohertz. -->
+    <string name="track_sampleRate" translatable="false"><xliff:g id="sampleRate" example="44.1">%1$s<!--.2f--></xliff:g> kHz</string>
+    <!-- Describes the bitrate of a media track in megabits (https://en.wikipedia.org/wiki/Megabit) per second. -->
+    <string name="track_bitrate" translatable="false"><xliff:g id="bitrate" example="5.2">%1$s<!--.2f--></xliff:g> Mb/s</string>
+    <!-- Describes an audio track with one channel. -->
+    <string name="track_mono">Mono</string>
+    <!-- Describes an audio track with two channels. -->
+    <string name="track_stereo">Stereo</string>
+    <!-- Describes a surround sound audio track. -->
+    <string name="track_surround">Surround sound</string>
+    <!-- Describes a 5.1 surround sound (https://en.wikipedia.org/wiki/5.1_surround_sound) audio track. -->
+    <string name="track_surround_5_point_1">5.1 surround sound</string>
+    <!-- Describes a 7.1 (https://en.wikipedia.org/wiki/7.1_surround_sound) audio track. -->
+    <string name="track_surround_7_point_1">7.1 surround sound</string>
+    <!-- Defines a way of appending an item to a list of items.
+         For example appending "banana" to "apple, pear" to get "apple, pear, banana".
+         Note: the command separator will appear between all consecutive list items,
+               so do not use an equivalent of 'and'. -->
+    <string name="item_list"><xliff:g id="list" example="apple, pear">%1$s</xliff:g>, <xliff:g id="item" example="banana">%2$s</xliff:g></string>
+    <!-- Shown in a UI component to indicate a video track selection has failed. -->
+    <string name="selectVideoTrackFailed">Select video track "%1$s" failed.</string>
+    <!-- Shown in a UI component to indicate an audio track selection has failed. -->
+    <string name="selectAudioTrackFailed">Select audio track "%1$s" failed.</string>
+    <!-- Shown in a UI component to indicate a subtitle track selection has failed. -->
+    <string name="selectSubtitleTrackFailed">Select subtitle track "%1$s" failed.</string>
+</resources>

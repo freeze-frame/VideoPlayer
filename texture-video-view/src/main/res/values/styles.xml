@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextAppearance_TrackTabItem">
+        <item name="android:textSize">@dimen/track_selection_view_tab_text_size</item>
+        <item name="android:textColor">@color/color_selector_track_tab_text</item>
+    </style>
+</resources>

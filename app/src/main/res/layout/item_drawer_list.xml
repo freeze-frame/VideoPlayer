@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/text_list"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:textSize="@dimen/primary_text_size"
+        android:textColor="@android:color/black"
+        android:textAlignment="viewStart"
+        android:gravity="start|center_vertical" />
+
+    <TextView
+        android:id="@+id/subtext_list"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:textSize="@dimen/secondary_text_size"
+        android:textAlignment="viewEnd"
+        android:gravity="end|center_vertical" />
+</LinearLayout>

@@ -1,0 +1,69 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.liuzhenlin.videos"
+        minSdkVersion 14
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 38
+        versionName "1.9.2"
+
+        vectorDrawables.useSupportLibrary = true
+
+        multiDexEnabled true
+
+        ndk {
+            abiFilters 'armeabi-v7a'/*, 'arm64-v8a'*/
+        }
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$rootProject.ext.appcompatVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+
+    implementation project(':slidingitemmenu-recyclerview')
+    implementation project(':sliding-drawer-layout')
+    implementation project(':texture-video-view')
+    implementation project(':gallery-viewer')
+    implementation project(':swipeback')
+    implementation project(':circular-checkbox')
+    implementation project(':floating-menu')
+
+    implementation 'pub.devrel:easypermissions:3.0.0'
+
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    implementation 'com.sun.mail:android-mail:1.6.5'
+    implementation 'com.sun.mail:android-activation:1.6.5'
+
+    implementation 'androidx.exifinterface:exifinterface:1.2.0'
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+
+    testImplementation "junit:junit:$rootProject.ext.testJunitVersion"
+    androidTestImplementation "androidx.test:runner:$rootProject.ext.androidTestRunnerVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.ext.androidTestEspressoVersion"
+}

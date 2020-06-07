@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <stroke
+        android:color="@color/colorAccent"
+        android:width="@dimen/cutout_buttons_stroke_width" />
+    <corners
+        android:topLeftRadius="@dimen/cutout_buttons_corner_radius"
+        android:bottomLeftRadius="@dimen/cutout_buttons_corner_radius" />
+</shape>

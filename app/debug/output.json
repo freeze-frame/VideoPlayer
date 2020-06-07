@@ -1,0 +1,20 @@
+[
+  {
+    "outputType": {
+      "type": "APK"
+    },
+    "apkData": {
+      "type": "MAIN",
+      "splits": [],
+      "versionCode": 38,
+      "versionName": "1.9.2",
+      "enabled": true,
+      "outputFile": "app-debug.apk",
+      "fullName": "debug",
+      "baseName": "debug",
+      "dirName": ""
+    },
+    "path": "app-debug.apk",
+    "properties": {}
+  }
+]

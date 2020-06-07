@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SlidingItemMenuRecyclerView">
+        <!-- Deprecated! Use itemDraggable instead (if both itemScrollingEnabled and itemDraggable
+             are supplied, the value of the latter always wins). -->
+        <attr name="itemScrollingEnabled" format="boolean" />
+        <attr name="itemDraggable" format="boolean" />
+        <attr name="itemScrollDuration" format="integer" />
+    </declare-styleable>
+</resources>

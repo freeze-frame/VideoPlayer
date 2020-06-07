@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingLeft="0dp"
+        android:paddingRight="1.5dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="1.5dp"
+        android:scrollbars="vertical">
+
+        <TextView
+            android:id="@+id/text_updateLogs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="3.5dp"
+            android:textSize="@dimen/secondary_text_size"
+            android:textIsSelectable="true"
+            tools:ignore="RtlHardcoded" />
+    </ScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/btn_ok_updateLogsDialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@drawable/selector_dialog_button"
+            android:text="@string/ok"
+            android:textSize="@dimen/dialog_button_text_size"
+            android:textColor="@color/colorAccent" />
+    </FrameLayout>
+</LinearLayout>

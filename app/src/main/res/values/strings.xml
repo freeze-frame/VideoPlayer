@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="aTotalOfSeveralVideos">%d videos in all</string>
+    <string name="aboutApp">About App</string>
+    <string name="adviceAndFeedback">Advice &amp; Feedback</string>
+    <string name="alias">Alias: %s</string>
+    <string name="appIcon">App icon</string>
+    <string name="appName">Videos</string>
+    <string name="areYouSureToDelete">Are you sure to delete?</string>
+    <string name="areYouSureToDeleteSomeVideoDir">
+        Are you sure to delete all the videos under \"%s\" directory?</string>
+    <string name="areYouSureToDeleteSth">Are you sure to delete \"%s\"?</string>
+    <string name="areYouSureToDeleteThisPicture">Are you sure to delete this picture?</string>
+    <string name="back">Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="cancelTop">Cancel Top</string>
+    <string name="cannotPlayThisVideo">Cannot play this video</string>
+    <string name="checkForUpdates">Check for Updates</string>
+    <string name="clickToInstallIt">Click to install it</string>
+    <string name="colon">:</string>
+    <string name="commit">Commit</string>
+    <string name="complete">OK</string>
+    <string name="confirm">@string/ok</string>
+    <string name="connectionTimeout">Connection timeout</string>
+    <string name="contactWay">Contact way</string>
+    <string name="copyURL">Copy URL</string>
+    <string name="delete">Delete</string>
+    <string name="deleteFailed">Failed to delete %s</string>
+    <string name="deletePicture">Delete picture</string>
+    <string name="details">Details</string>
+    <string name="directoryDetails">Directory Details</string>
+    <string name="doYouNeedToSaveTheEditedContents">Do you need to save the edited contents?</string>
+    <string name="doYouNeedToUpdateItSoon">Do you need to update it soon?</string>
+    <string name="downloadError">Download error</string>
+    <string name="downloadNotificationChannelName">Download</string>
+    <string name="downloading">Downloading…</string>
+    <string name="downloadingUpdates">Downloading Updates…</string>
+    <string name="drawerBackground">Drawer background</string>
+    <string name="drawerSettings">Drawer Settings</string>
+    <string name="findNewVersion">Find new version</string>
+    <string name="findNewVersion_title">Find New Version</string>
+    <plurals name="findSomeVideos">
+        <item quantity="one">Find a video</item>
+        <item quantity="other">Find %d videos</item>
+    </plurals>
+    <string name="goNow">Go Now</string>
+    <string name="hasBeenPlacedInTheBackground">Has been placed in the background</string>
+    <string name="illegalInputLink">Illegal input link!</string>
+    <string name="isTheLatestVersion">Is the latest version</string>
+    <string name="loadingVideos">Loading videos, please wait…</string>
+    <string name="localVideos">Local Videos</string>
+    <string name="lockScreenOrientation">Lock screen orientation</string>
+    <string name="msgNotificationChannelName">Message</string>
+    <string name="name">Name: %s</string>
+    <string name="newAppDownloaded">New App Downloaded</string>
+    <string name="noNetworkConnection">No network is connected!</string>
+    <string name="notHaveEnoughStorage">Device does not have enough storage.</string>
+    <string name="notOpenNow">Not Open</string>
+    <string name="notSave">Not Save</string>
+    <string name="ok">OK</string>
+    <string name="onlineVideos">Online Videos</string>
+    <string name="openOrCloseSideDrawer">Open or close the side drawer</string>
+    <string name="optionalForMeToContactWithYou">Optional, for me to contact with you</string>
+    <string name="path">Path: %s</string>
+    <string name="permissionsRequired">Permissions Required</string>
+    <string name="pictures">Pictures (Optional, provide screenshots of the issue(s))</string>
+    <string name="playWithThisApp">Play with Videos</string>
+    <string name="pleaseEnterTheIssuesYouEncounteredOrYourAdvice">
+        Please enter the issues you encountered or your advice…</string>
+    <string name="pleaseGoToAppSettingsScreenFirstToAllowAppsFromThisSourceToBeInstalled">
+        Please go to application settings screen first to allow apps from this source to be installed.</string>
+    <string name="pleaseInputVideoLinkFirst">Please input video link first!</string>
+    <string name="pleaseInsertSdCardOnYourDeviceFirst">Please insert SD card on your device first.</string>
+    <string name="pressAgainToExitApp">Press again to exit app</string>
+    <string name="rationale_askExternalStoragePermission">
+        This app needs access to your memory card to scan and load videos.</string>
+    <string name="rationale_askExternalStoragePermissionAgain">
+        This app will not work without permissions to read from and write to the memory card.
+        Please go to the application settings screen to allow those permissions.
+    </string>
+    <string name="rationale_askFloatingWindowPermission">
+        This app has not been granted the floating window permission.
+        Please try it again after opening!
+    </string>
+    <string name="readTimeout">Read timeout</string>
+    <string name="refreshError">Refresh Error</string>
+    <string name="refreshingVideos">Refreshing videos, please wait…</string>
+    <string name="rename">Rename</string>
+    <string name="renameDirectory">Rename Directory</string>
+    <string name="renameFailed">Rename failed</string>
+    <string name="renameFailedForThatDirectoryHasSomeFileWithTheSameName">
+        Rename failed for that directory has some file with the same name.</string>
+    <string name="renameFailedForThisVideoDoesNotExist">
+        Rename failed for this video does not exist.</string>
+    <string name="renameSuccessful">Rename successful</string>
+    <string name="renameVideo">Rename Video</string>
+    <string name="resolution">Resolution: %s</string>
+    <string name="save">Save</string>
+    <string name="saveSuccessful">Save successful</string>
+    <string name="screenshot">screenshot</string>
+    <string name="searchVideos">Search videos</string>
+    <string name="selectAll">Select All</string>
+    <string name="selectNone">Select None</string>
+    <string name="sendCanceled">Send canceled</string>
+    <string name="sendFailed">Send failed</string>
+    <string name="sendSuccessful">Send successful</string>
+    <string name="sending">Sending…</string>
+    <string name="setBackground">Set background</string>
+    <string name="setDarkStatus">Set dark status</string>
+    <string name="setDarkTexts">Set dark texts</string>
+    <string name="setForeground">Set foreground</string>
+    <string name="setLightStatus">Set light status</string>
+    <string name="setLightTexts">Set light texts</string>
+    <string name="severalItemsHaveBeenSelected">%d items selected</string>
+    <string name="share">Share</string>
+    <string name="size">Size: %s</string>
+    <string name="someDirectory">\"%s\" directory</string>
+    <string name="theInstallationPackageHasBeenDamaged">The installation package has been Damaged.</string>
+    <string name="theVideoIsPlaying">The video is playing</string>
+    <string name="top">Top</string>
+    <string name="unfold">Unfold</string>
+    <string name="unlockScreenOrientation">Unlock screen orientation</string>
+    <string name="updateLog">%1$sv%2$s update log: </string>
+    <string name="updateLogs">Update Logs</string>
+    <string name="userFeedback">User Feedback</string>
+    <string name="videoCount">Video count: %d</string>
+    <string name="videoDetails">Video Details</string>
+    <string name="videoTitle">Video Title</string>
+    <string name="videoLink">Video Link</string>
+    <string name="videoNotExists">That video does not exist</string>
+    <string name="videoThumbnail">Video thumbnail</string>
+    <string name="videodirThumbnail">Video directory thumbnail</string>
+    <string name="watching">Watching…</string>
+    <string name="youHaveNotCommitted">You Have Not Committed</string>
+
+    <string name="appName_chinese" translatable="false">视频</string>
+    <string name="version" translatable="false">1.9.2</string>
+    <string name="copyright" translatable="false">Copyright © 2017–present 刘振林.\nAll rights reserved.</string>
+    <string name="projectLink" translatable="false">https://github.com/lzls/Videos</string>
+    <string name="pictureCount" translatable="false">%d/3</string>
+    <string name="wordCount" translatable="false">%d/500</string>
+    <string name="charsequenceProgress" translatable="false">%1$s/%2$s</string>
+    <string name="percentProgress" translatable="false">%.2f%%</string>
+    <string name="updateAppendedColon" translatable="false">更新：</string>
+    <string name="downloadNotificationChannelId" translatable="false">%s__download_notification_channel</string>
+    <string name="msgNotificationChannelId" translatable="false">%s__msg_notification_channel</string>
+</resources>

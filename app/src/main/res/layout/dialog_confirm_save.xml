@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:text="@string/youHaveNotCommitted"
+        android:textSize="@dimen/title_text_size"
+        android:textColor="@android:color/black"
+        android:textAlignment="viewStart"
+        android:gravity="start" />
+
+    <TextView
+        android:id="@+id/text_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:text="@string/doYouNeedToSaveTheEditedContents"
+        android:textSize="@dimen/primary_text_size"
+        android:textColor="@android:color/black"
+        android:textAlignment="viewStart"
+        android:gravity="start" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp">
+
+        <TextView
+            android:id="@+id/btn_notSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btn_save"
+            android:layout_toStartOf="@+id/btn_save"
+            android:background="@drawable/selector_dialog_button"
+            android:text="@string/notSave"
+            android:textSize="@dimen/dialog_button_text_size"
+            android:textColor="@color/gray" />
+
+        <TextView
+            android:id="@id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/selector_dialog_button"
+            android:text="@string/save"
+            android:textSize="@dimen/dialog_button_text_size"
+            android:textColor="@color/colorAccent" />
+    </RelativeLayout>
+</LinearLayout>

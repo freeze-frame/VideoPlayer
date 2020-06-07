@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/itemVisibleFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/default_selector_recycler_item"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <com.liuzhenlin.circularcheckbox.CircularCheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            app:color_ring_checked="@color/colorAccent"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/image_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_default_thumb"
+            android:contentDescription="@string/videoThumbnail" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_videoName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="未命名"
+                android:textSize="@dimen/listitem_first_level_text_size"
+                android:textColor="@android:color/black"
+                android:singleLine="true"
+                android:textAlignment="viewStart"
+                android:gravity="start"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/text_videoSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2.5dp"
+                android:text="100.00MB"
+                android:textSize="@dimen/listitem_second_level_text_size"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/text_videoProgressAndDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2.5dp"
+                android:text="观看至1分钟 | 40分钟"
+                android:textSize="@dimen/listitem_third_level_text_size"
+                android:textAlignment="viewStart"
+                android:gravity="start"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <include layout="@layout/item_menu_video_list" />
+</LinearLayout>

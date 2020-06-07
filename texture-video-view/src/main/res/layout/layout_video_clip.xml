@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="20dp"
+    android:paddingBottom="25dp"
+    android:background="@color/bg_popup_dark"
+    android:clickable="true"
+    tools:ignore="KeyboardInaccessibleWidget">
+
+    <TextView
+        android:id="@+id/btn_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintVertical_bias="0"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:includeFontPadding="false"
+        android:text="@string/cancel"
+        android:textSize="@dimen/video_clip_title_text_size"
+        android:textColor="@color/color_selector_white_color_accent" />
+
+    <TextView
+        android:id="@+id/btn_cutoutShortVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/btn_cancel"
+        app:layout_constraintEnd_toStartOf="@id/btn_cutoutGif"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/surfaceView"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintVertical_chainStyle="spread_inside"
+        android:background="@drawable/selector_cutout_shortvideo_btn"
+        android:paddingLeft="20dp"
+        android:paddingTop="5dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="5dp"
+        android:includeFontPadding="false"
+        android:text="@string/cutoutShortVideo"
+        android:textSize="@dimen/video_clip_subtitle_text_size"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/btn_cutoutGif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/btn_cutoutShortVideo"
+        app:layout_constraintEnd_toStartOf="@id/btn_ok"
+        app:layout_constraintTop_toTopOf="@id/btn_cutoutShortVideo"
+        app:layout_constraintBottom_toBottomOf="@id/btn_cutoutShortVideo"
+        android:background="@drawable/selector_cutout_gif_btn"
+        android:paddingLeft="20dp"
+        android:paddingTop="5dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="5dp"
+        android:includeFontPadding="false"
+        android:text="@string/cutoutGif"
+        android:textSize="@dimen/video_clip_subtitle_text_size"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/btn_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintVertical_bias="0"
+        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
+        android:includeFontPadding="false"
+        android:text="@string/ok"
+        android:textSize="@dimen/video_clip_title_text_size"
+        android:textColor="@color/color_selector_white_color_accent" />
+
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintVertical_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_cutoutShortVideo"
+        app:layout_constraintBottom_toTopOf="@id/text_videoclipDescription"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/text_videoclipDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/surfaceView"
+        app:layout_constraintBottom_toTopOf="@id/view_videoclip"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:includeFontPadding="false"
+        android:textSize="@dimen/video_clip_text_size"
+        android:textColor="@android:color/white" />
+
+    <com.liuzhenlin.texturevideoview.VideoClipView
+        android:id="@+id/view_videoclip"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_videoclipDescription"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

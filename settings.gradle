@@ -1,0 +1,11 @@
+include ':app',
+        ':circular-checkbox',
+        ':floating-menu',
+        ':gallery-viewer',
+        ':swipeback',
+        ':sliding-drawer-layout',
+        ':slidingitemmenu-recyclerview',
+        ':texture-video-view',
+        ':exoplayer2-ext-av1',
+        ':exoplayer2-ext-vp9',
+        ':exoplayer2-ext-ffmpeg'

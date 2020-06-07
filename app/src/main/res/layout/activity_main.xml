@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.liuzhenlin.slidingdrawerlayout.SlidingDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/slidingDrawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.activity.MainActivity">
+
+    <ViewStub
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/layout_drawer"
+        android:layout_gravity="start" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/container_actionbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/windowBackground"
+            android:elevation="@dimen/actionbarElevationHeight"
+            tools:ignore="UnusedAttribute">
+
+            <include layout="@layout/actionbar" />
+        </FrameLayout>
+
+        <com.liuzhenlin.videos.view.ScrollDisableViewPager
+            android:id="@+id/viewpager_fragments"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tablayout_fragments"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/tabHeight"
+            android:layout_weight="0"
+            app:tabIndicatorColor="@color/pink"
+            app:tabIndicatorGravity="top"
+            app:tabTextAppearance="@style/TextAppearance_TabItem"
+            app:tabMaxWidth="0dp"
+            app:tabGravity="fill"
+            app:tabMode="fixed">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/localVideos" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/onlineVideos" />
+        </com.google.android.material.tabs.TabLayout>
+    </LinearLayout>
+</com.liuzhenlin.slidingdrawerlayout.SlidingDrawerLayout>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ActivityStyle_Translucent" parent="AppTheme">
+        <!--状态栏透明-->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!--虚拟按键透明-->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <!--背景透明-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+</resources>

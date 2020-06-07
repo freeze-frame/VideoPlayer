@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/directoryDetails"
+        android:textSize="@dimen/title_text_size"
+        android:textColor="@android:color/black"
+        android:textAlignment="viewStart"
+        android:gravity="start" />
+
+    <TextView
+        android:id="@+id/text_videodirName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:drawableTop="@drawable/ic_default_thumb"
+        android:drawablePadding="5dp"
+        android:text="@string/name"
+        android:textSize="@dimen/primary_text_size"
+        android:textIsSelectable="true"
+        android:textAlignment="viewStart"
+        android:gravity="start" />
+
+    <TextView
+        android:id="@+id/text_videodirSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/size"
+        android:textSize="@dimen/secondary_text_size"
+        android:textIsSelectable="true"
+        android:textAlignment="viewStart"
+        android:gravity="start" />
+
+    <TextView
+        android:id="@+id/text_videoCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/videoCount"
+        android:textSize="@dimen/secondary_text_size"
+        android:textIsSelectable="true"
+        android:textAlignment="viewStart"
+        android:gravity="start" />
+
+    <TextView
+        android:id="@+id/text_videodirPath"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/path"
+        android:textSize="@dimen/secondary_text_size"
+        android:textIsSelectable="true"
+        android:textAlignment="viewStart"
+        android:gravity="start" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/btn_ok_videoListItemDetailsDialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@drawable/selector_dialog_button"
+            android:text="@string/ok"
+            android:textSize="@dimen/dialog_button_text_size"
+            android:textColor="@color/colorAccent" />
+    </FrameLayout>
+</LinearLayout>

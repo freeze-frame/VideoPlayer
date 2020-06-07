@@ -1,0 +1,6 @@
+<component name="CopyrightManager">
+  <copyright>
+    <option name="notice" value="Created on &amp;#36;today.format(&quot;yyyy-M-d h:mm:ss a&quot;).&#10;Copyright © &amp;#36;today.year 刘振林. All rights reserved." />
+    <option name="myName" value="Liu Zhenlin's copyright" />
+  </copyright>
+</component>

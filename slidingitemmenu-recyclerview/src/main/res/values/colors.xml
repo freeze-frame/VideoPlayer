@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_selector">#E0E0E0</color>
+    <color name="color_rippleSelector">#E6E6E6</color>
+    <color name="color_ripple">#C9C9C9</color>
+</resources>

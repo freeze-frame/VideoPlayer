@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="actionbarHeight">45dp</dimen>
+    <dimen name="actionbarElevationHeight">4dp</dimen>
+    <dimen name="tabHeight">45dp</dimen>
+
+    <dimen name="homepage_actionbar_title_text_size">21dp</dimen>
+    <dimen name="homepage_actionbar_drawer_indicator_horizontal_margin">0dp</dimen>
+
+    <dimen name="title_text_size">17sp</dimen>
+    <dimen name="subtitle_text_size">16sp</dimen>
+    <dimen name="primary_text_size">15.5sp</dimen>
+    <dimen name="secondary_text_size">14sp</dimen>
+    <dimen name="smallest_text_size">12sp</dimen>
+    <dimen name="listitem_first_level_text_size">@dimen/primary_text_size</dimen>
+    <dimen name="listitem_second_level_text_size">13sp</dimen>
+    <dimen name="listitem_third_level_text_size">@dimen/smallest_text_size</dimen>
+    <dimen name="icon_bottom_text_size">@dimen/smallest_text_size</dimen>
+    <dimen name="dialog_button_text_size">@dimen/secondary_text_size</dimen>
+
+    <dimen name="notification_title_text_size">14sp</dimen>
+    <dimen name="notification_progress_text_size">12sp</dimen>
+    <dimen name="notification_button_text_size">13sp</dimen>
+</resources>

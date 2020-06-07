@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SlidingDrawerLayout">
+        <attr name="widthPercent_leftDrawer" format="float">
+            <enum name="unspecified" value="0" />
+        </attr>
+        <attr name="widthPercent_rightDrawer" format="float">
+            <enum name="unspecified" value="0" />
+        </attr>
+        <attr name="widthPercent_startDrawer" format="float">
+            <enum name="unspecified" value="0" />
+        </attr>
+        <attr name="widthPercent_endDrawer" format="float">
+            <enum name="unspecified" value="0" />
+        </attr>
+
+        <attr name="enabledInTouch_leftDrawer" format="boolean" />
+        <attr name="enabledInTouch_rightDrawer" format="boolean" />
+        <attr name="enabledInTouch_startDrawer" format="boolean" />
+        <attr name="enabledInTouch_endDrawer" format="boolean" />
+
+        <attr name="contentSensitiveEdgeSize" format="dimension" />
+
+        <attr name="contentFadeColor" format="color" />
+
+        <attr name="duration" format="integer" />
+
+        <!--<attr name="closeOpenDrawerOnBackPressedEnabled" format="boolean" />-->
+    </declare-styleable>
+
+    <declare-styleable name="SlidingDrawerLayout_Layout">
+        <attr name="android:layout_gravity" />
+    </declare-styleable>
+</resources>

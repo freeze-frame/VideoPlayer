@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 状态栏默认使用 colorPrimaryDark -->
+    <color name="colorPrimaryDark">#757DE8</color> <!-- Indigo material 500 (light) -->
+    <!-- ActionBar默认使用该颜色，Toolbar导航栏的底色 -->
+    <color name="colorPrimary">#29B6F6</color> <!-- Light Blue material 400 -->
+    <color name="colorAccent">#00B0FF</color> <!-- Light Blue material A400 -->
+    <color name="colorAccent_translucent">#8000B0FF</color>
+
+    <color name="lightBlue">#00B0FF</color> <!-- Light Blue material A400 -->
+    <color name="pink">#FF4081</color> <!-- Pink material A200 -->
+    <color name="purple">#E040FB</color> <!-- Purple material A200 -->
+
+    <color name="darkGray_translucent">#80444444</color>
+    <color name="darkGray">#444444</color>
+    <color name="gray">#888888</color>
+    <color name="lightGray">#AAAAAA</color>
+    <color name="gray_rgb230">#E6E6E6</color>
+    <color name="gray_rgb240">#F0F0F0</color>
+    <color name="gray_rgb242">#F2F2F2</color>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="btn_cancel_deleteVideoListItemDialog" type="id" />
+    <item name="btn_confirm_deleteVideoListItemDialog" type="id" />
+
+    <item name="btn_search" type="id" />
+    <item name="btn_link" type="id" />
+
+    <item name="setBackground" type="id" />
+    <item name="setForeground" type="id" />
+    <item name="changeTextColor" type="id" />
+    <item name="changeStatusTextColor" type="id" />
+</resources>

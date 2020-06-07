@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".view.activity.FeedbackActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableStart="@drawable/ic_back"
+            android:drawableLeft="@drawable/ic_back"
+            app:drawableTint="@color/color_selector_color_accent"
+            android:drawablePadding="7.5dp"
+            android:text="@string/back"
+            android:textSize="@dimen/title_text_size"
+            android:textColor="@color/color_selector_color_accent"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/text_adviceAndFeedback"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/adviceAndFeedback"
+            android:textSize="@dimen/title_text_size"
+            android:textColor="@android:color/black"
+            android:textAlignment="center"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/btn_saveFeedback"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/save"
+            android:textSize="@dimen/title_text_size"
+            android:textColor="@color/color_selector_color_accent"
+            android:gravity="center_vertical" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbarThumbVertical="@android:color/transparent"
+        android:background="@color/gray_rgb240">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:background="@android:color/white">
+
+                <EditText
+                    android:id="@+id/editor_enterProblemsOrAdvice"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:background="@null"
+                    android:hint="@string/pleaseEnterTheIssuesYouEncounteredOrYourAdvice"
+                    android:textSize="@dimen/primary_text_size"
+                    android:textColor="@android:color/black"
+                    android:maxLength="500"
+                    android:maxLines="3"
+                    android:inputType="textMultiLine"
+                    android:gravity="top" />
+
+                <TextView
+                    android:id="@+id/text_wordCountIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignBottom="@id/editor_enterProblemsOrAdvice"
+                    android:text="0/500"
+                    android:textSize="@dimen/secondary_text_size"
+                    tools:ignore="HardcodedText" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:padding="10dp"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:id="@+id/text_pictures"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/text_pictureCountIndicator"
+                    android:layout_toStartOf="@+id/text_pictureCountIndicator"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="@string/pictures"
+                    android:textSize="@dimen/primary_text_size"
+                    android:textColor="@android:color/black"
+                    android:textAlignment="viewStart"
+                    android:gravity="start" />
+
+                <TextView
+                    android:id="@id/text_pictureCountIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:text="0/3"
+                    android:textSize="@dimen/secondary_text_size"
+                    tools:ignore="HardcodedText" />
+
+                <GridView
+                    android:id="@+id/grid_pictures"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12.5dp"
+                    android:layout_marginBottom="2.5dp"
+                    android:layout_below="@id/text_pictures"
+                    android:scrollbars="none"
+                    android:overScrollMode="never"
+                    android:numColumns="3"
+                    android:horizontalSpacing="5dp"
+                    android:verticalSpacing="5dp"
+                    android:stretchMode="columnWidth"
+                    tools:ignore="NestedScrolling" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:padding="10dp"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:id="@+id/text_contactWay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_weight="0"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="@string/contactWay"
+                    android:textSize="@dimen/primary_text_size"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical" />
+
+                <EditText
+                    android:id="@+id/editor_enterContactWay"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:background="@null"
+                    android:hint="@string/optionalForMeToContactWithYou"
+                    android:textSize="@dimen/primary_text_size"
+                    android:textColor="@android:color/black"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:gravity="center_vertical" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_commit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="20dp"
+                android:enabled="false"
+                android:text="@string/commit"
+                android:textSize="@dimen/primary_text_size"
+                android:textColor="@android:color/white"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

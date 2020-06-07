@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/actionbar"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/actionbarHeight"
+    android:background="@drawable/bg_actionbar"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <ImageButton
+        android:id="@+id/btn_homeAsUpIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/homepage_actionbar_drawer_indicator_horizontal_margin"
+        android:layout_marginRight="@dimen/homepage_actionbar_drawer_indicator_horizontal_margin"
+        style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
+        android:contentDescription="@string/openOrCloseSideDrawer" />
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/appName"
+        android:textSize="@dimen/homepage_actionbar_title_text_size"
+        android:textColor="@android:color/white"
+        tools:ignore="SpUsage" />
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/img_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/ic_search"
+        style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
+        android:contentDescription="@string/searchVideos" />
+</LinearLayout>

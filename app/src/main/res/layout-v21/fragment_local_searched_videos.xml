@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:drawable/screen_background_dark_transparent"
+    android:clickable="true"
+    tools:ignore="KeyboardInaccessibleWidget">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_searchedVideoList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:background="?android:attr/windowBackground"
+        android:visibility="gone" />
+</FrameLayout>

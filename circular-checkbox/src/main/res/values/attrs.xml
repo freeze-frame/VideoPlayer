@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircularCheckBox">
+        <attr name="color_stroke" format="color" />
+        <attr name="color_ring_checked" format="color" />
+        <attr name="color_solid_unchecked" format="color" />
+        <attr name="color_tick" format="color" />
+        <attr name="strokeWidth" format="dimension" />
+        <attr name="tickStrokeWidth" format="dimension" />
+        <attr name="duration" format="integer" />
+    </declare-styleable>
+</resources>
