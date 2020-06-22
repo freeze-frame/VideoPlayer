@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * @author 刘振林
  */
-/*package*/ abstract class AbsTextureVideoView extends DrawerLayout {
+public abstract class AbsTextureVideoView extends DrawerLayout {
 
     protected final Context mContext;
     protected final Resources mResources;
@@ -39,7 +39,7 @@ import java.util.List;
      * A user agent string based on the application name resolved from this view's context object
      * and the `exoplayer-core` library version.
      */
-    /*package*/ final String mUserAgent;
+    /*package*/ final String mExoUserAgent;
 
     public AbsTextureVideoView(@NonNull Context context) {
         this(context, null);
@@ -55,7 +55,7 @@ import java.util.List;
         mResources = getResources();
 
         mAppName = context.getApplicationInfo().loadLabel(context.getPackageManager()).toString();
-        mUserAgent = Util.getUserAgent(context, mAppName);
+        mExoUserAgent = Util.getUserAgent(context, mAppName);
     }
 
     /**

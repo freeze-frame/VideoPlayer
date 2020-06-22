@@ -771,7 +771,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
   protected static class MsgHandler extends Handler {
     protected final WeakReference<VideoPlayer> videoPlayerRef;
 
-    protected MsgHandler(VideoPlayer videoPlayer) {
+    public MsgHandler(VideoPlayer videoPlayer) {
       videoPlayerRef = new WeakReference<>(videoPlayer);
     }
 

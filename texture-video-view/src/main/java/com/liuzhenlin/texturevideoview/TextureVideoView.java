@@ -2364,7 +2364,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         final MediaSourceFactory factory =
                 Utils.canUseExoPlayer() && videoPlayer instanceof ExoVideoPlayer
                         ? ((ExoVideoPlayer) videoPlayer).obtainMediaSourceFactory(videoUri) : null;
-        final VideoClipPlayer player = new VideoClipPlayer(mContext, holder, videoUri, mUserAgent, factory);
+        final VideoClipPlayer player = new VideoClipPlayer(mContext, holder, videoUri, mExoUserAgent, factory);
         final Runnable trackProgressRunnable = new Runnable() {
             @Override
             public void run() {

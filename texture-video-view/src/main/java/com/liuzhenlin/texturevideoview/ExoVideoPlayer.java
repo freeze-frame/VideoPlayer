@@ -209,7 +209,7 @@ public class ExoVideoPlayer extends VideoPlayer {
   public String getUserAgent() {
     if (mUserAgent == null) {
       if (mVideoView != null) {
-        mUserAgent = mVideoView.mUserAgent;
+        mUserAgent = mVideoView.mExoUserAgent;
       } else {
         mUserAgent = Util.getUserAgent(mContext,
             mContext.getApplicationInfo().loadLabel(mContext.getPackageManager()).toString());
