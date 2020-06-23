@@ -1,4 +1,4 @@
-package com.liuzhenlin.videos.model
+package com.liuzhenlin.videos.bean
 
 import android.os.Parcel
 import android.os.Parcelable

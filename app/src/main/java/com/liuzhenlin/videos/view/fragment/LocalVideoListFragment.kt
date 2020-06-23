@@ -5,7 +5,6 @@
 
 package com.liuzhenlin.videos.view.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -17,7 +16,6 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -43,13 +41,14 @@ import com.liuzhenlin.floatingmenu.DensityUtils
 import com.liuzhenlin.simrv.SlidingItemMenuRecyclerView
 import com.liuzhenlin.swipeback.SwipeBackFragment
 import com.liuzhenlin.texturevideoview.utils.FileUtils
-import com.liuzhenlin.texturevideoview.utils.ParallelThreadExecutor
 import com.liuzhenlin.videos.*
+import com.liuzhenlin.videos.bean.Video
+import com.liuzhenlin.videos.bean.VideoDirectory
+import com.liuzhenlin.videos.bean.VideoListItem
 import com.liuzhenlin.videos.dao.IVideoDao
 import com.liuzhenlin.videos.dao.VideoListItemDao
-import com.liuzhenlin.videos.model.Video
-import com.liuzhenlin.videos.model.VideoDirectory
-import com.liuzhenlin.videos.model.VideoListItem
+import com.liuzhenlin.videos.model.LocalVideoListModel
+import com.liuzhenlin.videos.model.OnLoadListener
 import com.liuzhenlin.videos.utils.BitmapUtils2
 import com.liuzhenlin.videos.utils.FileUtils2
 import com.liuzhenlin.videos.utils.UiUtils
@@ -91,8 +90,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
     private var mNeedReloadVideos = false
     private var mVideoObserver: VideoObserver? = null
     private val mVideoListItems = mutableListOf<VideoListItem>()
-    private var mOnReloadVideosListeners: MutableList<OnReloadVideosListener>? = null
-    private var mLoadVideosTask: LoadVideosTask? = null
+    internal val model: LocalVideoListModel = LocalVideoListModel(App.getInstanceUnsafe()!!)
 
     internal val allVideos: ArrayList<Video>?
         get() {
@@ -160,29 +158,6 @@ class LocalVideoListFragment : SwipeBackFragment(),
     private inline val miniThumbSize
         get() = (512f * (resources.displayMetrics.widthPixels / 1080f) + 0.5f).toInt()
 
-    fun addOnReloadVideosListener(listener: OnReloadVideosListener) {
-        if (mOnReloadVideosListeners == null)
-            mOnReloadVideosListeners = LinkedList()
-        if (!mOnReloadVideosListeners!!.contains(listener))
-            mOnReloadVideosListeners!!.add(listener)
-    }
-
-    fun removeOnReloadVideosListener(listener: OnReloadVideosListener?) {
-        mOnReloadVideosListeners?.remove(listener ?: return)
-    }
-
-    private fun notifyListenersOnReloadVideos() = mOnReloadVideosListeners?.let {
-        if (it.isEmpty()) return@let
-
-        val videos = allVideos
-        for (listener in it.toTypedArray()) {
-            @Suppress("UNCHECKED_CAST")
-            val copy = videos?.clone() as? MutableList<Video>
-            copy?.deepCopy(videos)
-            listener.onReloadVideos(copy)
-        }
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -203,6 +178,24 @@ class LocalVideoListFragment : SwipeBackFragment(),
             mLifecycleCallback = context
         }
         mLifecycleCallback?.onFragmentAttached(this)
+
+        model.addOnLoadListener(object : OnLoadListener<MutableList<VideoListItem>?> {
+            override fun onLoadStart() {
+                mRecyclerView.releaseItemView(false)
+                mRecyclerView.isItemDraggable = false
+            }
+
+            override fun onLoadFinish(result: MutableList<VideoListItem>?) {
+                onReloadVideoListItems(result)
+                mRecyclerView.isItemDraggable = true
+                mInteractionCallback.isRefreshLayoutRefreshing = false
+            }
+
+            override fun onLoadCanceled(result: MutableList<VideoListItem>?) {
+                mRecyclerView.isItemDraggable = true
+                mInteractionCallback.isRefreshLayoutRefreshing = false
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -255,11 +248,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
         mVideoObserver?.stopWatching()
         mNeedReloadVideos = false
 
-        val task = mLoadVideosTask
-        if (task != null) {
-            mLoadVideosTask = null
-            task.cancel(false)
-        }
+        model.stopLoader()
 //        mVideoListItems.clear()
 //        notifyListenersOnReloadVideos()
     }
@@ -416,8 +405,6 @@ class LocalVideoListFragment : SwipeBackFragment(),
             mVideoListItems.set(items)
             mAdapter.notifyDataSetChanged()
         }
-
-        notifyListenersOnReloadVideos()
     }
 
     private fun autoLoadVideos() {
@@ -439,63 +426,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
          */
         mItemOptionsWindow?.dismiss()
 
-        // 不在加载视频时才加载
-        if (mLoadVideosTask == null) {
-            mLoadVideosTask = LoadVideosTask()
-            mLoadVideosTask!!.executeOnExecutor(ParallelThreadExecutor.getSingleton())
-        }
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private inner class LoadVideosTask : AsyncTask<Void, Void, List<VideoListItem>?>() {
-
-        override fun onPreExecute() {
-            mRecyclerView.releaseItemView(false)
-            mRecyclerView.isItemDraggable = false
-        }
-
-        override fun doInBackground(vararg voids: Void): List<VideoListItem>? {
-            val dao = VideoListItemDao.getSingleton(contextRequired)
-
-            var videos: MutableList<Video>? = null
-
-            val videoCursor = dao.queryAllVideos() ?: return null
-            while (!isCancelled && videoCursor.moveToNext()) {
-                val video = dao.buildVideo(videoCursor)
-                if (video != null) {
-                    if (videos == null) videos = LinkedList()
-                    videos.add(video)
-                }
-            }
-            videoCursor.close()
-
-            val items = videos.toVideoListItems() ?: return null
-
-            val videodirCursor = dao.queryAllVideoDirs() ?: return items
-            while (!isCancelled && videodirCursor.moveToNext()) {
-                val videodir = dao.buildVideoDir(videodirCursor)
-                if (!items.contains(videodir)) {
-                    dao.deleteVideoDir(videodir.path)
-                }
-            }
-            videodirCursor.close()
-
-            return items
-        }
-
-        override fun onPostExecute(items: List<VideoListItem>?) {
-            onReloadVideoListItems(items)
-            mRecyclerView.isItemDraggable = true
-            mInteractionCallback.isRefreshLayoutRefreshing = false
-            mLoadVideosTask = null
-        }
-
-        override fun onCancelled(result: List<VideoListItem>?) {
-            if (mLoadVideosTask == null) {
-                mRecyclerView.isItemDraggable = true
-                mInteractionCallback.isRefreshLayoutRefreshing = false
-            }
-        }
+        model.startLoader()
     }
 
     private inner class VideoObserver(handler: Handler) : ContentObserver(handler) {

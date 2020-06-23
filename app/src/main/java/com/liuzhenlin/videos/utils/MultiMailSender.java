@@ -9,7 +9,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.liuzhenlin.videos.model.MailInfo;
+import com.liuzhenlin.videos.bean.MailInfo;
 
 import java.io.UnsupportedEncodingException;
 

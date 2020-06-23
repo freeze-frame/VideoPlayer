@@ -98,7 +98,7 @@ class LocalVideosFragment : Fragment(), ILocalVideosFragment, FragmentPartLifecy
             }
             childFragment === mLocalFoldedVideosFragment -> {
                 childFragment.setVideoOpCallback(mLocalVideoListFragment)
-                mLocalVideoListFragment.addOnReloadVideosListener(childFragment)
+                mLocalVideoListFragment.model.addOnReloadVideosListener(childFragment)
                 mSwipeRefreshLayout.setOnRefreshListener(childFragment)
 
                 mInteractionCallback.setSideDrawerEnabled(false)
@@ -108,7 +108,7 @@ class LocalVideosFragment : Fragment(), ILocalVideosFragment, FragmentPartLifecy
             }
             childFragment === mLocalSearchedVideosFragment -> {
                 childFragment.setVideoOpCallback(mLocalVideoListFragment)
-                mLocalVideoListFragment.addOnReloadVideosListener(childFragment)
+                mLocalVideoListFragment.model.addOnReloadVideosListener(childFragment)
                 mSwipeRefreshLayout.setOnRefreshListener(childFragment)
 
                 mInteractionCallback.setSideDrawerEnabled(false)
@@ -129,7 +129,7 @@ class LocalVideosFragment : Fragment(), ILocalVideosFragment, FragmentPartLifecy
     override fun onFragmentDetached(childFragment: Fragment) {
         when {
             childFragment === mLocalFoldedVideosFragment -> {
-                mLocalVideoListFragment.removeOnReloadVideosListener(childFragment)
+                mLocalVideoListFragment.model.removeOnReloadVideosListener(childFragment)
                 mLocalFoldedVideosFragment = null
                 mSwipeRefreshLayout.setOnRefreshListener(mLocalVideoListFragment)
 
@@ -139,7 +139,7 @@ class LocalVideosFragment : Fragment(), ILocalVideosFragment, FragmentPartLifecy
 //                mInteractionCallback.showTabItems(true)
             }
             childFragment === mLocalSearchedVideosFragment -> {
-                mLocalVideoListFragment.removeOnReloadVideosListener(childFragment)
+                mLocalVideoListFragment.model.removeOnReloadVideosListener(childFragment)
                 mLocalSearchedVideosFragment = null
                 mSwipeRefreshLayout.setOnRefreshListener(mLocalVideoListFragment)
 

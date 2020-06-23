@@ -12,7 +12,7 @@ import android.view.Surface;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.liuzhenlin.texturevideoview.model.TrackInfo;
+import com.liuzhenlin.texturevideoview.bean.TrackInfo;
 
 /**
  * Stub of VlcVideoPlayer

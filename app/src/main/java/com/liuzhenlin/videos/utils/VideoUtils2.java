@@ -23,7 +23,7 @@ import com.bumptech.glide.RequestManager;
 import com.liuzhenlin.videos.App;
 import com.liuzhenlin.videos.Consts;
 import com.liuzhenlin.videos.R;
-import com.liuzhenlin.videos.model.Video;
+import com.liuzhenlin.videos.bean.Video;
 
 /**
  * @author 刘振林

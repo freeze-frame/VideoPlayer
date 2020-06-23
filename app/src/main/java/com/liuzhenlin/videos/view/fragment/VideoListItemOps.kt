@@ -20,10 +20,10 @@ import com.liuzhenlin.texturevideoview.utils.ParallelThreadExecutor
 import com.liuzhenlin.texturevideoview.utils.ShareUtils
 import com.liuzhenlin.texturevideoview.utils.URLUtils
 import com.liuzhenlin.videos.*
+import com.liuzhenlin.videos.bean.Video
+import com.liuzhenlin.videos.bean.VideoDirectory
+import com.liuzhenlin.videos.bean.VideoListItem
 import com.liuzhenlin.videos.dao.VideoListItemDao
-import com.liuzhenlin.videos.model.Video
-import com.liuzhenlin.videos.model.VideoDirectory
-import com.liuzhenlin.videos.model.VideoListItem
 import com.liuzhenlin.videos.utils.UiUtils
 import com.liuzhenlin.videos.view.activity.VideoActivity
 import java.io.File

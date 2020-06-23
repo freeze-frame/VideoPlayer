@@ -21,10 +21,10 @@ import androidx.annotation.RawRes;
 import androidx.annotation.RestrictTo;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.liuzhenlin.texturevideoview.model.AudioTrackInfo;
-import com.liuzhenlin.texturevideoview.model.SubtitleTrackInfo;
-import com.liuzhenlin.texturevideoview.model.TrackInfo;
-import com.liuzhenlin.texturevideoview.model.VideoTrackInfo;
+import com.liuzhenlin.texturevideoview.bean.AudioTrackInfo;
+import com.liuzhenlin.texturevideoview.bean.SubtitleTrackInfo;
+import com.liuzhenlin.texturevideoview.bean.TrackInfo;
+import com.liuzhenlin.texturevideoview.bean.VideoTrackInfo;
 import com.liuzhenlin.texturevideoview.receiver.HeadsetEventsReceiver;
 import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventHandler;
 import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventReceiver;

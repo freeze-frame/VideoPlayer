@@ -11,7 +11,6 @@ import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.os.AsyncTask
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
@@ -32,10 +31,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import com.liuzhenlin.floatingmenu.FloatingMenu
-import com.liuzhenlin.texturevideoview.utils.ParallelThreadExecutor
 import com.liuzhenlin.videos.*
-import com.liuzhenlin.videos.dao.VideoListItemDao
-import com.liuzhenlin.videos.model.Video
+import com.liuzhenlin.videos.bean.Video
+import com.liuzhenlin.videos.model.LocalSearchedVideoListModel
+import com.liuzhenlin.videos.model.OnLoadListener
+import com.liuzhenlin.videos.model.OnReloadVideosListener
 import com.liuzhenlin.videos.utils.AlgorithmUtil
 import com.liuzhenlin.videos.utils.UiUtils
 import com.liuzhenlin.videos.utils.VideoUtils2
@@ -67,7 +67,7 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
     private val mSearchedVideos = mutableListOf<Video>()
     private var mSelectedItemIndex = NO_POSITION
 
-    private var mLoadVideosTask: LoadVideosTask? = null
+    private lateinit var mModel: LocalSearchedVideoListModel
     private var _mVideos: ArrayList<Video>? = null
     private inline val mVideos: ArrayList<Video>
         get() {
@@ -105,6 +105,18 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
             mLifecycleCallback = context
         }
         mLifecycleCallback?.onFragmentAttached(this)
+
+        mModel = LocalSearchedVideoListModel(context)
+        mModel.addOnLoadListener(object : OnLoadListener<MutableList<Video>?> {
+            override fun onLoadFinish(result: MutableList<Video>?) {
+                onReloadVideos(result)
+                mInteractionCallback.isRefreshLayoutRefreshing = false
+            }
+
+            override fun onLoadCanceled(result: MutableList<Video>?) {
+                mInteractionCallback.isRefreshLayoutRefreshing = false
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -268,11 +280,7 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
 
         mSearchText = EMPTY_STRING
         mSearchedVideos.clear()
-        val task = mLoadVideosTask
-        if (task != null) {
-            mLoadVideosTask = null
-            task.cancel(false)
-        }
+        mModel.stopLoader()
 
         mInteractionCallback.setOnRefreshLayoutChildScrollUpCallback(null)
     }
@@ -312,7 +320,7 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
         }
     }
 
-    override fun onReloadVideos(videos: List<Video>?) =
+    override fun onReloadVideos(videos: MutableList<Video>?) =
             if (!mVideos.allEqual(videos)) {
                 mVideos.set(videos)
                 refreshList(false)
@@ -381,42 +389,7 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
             mInteractionCallback.isRefreshLayoutRefreshing = false
             return
         }
-        if (mLoadVideosTask == null) {
-            mLoadVideosTask = LoadVideosTask()
-            mLoadVideosTask!!.executeOnExecutor(ParallelThreadExecutor.getSingleton())
-        }
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private inner class LoadVideosTask : AsyncTask<Void, Void, List<Video>?>() {
-        override fun doInBackground(vararg voids: Void): List<Video>? {
-            val dao = VideoListItemDao.getSingleton(contextRequired)
-
-            var videos: MutableList<Video>? = null
-
-            val videoCursor = dao.queryAllVideos() ?: return null
-            while (!isCancelled && videoCursor.moveToNext()) {
-                val video = dao.buildVideo(videoCursor)
-                if (video != null) {
-                    if (videos == null) videos = mutableListOf()
-                    videos.add(video)
-                }
-            }
-            videoCursor.close()
-
-            videos.sortByElementName()
-            return videos
-        }
-
-        override fun onPostExecute(videos: List<Video>?) {
-            onReloadVideos(videos)
-            mInteractionCallback.isRefreshLayoutRefreshing = false
-            mLoadVideosTask = null
-        }
-
-        override fun onCancelled(result: List<Video>?) {
-            if (mLoadVideosTask == null) mInteractionCallback.isRefreshLayoutRefreshing = false
-        }
+        mModel.startLoader()
     }
 
     private inner class SearchedVideoListAdapter : RecyclerView.Adapter<SearchedVideoListAdapter.ViewHolder>() {

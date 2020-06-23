@@ -26,7 +26,7 @@ import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.material.snackbar.Snackbar;
-import com.liuzhenlin.texturevideoview.model.TrackInfo;
+import com.liuzhenlin.texturevideoview.bean.TrackInfo;
 import com.liuzhenlin.texturevideoview.receiver.HeadsetEventsReceiver;
 import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventHandler;
 import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventReceiver;

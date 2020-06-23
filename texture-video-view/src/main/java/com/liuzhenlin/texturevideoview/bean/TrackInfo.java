@@ -3,7 +3,7 @@
  * Copyright © 2020 刘振林. All rights reserved.
  */
 
-package com.liuzhenlin.texturevideoview.model;
+package com.liuzhenlin.texturevideoview.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;

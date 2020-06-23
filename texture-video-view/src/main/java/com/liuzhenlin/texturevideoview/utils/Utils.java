@@ -29,7 +29,7 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.material.snackbar.Snackbar;
 import com.liuzhenlin.texturevideoview.IVideoPlayer;
 import com.liuzhenlin.texturevideoview.R;
-import com.liuzhenlin.texturevideoview.model.TrackInfo;
+import com.liuzhenlin.texturevideoview.bean.TrackInfo;
 
 import java.math.RoundingMode;
 import java.text.NumberFormat;

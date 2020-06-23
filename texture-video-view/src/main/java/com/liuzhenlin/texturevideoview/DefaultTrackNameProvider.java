@@ -12,11 +12,11 @@ import androidx.annotation.NonNull;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Util;
-import com.liuzhenlin.texturevideoview.model.AudioTrackInfo;
-import com.liuzhenlin.texturevideoview.model.MediaTrackInfo;
-import com.liuzhenlin.texturevideoview.model.SubtitleTrackInfo;
-import com.liuzhenlin.texturevideoview.model.TrackInfo;
-import com.liuzhenlin.texturevideoview.model.VideoTrackInfo;
+import com.liuzhenlin.texturevideoview.bean.AudioTrackInfo;
+import com.liuzhenlin.texturevideoview.bean.MediaTrackInfo;
+import com.liuzhenlin.texturevideoview.bean.SubtitleTrackInfo;
+import com.liuzhenlin.texturevideoview.bean.TrackInfo;
+import com.liuzhenlin.texturevideoview.bean.VideoTrackInfo;
 import com.liuzhenlin.texturevideoview.utils.Utils;
 
 import java.util.Locale;

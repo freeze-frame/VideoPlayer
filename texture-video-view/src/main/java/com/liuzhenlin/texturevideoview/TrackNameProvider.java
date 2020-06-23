@@ -7,7 +7,7 @@ package com.liuzhenlin.texturevideoview;
 
 import androidx.annotation.NonNull;
 
-import com.liuzhenlin.texturevideoview.model.TrackInfo;
+import com.liuzhenlin.texturevideoview.bean.TrackInfo;
 
 /** Converts {@link TrackInfo}s to user readable track names. */
 public interface TrackNameProvider {

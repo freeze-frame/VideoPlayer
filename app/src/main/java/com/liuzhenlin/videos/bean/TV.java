@@ -3,7 +3,7 @@
  * Copyright © 2020 刘振林. All rights reserved.
  */
 
-package com.liuzhenlin.videos.model;
+package com.liuzhenlin.videos.bean;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.ObjectsCompat;

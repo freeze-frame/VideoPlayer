@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RawRes;
 
-import com.liuzhenlin.texturevideoview.model.TrackInfo;
+import com.liuzhenlin.texturevideoview.bean.TrackInfo;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -310,9 +310,9 @@ public interface IVideoPlayer {
      * Returns an array of track information.
      *
      * @return Array of track info. The total number of tracks is the array length.
-     * @see com.liuzhenlin.texturevideoview.model.VideoTrackInfo
-     * @see com.liuzhenlin.texturevideoview.model.AudioTrackInfo
-     * @see com.liuzhenlin.texturevideoview.model.SubtitleTrackInfo
+     * @see com.liuzhenlin.texturevideoview.bean.VideoTrackInfo
+     * @see com.liuzhenlin.texturevideoview.bean.AudioTrackInfo
+     * @see com.liuzhenlin.texturevideoview.bean.SubtitleTrackInfo
      */
     @NonNull
     TrackInfo[] getTrackInfos();

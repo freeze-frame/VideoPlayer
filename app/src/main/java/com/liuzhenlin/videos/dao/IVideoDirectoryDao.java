@@ -9,7 +9,7 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.liuzhenlin.videos.model.VideoDirectory;
+import com.liuzhenlin.videos.bean.VideoDirectory;
 
 /**
  * @author 刘振林

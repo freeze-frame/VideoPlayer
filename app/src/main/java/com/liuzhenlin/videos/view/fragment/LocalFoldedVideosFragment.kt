@@ -5,10 +5,8 @@
 
 package com.liuzhenlin.videos.view.fragment
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,11 +26,13 @@ import com.liuzhenlin.simrv.SlidingItemMenuRecyclerView
 import com.liuzhenlin.simrv.Utils
 import com.liuzhenlin.swipeback.SwipeBackFragment
 import com.liuzhenlin.swipeback.SwipeBackLayout
-import com.liuzhenlin.texturevideoview.utils.ParallelThreadExecutor
 import com.liuzhenlin.videos.*
+import com.liuzhenlin.videos.bean.Video
+import com.liuzhenlin.videos.bean.VideoDirectory
 import com.liuzhenlin.videos.dao.VideoListItemDao
-import com.liuzhenlin.videos.model.Video
-import com.liuzhenlin.videos.model.VideoDirectory
+import com.liuzhenlin.videos.model.LocalFoldedVideoListModel
+import com.liuzhenlin.videos.model.OnLoadListener
+import com.liuzhenlin.videos.model.OnReloadVideosListener
 import com.liuzhenlin.videos.utils.FileUtils2
 import com.liuzhenlin.videos.utils.VideoUtils2
 import com.liuzhenlin.videos.view.fragment.PackageConsts.*
@@ -66,7 +66,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
             }
             return _mVideos!!
         }
-    private var mLoadDirectoryVideosTask: LoadDirectoryVideosTask? = null
+    private var mModel: LocalFoldedVideoListModel? = null
 
     private lateinit var mBackButton: ImageButton
     private lateinit var mCancelButton: Button
@@ -134,6 +134,28 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
             mLifecycleCallback = context
         }
         mLifecycleCallback?.onFragmentAttached(this)
+
+        val videodir = mVideoDir
+        if (videodir != null) {
+            mModel = LocalFoldedVideoListModel(videodir, context)
+            mModel!!.addOnLoadListener(object : OnLoadListener<MutableList<Video>?> {
+                override fun onLoadStart() {
+                    mRecyclerView.isItemDraggable = false
+                    mRecyclerView.releaseItemView(false)
+                }
+
+                override fun onLoadFinish(result: MutableList<Video>?) {
+                    onReloadDirectoryVideos(result)
+                    mRecyclerView.isItemDraggable = true
+                    mInteractionCallback.isRefreshLayoutRefreshing = false
+                }
+
+                override fun onLoadCanceled(result: MutableList<Video>?) {
+                    mRecyclerView.isItemDraggable = true
+                    mInteractionCallback.isRefreshLayoutRefreshing = false
+                }
+            })
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -145,11 +167,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
         super.onDestroyView()
         mLifecycleCallback?.onFragmentViewDestroyed(this)
 
-        val task = mLoadDirectoryVideosTask
-        if (task != null) {
-            mLoadDirectoryVideosTask = null
-            task.cancel(false)
-        }
+        mModel?.stopLoader()
         if (mVideoOptionsFrame.visibility == View.VISIBLE) {
             for (video in mVideos) {
                 video.isChecked = false
@@ -471,7 +489,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
         }
     }
 
-    override fun onReloadVideos(videos: List<Video>?) =
+    override fun onReloadVideos(videos: MutableList<Video>?) =
             if (videos == null || videos.isEmpty()) {
                 onReloadDirectoryVideos(null)
             } else {
@@ -529,49 +547,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
             hideMultiselectVideoControls()
         }
 
-        if (mLoadDirectoryVideosTask == null) {
-            mLoadDirectoryVideosTask = LoadDirectoryVideosTask()
-            mLoadDirectoryVideosTask!!.executeOnExecutor(ParallelThreadExecutor.getSingleton())
-        }
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private inner class LoadDirectoryVideosTask : AsyncTask<Void, Void, List<Video>?>() {
-        override fun onPreExecute() {
-            mRecyclerView.isItemDraggable = false
-            mRecyclerView.releaseItemView(false)
-        }
-
-        override fun doInBackground(vararg params: Void?): List<Video>? {
-            val dao = VideoListItemDao.getSingleton(contextRequired)
-
-            var videos: MutableList<Video>? = null
-
-            val videoCursor = dao.queryAllVideosInDirectory(mVideoDir?.path) ?: return null
-            while (!isCancelled && videoCursor.moveToNext()) {
-                val video = dao.buildVideo(videoCursor) ?: continue
-                if (videos == null)
-                    videos = LinkedList()
-                videos.add(video)
-            }
-            videoCursor.close()
-
-            return videos?.reordered()
-        }
-
-        override fun onPostExecute(videos: List<Video>?) {
-            onReloadDirectoryVideos(videos)
-            mRecyclerView.isItemDraggable = true
-            mInteractionCallback.isRefreshLayoutRefreshing = false
-            mLoadDirectoryVideosTask = null
-        }
-
-        override fun onCancelled(result: List<Video>?) {
-            if (mLoadDirectoryVideosTask == null) {
-                mRecyclerView.isItemDraggable = true
-                mInteractionCallback.isRefreshLayoutRefreshing = false
-            }
-        }
+        mModel?.startLoader()
     }
 
     private inner class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.ViewHolder>() {

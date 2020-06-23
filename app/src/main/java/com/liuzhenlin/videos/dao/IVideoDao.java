@@ -13,7 +13,7 @@ import android.provider.MediaStore;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import com.liuzhenlin.videos.model.Video;
+import com.liuzhenlin.videos.bean.Video;
 
 /**
  * @author 刘振林

@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import androidx.collection.ArrayMap
 import androidx.fragment.app.Fragment
 import com.liuzhenlin.texturevideoview.utils.FileUtils
+import com.liuzhenlin.videos.bean.Video
+import com.liuzhenlin.videos.bean.VideoDirectory
+import com.liuzhenlin.videos.bean.VideoListItem
 import com.liuzhenlin.videos.dao.IVideoDirectoryDao
 import com.liuzhenlin.videos.dao.VideoListItemDao
-import com.liuzhenlin.videos.model.Video
-import com.liuzhenlin.videos.model.VideoDirectory
-import com.liuzhenlin.videos.model.VideoListItem
 import java.io.File
 import java.util.*
 

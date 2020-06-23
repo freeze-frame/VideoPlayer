@@ -23,7 +23,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.liuzhenlin.texturevideoview.model.TrackInfo;
+import com.liuzhenlin.texturevideoview.bean.TrackInfo;
 import com.liuzhenlin.texturevideoview.utils.ComparableSparseArray;
 import com.liuzhenlin.texturevideoview.utils.Utils;
 
