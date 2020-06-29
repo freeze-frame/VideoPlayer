@@ -222,7 +222,7 @@ class OnlineVideosFragment : Fragment(), View.OnClickListener,
 
         override fun isChildSelectable(groupPosition: Int, childPosition: Int) = true
 
-        override fun hasStableIds() = true
+        override fun hasStableIds() = false
 
         override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup): View {
 

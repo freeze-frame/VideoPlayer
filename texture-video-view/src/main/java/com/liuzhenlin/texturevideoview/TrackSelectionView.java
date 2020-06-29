@@ -188,10 +188,6 @@ public class TrackSelectionView extends LinearLayout {
 
   private final class PagerAdapter extends RecyclerView.Adapter<PagerAdapter.ViewHolder> {
 
-    PagerAdapter() {
-      setHasStableIds(true);
-    }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -239,11 +235,6 @@ public class TrackSelectionView extends LinearLayout {
       return TRACK_GROUP_COUNT;
     }
 
-    @Override
-    public long getItemId(int position) {
-      return mTrackGroups.keyAt(position);
-    }
-
     final class ViewHolder extends RecyclerView.ViewHolder {
       final RecyclerView recyclerView;
 
@@ -269,7 +260,6 @@ public class TrackSelectionView extends LinearLayout {
     TrackListAdapter(@TrackInfo.TrackType int trackType) {
       mTrackType = trackType;
       updateDataSet();
-      setHasStableIds(true);
     }
 
     void updateDataSet() {
@@ -320,11 +310,6 @@ public class TrackSelectionView extends LinearLayout {
     public int getItemCount() {
       int count = mTrackGroup.size();
       return count == 1 ? 0 /* no such track available */ : count;
-    }
-
-    @Override
-    public long getItemId(int position) {
-      return mTrackGroup.keyAt(position);
     }
 
     @Override

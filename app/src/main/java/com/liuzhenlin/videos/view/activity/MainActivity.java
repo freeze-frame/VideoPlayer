@@ -487,6 +487,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public long getItemId(int position) {
+            if (position == 0) {
+                final int baseId = sDrawerListItemIDs[0];
+                if (!TextUtils.isEmpty(mCheckUpdateResultText)) {
+                    return 31 * baseId + mCheckUpdateResultText.hashCode();
+                }
+                return baseId;
+            }
             return sDrawerListItemIDs[position];
         }
 
