@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.DisplayCutout;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -531,15 +532,14 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder vh;
             if (convertView == null) {
-                vh = new ViewHolder(mContext);
-                convertView = vh.convertView;
+                vh = new ViewHolder(parent);
+                convertView = vh.itemView;
                 convertView.setTag(vh);
 
                 final int screenWidth = App.getInstance(mContext).getScreenWidthIgnoreOrientation();
                 final int dp_20 = DensityUtils.dp2px(mContext, 20f);
 
-                View child = vh.convertView.getChildAt(0);
-                ViewGroup.LayoutParams lp = child.getLayoutParams();
+                ViewGroup.LayoutParams lp = convertView.getLayoutParams();
                 lp.height = lp.width = (int) ((screenWidth - dp_20 * 1.5f) / 3f + 0.5f);
 
                 ViewGroup.LayoutParams plp = parent.getLayoutParams();
@@ -556,14 +556,15 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
         }
 
         final class ViewHolder {
-            final ViewGroup convertView;
+            final View itemView;
             final ImageView pictureImage;
             final TextView pictureText;
 
-            ViewHolder(Context context) {
-                convertView = (ViewGroup) View.inflate(context, R.layout.item_picture_grid, null);
-                pictureImage = convertView.findViewById(R.id.image_picture);
-                pictureText = convertView.findViewById(R.id.text_picture);
+            ViewHolder(ViewGroup adapterView) {
+                itemView = (ViewGroup) LayoutInflater.from(adapterView.getContext())
+                        .inflate(R.layout.item_picture_grid, adapterView, false);
+                pictureImage = itemView.findViewById(R.id.image_picture);
+                pictureText = itemView.findViewById(R.id.text_picture);
             }
         }
 

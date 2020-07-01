@@ -225,19 +225,19 @@ class OnlineVideosFragment : Fragment(), View.OnClickListener,
         override fun hasStableIds() = false
 
         override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup): View {
-
+            val groupHolder: GroupViewHolder
             val groupView: View
+
             if (convertView == null) {
-                groupView = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_tv_group, parent, false)
-                groupView.tag = GroupHolder(groupView)
+                groupHolder = GroupViewHolder(parent)
+                groupView = groupHolder.groupView
+                groupView.tag = groupHolder
             } else {
                 groupView = convertView
+                groupHolder = groupView.tag as GroupViewHolder
             }
 
             val tvGroup = tvGroups!![groupPosition]
-
-            val groupHolder = groupView.tag as GroupHolder
             groupHolder.nameText.text = tvGroup.name
             groupHolder.childCountText.text = tvGroup.tVs.size.toString()
 
@@ -254,22 +254,22 @@ class OnlineVideosFragment : Fragment(), View.OnClickListener,
                 groupPosition.toLong()
 
         override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup): View {
-
+            val childHolder: ChildViewHolder
             val childView: View
+
             if (convertView == null) {
-                childView = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_tv, parent, false)
-                childView.tag = ChildHolder(childView)
+                childHolder = ChildViewHolder(parent)
+                childView = childHolder.childView
+                childView.tag = childHolder
             } else {
                 childView = convertView
+                childHolder = childView.tag as ChildViewHolder
             }
 
-            val child = tvGroups!![groupPosition].tVs[childPosition]
-
-            val childHolder = childView.tag as ChildHolder
-            childHolder.nameText.text = child.name
+            val tv = tvGroups!![groupPosition].tVs[childPosition]
+            childHolder.nameText.text = tv.name
             // 高亮长按后选中的childView
-            if (child === selectedTV) {
+            if (tv === selectedTV) {
                 childView.setBackgroundColor(COLOR_SELECTOR)
             } else {
                 ViewCompat.setBackground(childView, null)
@@ -323,12 +323,18 @@ class OnlineVideosFragment : Fragment(), View.OnClickListener,
             return false
         }
 
-        inner class GroupHolder(groupView: View) {
+        inner class GroupViewHolder(adapterView: ViewGroup) {
+            val groupView: View =
+                    LayoutInflater.from(adapterView.context)
+                            .inflate(R.layout.item_tv_group, adapterView, false)
             val nameText: TextView = groupView.findViewById(R.id.text_tvGroupName)
             val childCountText: TextView = groupView.findViewById(R.id.text_childCount)
         }
 
-        inner class ChildHolder(childView: View) {
+        inner class ChildViewHolder(adapterView: ViewGroup) {
+            val childView: View =
+                    LayoutInflater.from(adapterView.context)
+                            .inflate(R.layout.item_tv, adapterView, false)
             val nameText: TextView = childView.findViewById(R.id.text_tvName)
         }
     }

@@ -506,8 +506,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public View getView(int position, View convertView, ViewGroup listview) {
             ViewHolder vh;
             if (convertView == null) {
-                vh = new ViewHolder(listview.getContext());
-                convertView = vh.convertView;
+                vh = new ViewHolder(listview);
+                convertView = vh.itemView;
                 convertView.setTag(vh);
             } else {
                 vh = (ViewHolder) convertView.getTag();
@@ -533,14 +533,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         final class ViewHolder {
-            final View convertView;
+            final View itemView;
             final TextView text;
             final TextView subText;
 
-            ViewHolder(Context context) {
-                convertView = View.inflate(context, R.layout.item_drawer_list, null);
-                text = convertView.findViewById(R.id.text_list);
-                subText = convertView.findViewById(R.id.subtext_list);
+            ViewHolder(ViewGroup adapterView) {
+                itemView = LayoutInflater.from(adapterView.getContext())
+                        .inflate(R.layout.item_drawer_list, adapterView, false);
+                text = itemView.findViewById(R.id.text_list);
+                subText = itemView.findViewById(R.id.subtext_list);
             }
         }
     }
