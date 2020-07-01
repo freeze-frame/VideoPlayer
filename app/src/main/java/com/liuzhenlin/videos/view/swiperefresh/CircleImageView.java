@@ -18,6 +18,7 @@ package com.liuzhenlin.videos.view.swiperefresh;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -29,19 +30,21 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
-import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
+import androidx.swiperefreshlayout.R;
 
 /**
  * Private class created to work around issues with AnimationListeners being
  * called before the animation is actually complete and support shadows on older
  * platforms.
  */
-@SuppressLint({"ViewConstructor", "AppCompatCustomView"})
+@SuppressLint("AppCompatCustomView")
 class CircleImageView extends ImageView {
 
-    private static final int KEY_SHADOW_COLOR = 0x1E000000;
+    private static final int DEFAULT_BACKGROUND_COLOR = 0xFFFAFAFA;
     private static final int FILL_SHADOW_COLOR = 0x3D000000;
+    private static final int KEY_SHADOW_COLOR = 0x1E000000;
+
     // PX
     private static final float X_OFFSET = 0f;
     private static final float Y_OFFSET = 1.75f;
@@ -49,23 +52,33 @@ class CircleImageView extends ImageView {
     private static final int SHADOW_ELEVATION = 4;
 
     private Animation.AnimationListener mListener;
-    int mShadowRadius;
+    private final int mShadowRadius;
+    private int mBackgroundColor;
 
-    CircleImageView(Context context, int color) {
+    CircleImageView(Context context) {
         super(context);
+
         final float density = getContext().getResources().getDisplayMetrics().density;
         final int shadowYOffset = (int) (density * Y_OFFSET);
         final int shadowXOffset = (int) (density * X_OFFSET);
 
         mShadowRadius = (int) (density * SHADOW_RADIUS);
 
+        // The style attribute is named SwipeRefreshLayout instead of CircleImageView because
+        // CircleImageView is not part of the public api.
+        @SuppressLint("CustomViewStyleable")
+        TypedArray colorArray = getContext().obtainStyledAttributes(R.styleable.SwipeRefreshLayout);
+        mBackgroundColor = colorArray.getColor(
+                R.styleable.SwipeRefreshLayout_swipeRefreshLayoutProgressSpinnerBackgroundColor,
+                DEFAULT_BACKGROUND_COLOR);
+        colorArray.recycle();
+
         ShapeDrawable circle;
         if (elevationSupported()) {
             circle = new ShapeDrawable(new OvalShape());
             ViewCompat.setElevation(this, SHADOW_ELEVATION * density);
         } else {
-            OvalShape oval = new OvalShadow(mShadowRadius);
-            circle = new ShapeDrawable(oval);
+            circle = new ShapeDrawable(new OvalShadow(this, mShadowRadius));
             setLayerType(View.LAYER_TYPE_SOFTWARE, circle.getPaint());
             circle.getPaint().setShadowLayer(mShadowRadius, shadowXOffset, shadowYOffset,
                     KEY_SHADOW_COLOR);
@@ -73,7 +86,7 @@ class CircleImageView extends ImageView {
             // set padding so the inner image sits correctly within the shadow.
             setPadding(padding, padding, padding, padding);
         }
-        circle.getPaint().setColor(color);
+        circle.getPaint().setColor(mBackgroundColor);
         ViewCompat.setBackground(this, circle);
     }
 
@@ -110,28 +123,26 @@ class CircleImageView extends ImageView {
         }
     }
 
-    /**
-     * Update the background color of the circle image view.
-     *
-     * @param colorRes Id of a color resource.
-     */
-    public void setBackgroundColorRes(int colorRes) {
-        setBackgroundColor(ContextCompat.getColor(getContext(), colorRes));
-    }
-
     @Override
     public void setBackgroundColor(int color) {
         if (getBackground() instanceof ShapeDrawable) {
             ((ShapeDrawable) getBackground()).getPaint().setColor(color);
+            mBackgroundColor = color;
         }
     }
 
-    private final class OvalShadow extends OvalShape {
-        private RadialGradient mRadialGradient;
-        private Paint mShadowPaint;
+    public int getBackgroundColor() {
+        return mBackgroundColor;
+    }
 
-        OvalShadow(int shadowRadius) {
+    private static final class OvalShadow extends OvalShape {
+        private final Paint mShadowPaint;
+        private final int mShadowRadius;
+        private final CircleImageView mCircleImageView;
+
+        OvalShadow(CircleImageView circleImageView, int shadowRadius) {
             super();
+            mCircleImageView = circleImageView;
             mShadowPaint = new Paint();
             mShadowRadius = shadowRadius;
             updateRadialGradient((int) rect().width());
@@ -145,17 +156,20 @@ class CircleImageView extends ImageView {
 
         @Override
         public void draw(Canvas canvas, Paint paint) {
-            final int viewWidth = CircleImageView.this.getWidth();
-            final int viewHeight = CircleImageView.this.getHeight();
-            canvas.drawCircle(viewWidth / 2f, viewHeight / 2f, viewWidth / 2f, mShadowPaint);
-            canvas.drawCircle(viewWidth / 2f, viewHeight / 2f, viewWidth / 2f - mShadowRadius, paint);
+            final float x = mCircleImageView.getWidth() / 2f;
+            final float y = mCircleImageView.getHeight() / 2f;
+            canvas.drawCircle(x, y, x, mShadowPaint);
+            canvas.drawCircle(x, y, x - mShadowRadius, paint);
         }
 
         private void updateRadialGradient(int diameter) {
-            mRadialGradient = new RadialGradient(diameter / 2f, diameter / 2f,
-                    mShadowRadius, new int[]{FILL_SHADOW_COLOR, Color.TRANSPARENT},
-                    null, Shader.TileMode.CLAMP);
-            mShadowPaint.setShader(mRadialGradient);
+            mShadowPaint.setShader(new RadialGradient(
+                    diameter / 2f,
+                    diameter / 2f,
+                    mShadowRadius,
+                    new int[]{FILL_SHADOW_COLOR, Color.TRANSPARENT},
+                    null,
+                    Shader.TileMode.CLAMP));
         }
     }
 }

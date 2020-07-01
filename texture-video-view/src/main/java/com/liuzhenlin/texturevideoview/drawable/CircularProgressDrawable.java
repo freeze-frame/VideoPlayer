@@ -18,6 +18,7 @@ package com.liuzhenlin.texturevideoview.drawable;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -120,7 +121,7 @@ public class CircularProgressDrawable extends Drawable implements Animatable {
     /** Rotation applied to ring during the animation, to complete it to a full circle. */
     private static final float RING_ROTATION = 1f - (MAX_PROGRESS_ARC - MIN_PROGRESS_ARC);
 
-    private Resources mResources;
+    private final Resources mResources;
     private Animator mAnimator;
     @SuppressWarnings("WeakerAccess") /* synthetic access */
             float mRotationCount;
@@ -130,6 +131,7 @@ public class CircularProgressDrawable extends Drawable implements Animatable {
     /**
      * @param context application context
      */
+    @SuppressLint("RestrictedApi")
     public CircularProgressDrawable(@NonNull Context context) {
         mResources = Preconditions.checkNotNull(context).getResources();
 
@@ -390,7 +392,7 @@ public class CircularProgressDrawable extends Drawable implements Animatable {
     }
 
     @Override
-    public void draw(@NonNull Canvas canvas) {
+    public void draw(Canvas canvas) {
         final Rect bounds = getBounds();
         canvas.save();
         canvas.rotate(mRotation, bounds.exactCenterX(), bounds.exactCenterY());
@@ -444,13 +446,12 @@ public class CircularProgressDrawable extends Drawable implements Animatable {
         if (mRing.getEndTrim() != mRing.getStartTrim()) {
             mFinishing = true;
             mAnimator.setDuration(ANIMATION_DURATION / 2);
-            mAnimator.start();
         } else {
             mRing.setColorIndex(0);
             mRing.resetOriginals();
             mAnimator.setDuration(ANIMATION_DURATION);
-            mAnimator.start();
         }
+        mAnimator.start();
     }
 
     /**
@@ -560,14 +561,11 @@ public class CircularProgressDrawable extends Drawable implements Animatable {
     private void setupAnimators() {
         final Ring ring = mRing;
         final ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float interpolatedTime = (float) animation.getAnimatedValue();
-                updateRingColor(interpolatedTime, ring);
-                applyTransformation(interpolatedTime, ring, false);
-                invalidateSelf();
-            }
+        animator.addUpdateListener(animation -> {
+            float interpolatedTime = (float) animation.getAnimatedValue();
+            updateRingColor(interpolatedTime, ring);
+            applyTransformation(interpolatedTime, ring, false);
+            invalidateSelf();
         });
         animator.setRepeatCount(ValueAnimator.INFINITE);
         animator.setRepeatMode(ValueAnimator.RESTART);
@@ -801,7 +799,7 @@ public class CircularProgressDrawable extends Drawable implements Animatable {
         }
 
         int getNextColorIndex() {
-            return (mColorIndex + 1) % (mColors.length);
+            return (mColorIndex + 1) % mColors.length;
         }
 
         /**

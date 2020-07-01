@@ -426,12 +426,12 @@ import com.google.android.exoplayer2.util.Util;
         Math.round(
             cuePositionAnchor == Cue.ANCHOR_TYPE_END
                 ? (anchorX - width)
-                : cuePositionAnchor == Cue.ANCHOR_TYPE_MIDDLE ? (anchorX - (width / 2)) : anchorX);
+                : cuePositionAnchor == Cue.ANCHOR_TYPE_MIDDLE ? (anchorX - (width / 2f)) : anchorX);
     int y =
         Math.round(
             cueLineAnchor == Cue.ANCHOR_TYPE_END
                 ? (anchorY - height)
-                : cueLineAnchor == Cue.ANCHOR_TYPE_MIDDLE ? (anchorY - (height / 2)) : anchorY);
+                : cueLineAnchor == Cue.ANCHOR_TYPE_MIDDLE ? (anchorY - (height / 2f)) : anchorY);
     bitmapRect = new Rect(x, y, x + width, y + height);
   }
 
