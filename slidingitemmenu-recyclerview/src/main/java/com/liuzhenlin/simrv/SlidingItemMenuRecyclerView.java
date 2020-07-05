@@ -693,7 +693,7 @@ public class SlidingItemMenuRecyclerView extends RecyclerView {
      * This method does not cancel the translation animator of the 'itemView', for which it is used
      * to update the item view's horizontal scrolled position.
      */
-    private void baseTranslateItemViewXBy(ViewGroup itemView, float dx) {
+    /*synthetic*/ void baseTranslateItemViewXBy(ViewGroup itemView, float dx) {
         if (dx == 0) return;
 
         final float translationX = itemView.getChildAt(0).getTranslationX() + dx;

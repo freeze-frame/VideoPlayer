@@ -11,6 +11,8 @@ import android.view.OrientationEventListener;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.util.Synthetic;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -24,7 +26,7 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAI
  */
 public abstract class OnOrientationChangeListener {
     @ScreenOrientation
-    private int mOrientation;
+    @Synthetic int mOrientation;
     private final OrientationEventListener mListener;
 
     @IntDef({

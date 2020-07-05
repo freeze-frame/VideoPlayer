@@ -67,7 +67,7 @@ import com.liuzhenlin.texturevideoview.R;
  */
 public class DecoratedMediaCustomViewStyle extends NotificationCompat.Style {
 
-    MediaSessionCompat.Token mToken;
+    /*package*/ MediaSessionCompat.Token mToken;
 
     public DecoratedMediaCustomViewStyle() {
     }
@@ -102,7 +102,7 @@ public class DecoratedMediaCustomViewStyle extends NotificationCompat.Style {
     }
 
     @RequiresApi(21)
-    Notification.MediaStyle fillInMediaStyle(Notification.MediaStyle style) {
+    /*package*/ Notification.MediaStyle fillInMediaStyle(Notification.MediaStyle style) {
         if (mToken != null) {
             style.setMediaSession((MediaSession.Token) mToken.getToken());
         }
@@ -145,12 +145,12 @@ public class DecoratedMediaCustomViewStyle extends NotificationCompat.Style {
         return null;
     }
 
-    RemoteViews generateContentView() {
+    /*package*/ RemoteViews generateContentView() {
         return applyStandardTemplate(false /* showSmallIcon */,
                 getContentViewLayoutResource(), false /* fitIn1U */);
     }
 
-    int getContentViewLayoutResource() {
+    /*package*/ int getContentViewLayoutResource() {
         return R.layout.notification_template_media_simple_custom;
     }
 
@@ -181,12 +181,12 @@ public class DecoratedMediaCustomViewStyle extends NotificationCompat.Style {
         return bigContentView;
     }
 
-    RemoteViews generateBigContentView() {
+    /*package*/ RemoteViews generateBigContentView() {
         return applyStandardTemplate(false /* showSmallIcon */,
                 getBigContentViewLayoutResource(), false /* fitIn1U */);
     }
 
-    int getBigContentViewLayoutResource() {
+    /*package*/ int getBigContentViewLayoutResource() {
         return R.layout.notification_template_media_simple_custom;
     }
 

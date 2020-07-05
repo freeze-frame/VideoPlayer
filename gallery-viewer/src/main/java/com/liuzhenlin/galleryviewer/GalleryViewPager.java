@@ -36,7 +36,7 @@ public class GalleryViewPager extends ViewPager {
     private final float mMinimumFlingVelocityOnCurrImageMagnified; // 400 dp/s
 
     /** Position of the last selected page */
-    private int mLastSelectedPageIndex;
+    /*synthetic*/ int mLastSelectedPageIndex;
 
     private final OnPageChangeListener mInternalOnPageChangeListener = new SimpleOnPageChangeListener() {
         @Override
@@ -192,7 +192,7 @@ public class GalleryViewPager extends ViewPager {
         }
     }
 
-    private ItemCallback mItemCallback;
+    /*synthetic*/ ItemCallback mItemCallback;
 
     public void setItemCallback(@Nullable ItemCallback callback) {
         mItemCallback = callback;

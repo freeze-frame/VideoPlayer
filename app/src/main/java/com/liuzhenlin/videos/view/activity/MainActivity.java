@@ -47,6 +47,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.util.Synthetic;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.liuzhenlin.floatingmenu.DensityUtils;
@@ -86,44 +87,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @SuppressLint("StaticFieldLeak")
     @Nullable
-    /*package*/ static MainActivity this$;
+    static MainActivity this$;
 
-    private LocalVideosFragment mLocalVideosFragment;
-    private OnlineVideosFragment mOnlineVideosFragment;
+    @Synthetic LocalVideosFragment mLocalVideosFragment;
+    @Synthetic OnlineVideosFragment mOnlineVideosFragment;
 
     private SlidingDrawerLayout mSlidingDrawerLayout;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private ScrollDisableViewPager mFragmentViewPager;
+    @Synthetic ScrollDisableViewPager mFragmentViewPager;
     private ViewGroup mActionBarContainer;
     private TabLayout mFragmentTabLayout;
 
     // LocalVideosFragment和OnlineVideosFragment的ActionBar
     private ViewGroup mActionBar;
-    private ImageButton mHomeAsUpIndicator;
-    private TextView mTitleText;
-    private ImageButton mActionButton;
+    @Synthetic ImageButton mHomeAsUpIndicator;
+    @Synthetic TextView mTitleText;
+    @Synthetic ImageButton mActionButton;
     private DrawerArrowDrawable mDrawerArrowDrawable;
 
     // 临时缓存LocalSearchedVideosFragment或LocalFoldedVideosFragment的ActionBar
     private ViewGroup mTmpActionBar;
 
-    private ScrollDisableListView mDrawerList;
-    private DrawerListAdapter mDrawerListAdapter;
-    private ImageView mDrawerImage;
-    private boolean mIsDrawerStatusLight = true;
-    private boolean mIsDrawerListForegroundLight = false;
+    @Synthetic ScrollDisableListView mDrawerList;
+    @Synthetic DrawerListAdapter mDrawerListAdapter;
+    @Synthetic ImageView mDrawerImage;
+    @Synthetic boolean mIsDrawerStatusLight = true;
+    @Synthetic boolean mIsDrawerListForegroundLight = false;
     private float mOldDrawerScrollPercent;
 
     private static final int REQUEST_CODE_CHOSE_DRAWER_BACKGROUND_PICTURE = 7;
     private static final int REQUEST_CODE_APPLY_FOR_FLOATING_WINDOW_PERMISSION = 8;
 
-    private String mCheckUpdateResultText;
-    private String mIsTheLatestVersion;
-    private String mFindNewVersion;
+    @Synthetic String mCheckUpdateResultText;
+    @Synthetic String mIsTheLatestVersion;
+    @Synthetic String mFindNewVersion;
     private MergeAppUpdateChecker.OnResultListener mOnCheckUpdateResultListener;
 
-    private boolean mIsBackPressed;
+    @Synthetic boolean mIsBackPressed;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -292,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mFragmentTabLayout.setupWithViewPager(mFragmentViewPager);
     }
 
-    private void setLightDrawerStatus(boolean light) {
+    @Synthetic void setLightDrawerStatus(boolean light) {
         if (mIsDrawerStatusLight != light) {
             mIsDrawerStatusLight = light;
             AppPrefs.getSingleton(this).setLightDrawerStatus(light);
@@ -302,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void setDrawerBackground(String path) {
+    @Synthetic void setDrawerBackground(String path) {
         if (path == null || path.equals(mDrawerImage.getTag())) {
             return;
         }
@@ -411,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private static final int[] sDrawerListItemIDs = {
+    @Synthetic static final int[] sDrawerListItemIDs = {
             R.string.checkForUpdates,
             R.string.aboutApp,
             R.string.updateLogs,

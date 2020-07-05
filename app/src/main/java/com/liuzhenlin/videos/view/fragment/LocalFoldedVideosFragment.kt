@@ -609,7 +609,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
                     VideoUtils2.concatVideoProgressAndDuration(video.progress, video.duration)
         }
 
-        private fun separateToppedItemsFromUntoppedOnes(holder: ViewHolder, position: Int) {
+        fun separateToppedItemsFromUntoppedOnes(holder: ViewHolder, position: Int) {
             val context = contextThemedFirst
             val lp = holder.topButton.layoutParams
 

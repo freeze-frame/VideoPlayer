@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.util.Synthetic;
 import com.liuzhenlin.texturevideoview.IVideoPlayer;
 import com.liuzhenlin.texturevideoview.R;
 import com.liuzhenlin.texturevideoview.SystemVideoPlayer;
@@ -26,8 +27,8 @@ import java.io.File;
  * @author 刘振林
  */
 public class DemoActivity extends AppCompatActivity {
-    private TextureVideoView mVideoView;
-    private VideoPlayer mVideoPlayer;
+    @Synthetic TextureVideoView mVideoView;
+    @Synthetic VideoPlayer mVideoPlayer;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

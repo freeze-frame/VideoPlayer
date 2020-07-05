@@ -35,6 +35,7 @@ import androidx.appcompat.app.AppCompatDialog;
 import androidx.core.app.NotificationCompat;
 import androidx.core.util.ObjectsCompat;
 
+import com.bumptech.glide.util.Synthetic;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -85,27 +86,27 @@ public final class MergeAppUpdateChecker {
     private static final String LINK_APP_INFOS =
             "https://gitee.com/lzl_s/Videos-Server/raw/master/app/Android/app.json";
 
-    private String mAppName;
-    private String mVersionName;
-    private String[] mAppPartLinks;
-    private int mAppLength;
-    private String mAppSha1;
-    private StringBuilder mUpdateLog;
-    private String mPromptDialogAnchorActivityClsName;
+    @Synthetic String mAppName;
+    @Synthetic String mVersionName;
+    @Synthetic String[] mAppPartLinks;
+    @Synthetic int mAppLength;
+    @Synthetic String mAppSha1;
+    @Synthetic StringBuilder mUpdateLog;
+    @Synthetic String mPromptDialogAnchorActivityClsName;
 
-    private final Context mContext;
-    private final H mH;
-    private boolean mToastResult;
+    @Synthetic final Context mContext;
+    @Synthetic final H mH;
+    @Synthetic boolean mToastResult;
     private boolean mCheckInProgress;
 
-    private List<OnResultListener> mListeners;
+    @Synthetic List<OnResultListener> mListeners;
 
     private static final String EXTRA_APP_NAME = "extra_appName";
     private static final String EXTRA_VERSION_NAME = "extra_versionName";
     private static final String EXTRA_APP_PART_LINKS = "extra_appPartLinks";
     private static final String EXTRA_APP_LENGTH = "extra_appLength";
     private static final String EXTRA_APP_SHA1 = "extra_appSha1";
-    private Intent mServiceIntent;
+    @Synthetic Intent mServiceIntent;
 
     private static final Singleton<Context, MergeAppUpdateChecker> sMergeAppUpdateCheckerSingleton =
             new Singleton<Context, MergeAppUpdateChecker>() {
@@ -126,7 +127,7 @@ public final class MergeAppUpdateChecker {
         mH = new H();
     }
 
-    private boolean hasOnResultListener() {
+    @Synthetic boolean hasOnResultListener() {
         return mListeners != null && !mListeners.isEmpty();
     }
 
@@ -281,7 +282,7 @@ public final class MergeAppUpdateChecker {
     /**
      * 弹出对话框，提醒用户更新
      */
-    private void showUpdatePromptDialog() {
+    @Synthetic void showUpdatePromptDialog() {
         Activity anchorActivity = ActivityUtils.getActivityForName(mPromptDialogAnchorActivityClsName);
         if (anchorActivity == null || anchorActivity.isFinishing()) {
             Log.w(TAG, "The Activity in which the dialog should run does'nt exist, " +
@@ -354,7 +355,7 @@ public final class MergeAppUpdateChecker {
         dialog.show();
     }
 
-    private void reset() {
+    @Synthetic void reset() {
         mAppName = null;
         mVersionName = null;
         mAppPartLinks = null;
@@ -371,6 +372,9 @@ public final class MergeAppUpdateChecker {
         static final int MSG_STOP_UPDATE_APP_SERVICE = -1;
         static final int MSG_NO_NEW_VERSION = 0;
         static final int MSG_FIND_NEW_VERSION = 1;
+
+        H() {
+        }
 
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -399,11 +403,11 @@ public final class MergeAppUpdateChecker {
     public static final class UpdateAppService extends Service {
 
         @SuppressLint("StaticFieldLeak")
-        private Context mContext;
+        @Synthetic Context mContext;
         private String mPkgName;
 
-        private NotificationManager mNotificationManager;
-        private NotificationCompat.Builder mNotificationBuilder;
+        @Synthetic NotificationManager mNotificationManager;
+        @Synthetic NotificationCompat.Builder mNotificationBuilder;
         private static final int ID_NOTIFICATION = 20200330;
 
         private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
@@ -413,16 +417,16 @@ public final class MergeAppUpdateChecker {
         private static final int COUNT_DOWNLOAD_APP_TASK = Math.max(2, Math.min(CPU_COUNT - 1, 4));
 
         private ExecutorService mDownloadAppExecutor;
-        private List<DownloadAppPartTask> mDownloadAppPartTasks;
-        private String[] mAppPartLinks;
-        private File[] mApkParts;
-        private File mApk;
-        private int mApkLength;
-        private final AtomicInteger mProgress = new AtomicInteger();
+        @Synthetic List<DownloadAppPartTask> mDownloadAppPartTasks;
+        @Synthetic String[] mAppPartLinks;
+        @Synthetic File[] mApkParts;
+        @Synthetic File mApk;
+        @Synthetic int mApkLength;
+        @Synthetic final AtomicInteger mProgress = new AtomicInteger();
 
         private CancelAppUpdateReceiver mReceiver;
 
-        private final AtomicBoolean mCanceled = new AtomicBoolean();
+        @Synthetic final AtomicBoolean mCanceled = new AtomicBoolean();
         private boolean mRunning;
 
         @Nullable
@@ -497,7 +501,7 @@ public final class MergeAppUpdateChecker {
             return START_REDELIVER_INTENT;
         }
 
-        private RemoteViews createNotificationView() {
+        @Synthetic RemoteViews createNotificationView() {
             RemoteViews nv = new RemoteViews(mPkgName, R.layout.notification_download_app);
             nv.setOnClickPendingIntent(R.id.btn_cancel_danv,
                     PendingIntent.getBroadcast(mContext,
@@ -523,7 +527,7 @@ public final class MergeAppUpdateChecker {
             mReceiver = null;
         }
 
-        private void cancel() {
+        void cancel() {
             if (mDownloadAppExecutor != null) {
                 if (mDownloadAppPartTasks != null) {
                     for (DownloadAppPartTask task : mDownloadAppPartTasks) {
@@ -547,7 +551,7 @@ public final class MergeAppUpdateChecker {
             }
         }
 
-        private void stopService() {
+        @Synthetic void stopService() {
             mRunning = false;
             stopForeground(false);
             mNotificationManager.cancel(ID_NOTIFICATION);
@@ -558,7 +562,7 @@ public final class MergeAppUpdateChecker {
             return MergeAppUpdateChecker.getSingleton(mContext).mH;
         }
 
-        private void onConnectionTimeout() {
+        @Synthetic void onConnectionTimeout() {
             if (!mCanceled.getAndSet(true)) {
                 getHandler().post(new Runnable() {
                     @Override
@@ -571,7 +575,7 @@ public final class MergeAppUpdateChecker {
             }
         }
 
-        private void onReadTimeout() {
+        @Synthetic void onReadTimeout() {
             if (!mCanceled.getAndSet(true)) {
                 getHandler().post(new Runnable() {
                     @Override
@@ -584,7 +588,7 @@ public final class MergeAppUpdateChecker {
             }
         }
 
-        private void onDownloadError() {
+        @Synthetic void onDownloadError() {
             if (!mCanceled.getAndSet(true)) {
                 getHandler().post(new Runnable() {
                     @Override
@@ -600,6 +604,9 @@ public final class MergeAppUpdateChecker {
         @SuppressLint("StaticFieldLeak")
         private final class DownloadAppPartTask extends AsyncTask<Integer, Integer, Void> {
             final UpdateAppService mHost = UpdateAppService.this;
+
+            DownloadAppPartTask() {
+            }
 
             @Override
             protected Void doInBackground(Integer... indices) {
@@ -706,7 +713,7 @@ public final class MergeAppUpdateChecker {
             }
         }
 
-        private void onAppDownloaded(File apk) {
+        void onAppDownloaded(File apk) {
             if (apk == null || !apk.exists() || apk.length() != mApkLength) {
                 Toast.makeText(mContext, R.string.theInstallationPackageHasBeenDamaged,
                         Toast.LENGTH_SHORT).show();
@@ -741,6 +748,9 @@ public final class MergeAppUpdateChecker {
         private static final class CancelAppUpdateReceiver extends BroadcastReceiver {
             static final String ACTION =
                     "action_MergeAppUpdateChecker$UpdateAppService$CancelAppUpdateReceiver";
+
+            CancelAppUpdateReceiver() {
+            }
 
             @Override
             public void onReceive(Context context, Intent intent) {

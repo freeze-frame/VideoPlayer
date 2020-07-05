@@ -20,6 +20,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.util.Synthetic;
 import com.liuzhenlin.videos.R;
 
 import java.lang.reflect.InvocationTargetException;
@@ -78,7 +79,7 @@ public class FloatingWindowPermissionUtils {
                 .show();
     }
 
-    private static void applyForPermission$(Activity activity, int requestCode) {
+    @Synthetic static void applyForPermission$(Activity activity, int requestCode) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity.startActivityForResult(
                     createManageOverlayPermissionActionIntent(activity), requestCode);
@@ -109,7 +110,7 @@ public class FloatingWindowPermissionUtils {
                 .show();
     }
 
-    private static void applyForPermission$(Fragment fragment, int requestCode) {
+    @Synthetic static void applyForPermission$(Fragment fragment, int requestCode) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             fragment.startActivityForResult(
                     createManageOverlayPermissionActionIntent(obtainFragmentContext(fragment)),

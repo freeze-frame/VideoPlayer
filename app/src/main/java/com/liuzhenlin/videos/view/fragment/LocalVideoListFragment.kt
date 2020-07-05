@@ -559,7 +559,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
             }
         }
 
-        private fun separateToppedItemsFromUntoppedOnes(holder: VideoListViewHolder, position: Int) {
+        fun separateToppedItemsFromUntoppedOnes(holder: VideoListViewHolder, position: Int) {
             val context = contextThemedFirst
             val lp = holder.topButton.layoutParams
 

@@ -53,21 +53,21 @@ public class FloatingMenu extends PopupWindow {
     private final int mScreenWidth;
     private final int mScreenHeight;
 
-    private final List<MenuItem> mMenuItems = new ArrayList<>();
+    /*synthetic*/ final List<MenuItem> mMenuItems = new ArrayList<>();
 
-    private LinearLayout mMenuLayout;
+    /*synthetic*/ LinearLayout mMenuLayout;
 
     // Match the width of the contentView of this menu
     private static final int DEFAULT_ITEM_WIDTH = ViewGroup.LayoutParams.MATCH_PARENT;
 
-    private OnItemClickListener mOnItemClickListener;
-    private OnItemLongClickListener mOnItemLongClickListener;
+    /*synthetic*/ OnItemClickListener mOnItemClickListener;
+    /*synthetic*/ OnItemLongClickListener mOnItemLongClickListener;
 
     private View.OnClickListener mOnClickListener;
     private View.OnLongClickListener mOnLongClickListener;
 
-    private int mDownX;
-    private int mDownY;
+    /*synthetic*/ int mDownX;
+    /*synthetic*/ int mDownY;
 
     public FloatingMenu(@NonNull View anchor) {
         super(anchor.getContext());

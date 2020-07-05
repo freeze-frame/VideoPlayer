@@ -40,6 +40,7 @@ import androidx.appcompat.app.AppCompatDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.widget.TextViewCompat;
 
+import com.bumptech.glide.util.Synthetic;
 import com.google.android.material.snackbar.Snackbar;
 import com.liuzhenlin.floatingmenu.DensityUtils;
 import com.liuzhenlin.galleryviewer.GalleryViewPager;
@@ -81,18 +82,18 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAI
  */
 public class FeedbackActivity extends SwipeBackActivity implements View.OnClickListener {
 
-    private EditText mEnterProblemsOrAdviceEditor;
-    private TextView mWordCountIndicator;
-    private TextView mPictureCountIndicator;
+    @Synthetic EditText mEnterProblemsOrAdviceEditor;
+    @Synthetic TextView mWordCountIndicator;
+    @Synthetic TextView mPictureCountIndicator;
     private EditText mEnterContactWayEditor;
-    private Button mCommitButton;
+    @Synthetic Button mCommitButton;
 
     private PictureGridAdapter mGridAdapter;
 
     private Dialog mConfirmSaveDataDialog;
-    private Dialog mPicturePreviewDialog;
+    @Synthetic Dialog mPicturePreviewDialog;
 
-    private boolean mShouldSaveDataOnDestroy;
+    @Synthetic boolean mShouldSaveDataOnDestroy;
 
     private FeedbackSavedPrefs mFeedbackSPs;
     private String mSavedFeedbackText = Consts.EMPTY_STRING;

@@ -37,7 +37,7 @@ import androidx.annotation.Nullable;
 public class CircularCheckBox extends View implements Checkable {
     private static final String KEY_INSTANCE_STATE = "InstanceState";
 
-    private boolean mIsChecked;
+    /*synthetic*/ boolean mIsChecked;
 
     private final int mDefaultDrawingSize; // px
     private static final int DEF_DRAWING_SIZE = 20; // dp
@@ -52,13 +52,13 @@ public class CircularCheckBox extends View implements Checkable {
 
     private final Paint mRingPaint;
     //private final RectF mRingBounds = new RectF();
-    private float mDrawingRingOuterCircleScale = 1.0f;
-    private float mDrawingRingInnerCircleScale;
-    private float mStrokeInnerCircleScale; // Ring inner circle scale when this view is unchecked
+    /*synthetic*/ float mDrawingRingOuterCircleScale = 1.0f;
+    /*synthetic*/ float mDrawingRingInnerCircleScale;
+    /*synthetic*/ float mStrokeInnerCircleScale; // Ring inner circle scale when this view is unchecked
     private float mStrokeWidth;  // Ring width when this view is unchecked
-    private int mCheckedRingColor;
-    private int mStrokeColor; // Ring color when this check box is unchecked
-    private int mRingColor;
+    /*synthetic*/ int mCheckedRingColor;
+    /*synthetic*/ int mStrokeColor; // Ring color when this check box is unchecked
+    /*synthetic*/ int mRingColor;
 
     private final Paint mUncheckedSolidPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -69,7 +69,7 @@ public class CircularCheckBox extends View implements Checkable {
     private final Path mTickPath = new Path();
     private float mTickLeftPartLength, mTickRightPartLength, mTickLength;
     private float mTickStrokeWidth;
-    private boolean mNeedDrawTick;
+    /*synthetic*/ boolean mNeedDrawTick;
 
     private ValueAnimator mAnimator;
     protected static final Interpolator sLinearInterpolator = new LinearInterpolator();
@@ -92,7 +92,7 @@ public class CircularCheckBox extends View implements Checkable {
         }
     };
 
-    private Runnable mPostedSetCheckedRunnable;
+    /*synthetic*/ Runnable mPostedSetCheckedRunnable;
 
     private OnCheckedChangeListener mListener;
 
@@ -170,7 +170,7 @@ public class CircularCheckBox extends View implements Checkable {
         setStrokeWidthInternal(width, true);
     }
 
-    void setStrokeWidthInternal(float width, boolean invalidate) {
+    /*package*/ void setStrokeWidthInternal(float width, boolean invalidate) {
         if (mCenterPoint.x > 0) {
             final float old = mStrokeWidth;
             mStrokeWidth = Math.max(1.0f, Math.min(width, mCenterPoint.x / 5f));
@@ -196,7 +196,7 @@ public class CircularCheckBox extends View implements Checkable {
         setTickStrokeWidthInternal(width, true);
     }
 
-    void setTickStrokeWidthInternal(float width, boolean invalidate) {
+    /*package*/ void setTickStrokeWidthInternal(float width, boolean invalidate) {
         if (mCenterPoint.x > 0) {
             mTickStrokeWidth = Math.max(3.0f, Math.min(width, mCenterPoint.x / 2.5f));
 
@@ -538,7 +538,7 @@ public class CircularCheckBox extends View implements Checkable {
         }
     }
 
-    private void startCheckedAnimation() {
+    /*synthetic*/ void startCheckedAnimation() {
         cancelRunningAnimationAndRemoveDrawTickPendingActions();
 
         initAnimatorIfNeeded();

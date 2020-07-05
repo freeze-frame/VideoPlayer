@@ -37,12 +37,12 @@ import java.util.List;
 public class SwipeBackLayout extends FrameLayout {
 
     @Nullable
-    private ISwipeBackActivity mActivity;
+    /*synthetic*/ ISwipeBackActivity mActivity;
 
     @Nullable
-    private ISwipeBackFragment mFragment;
+    /*synthetic*/ ISwipeBackFragment mFragment;
 
-    private final ViewDragHelper mDragHelper;
+    /*synthetic*/ final ViewDragHelper mDragHelper;
 
     public static final int EDGE_LEFT = ViewDragHelper.EDGE_LEFT;
     public static final int EDGE_RIGHT = ViewDragHelper.EDGE_RIGHT;
@@ -51,11 +51,11 @@ public class SwipeBackLayout extends FrameLayout {
 
     @IntDef(flag = true, value = {EDGE_LEFT, EDGE_RIGHT})
     @Retention(RetentionPolicy.SOURCE)
-    @interface Edge {
+    /*package*/ @interface Edge {
     }
 
     @Edge
-    private int mTrackingEdge = NO_TRACKING_EDGE;
+    /*synthetic*/ int mTrackingEdge = NO_TRACKING_EDGE;
     private static final int NO_TRACKING_EDGE = -1;
 
     public static final int STATE_IDLE = ViewDragHelper.STATE_IDLE;
@@ -72,7 +72,7 @@ public class SwipeBackLayout extends FrameLayout {
      * @see #setScrollThreshold(float)
      */
     @FloatRange(from = 0.0, to = 1.0, fromInclusive = false, toInclusive = false)
-    private float mScrollThreshold = DEFAULT_SCROLL_THRESHOLD;
+    /*synthetic*/ float mScrollThreshold = DEFAULT_SCROLL_THRESHOLD;
     /** Default threshold of scroll */
     public static final float DEFAULT_SCROLL_THRESHOLD = 1f / 3f;
 
@@ -85,9 +85,9 @@ public class SwipeBackLayout extends FrameLayout {
 
     /** The ratio of the current scrolling distance to the maximum scrollable distance */
     @FloatRange(from = 0.0, to = 1.0)
-    private float mScrollPercent;
+    /*synthetic*/ float mScrollPercent;
 
-    private int mViewFlags = EDGE_LEFT | FLAG_ENABLED | FLAG_PREVIOUS_CONTENT_SCROLLABLE;
+    /*synthetic*/ int mViewFlags = EDGE_LEFT | FLAG_ENABLED | FLAG_PREVIOUS_CONTENT_SCROLLABLE;
 
     /**
      * @see #isGestureEnabled()
@@ -107,10 +107,10 @@ public class SwipeBackLayout extends FrameLayout {
      * @see SwipeListener
      */
     @Nullable
-    private List<SwipeListener> mSwipeListeners;
+    /*synthetic*/ List<SwipeListener> mSwipeListeners;
 
     /** The content view that will be moved by user gestures */
-    private View mContentView;
+    /*synthetic*/ View mContentView;
 
     /**
      * The rectangle used to measure the bounds of {@link #mContentView} (relative to current view)
@@ -118,14 +118,14 @@ public class SwipeBackLayout extends FrameLayout {
     private final Rect mTempRect = new Rect();
 
     /** The left position of {@link #mContentView} */
-    private int mContentLeft;
+    /*synthetic*/ int mContentLeft;
 
     /** The shadow to be shown while the left edge of {@link #mContentView} is being dragged */
     @Nullable
-    private Drawable mShadowLeft;
+    /*synthetic*/ Drawable mShadowLeft;
     /** The shadow to be shown while the right edge of {@link #mContentView} is being dragged */
     @Nullable
-    private Drawable mShadowRight;
+    /*synthetic*/ Drawable mShadowRight;
 
     /**
      * @see #getScrimColor()
@@ -137,7 +137,7 @@ public class SwipeBackLayout extends FrameLayout {
     public static final int DEFAULT_SCRIM_COLOR = 0x80000000;
 
     @FloatRange(from = 0.0, to = 1.0)
-    private float mScrimOpacity;
+    /*synthetic*/ float mScrimOpacity;
 
     private static final int FULL_ALPHA = 255;
 
@@ -496,6 +496,8 @@ public class SwipeBackLayout extends FrameLayout {
     }
 
     private final class ViewDragCallback extends ViewDragHelper.Callback {
+        ViewDragCallback() {
+        }
 
         @Override
         public boolean tryCaptureView(@NonNull View child, int pointerId) {
@@ -628,7 +630,7 @@ public class SwipeBackLayout extends FrameLayout {
         }
     }
 
-    private void prepareForSlidingContents() {
+    /*synthetic*/ void prepareForSlidingContents() {
         // If the current view is in the fragment, set the view of the previous fragment
         // to be visible before the scroll started.
         if (mFragment != null) {
@@ -665,7 +667,7 @@ public class SwipeBackLayout extends FrameLayout {
     /**
      * Translate the previous content view {@link #getPreviousContent()}
      */
-    private void movePreviousContent() {
+    /*synthetic*/ void movePreviousContent() {
         View view = getPreviousContent();
         if (view != null) {
             float translationX = 0;
@@ -685,7 +687,7 @@ public class SwipeBackLayout extends FrameLayout {
      * Translate the previous content view {@link #getPreviousContent()} back to
      * its original position (0,0)
      */
-    private void layPreviousContentBack() {
+    /*synthetic*/ void layPreviousContentBack() {
         View view = getPreviousContent();
         if (view != null) {
             view.setTranslationX(0);

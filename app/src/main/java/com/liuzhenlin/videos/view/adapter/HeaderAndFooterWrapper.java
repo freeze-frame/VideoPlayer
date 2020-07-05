@@ -13,14 +13,16 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.bumptech.glide.util.Synthetic;
+
 import java.util.List;
 
 public class HeaderAndFooterWrapper<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int BASE_ITEM_TYPE_HEADER = 100000;
     private static final int BASE_ITEM_TYPE_FOOTER = 200000;
 
-    private final SparseArray<View> mHeaderViews = new SparseArray<>();
-    private final SparseArray<View> mFootViews = new SparseArray<>();
+    @Synthetic final SparseArray<View> mHeaderViews = new SparseArray<>();
+    @Synthetic final SparseArray<View> mFootViews = new SparseArray<>();
 
     private final RecyclerView.Adapter<VH> mInnerAdapter;
 

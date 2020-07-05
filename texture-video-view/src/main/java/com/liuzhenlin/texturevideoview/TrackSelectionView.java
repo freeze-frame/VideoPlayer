@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.util.Synthetic;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.liuzhenlin.texturevideoview.bean.TrackInfo;
@@ -40,7 +41,7 @@ public class TrackSelectionView extends LinearLayout {
 
   private TrackNameProvider mTrackNameProvider;
 
-  private IVideoPlayer mVideoPlayer;
+  @Synthetic IVideoPlayer mVideoPlayer;
   private final IVideoPlayer.OnPlaybackStateChangeListener mOnPlaybackStateChangeListener =
       (oldState, newState) -> {
         switch (newState) {
@@ -55,7 +56,7 @@ public class TrackSelectionView extends LinearLayout {
         }
       };
 
-  private ComparableSparseArray<ComparableSparseArray<TrackInfo>> mTrackGroups =
+  @Synthetic ComparableSparseArray<ComparableSparseArray<TrackInfo>> mTrackGroups =
       newTrackGroupSparseArray();
 
   private static final int TRACK_GROUP_COUNT = 3;
@@ -105,7 +106,7 @@ public class TrackSelectionView extends LinearLayout {
         }).attach();
   }
 
-  private TrackNameProvider getTrackNameProvider() {
+  @Synthetic TrackNameProvider getTrackNameProvider() {
     if (mTrackNameProvider == null) {
       mTrackNameProvider = new DefaultTrackNameProvider(getResources());
     }
@@ -187,6 +188,8 @@ public class TrackSelectionView extends LinearLayout {
   }
 
   private final class PagerAdapter extends RecyclerView.Adapter<PagerAdapter.ViewHolder> {
+    PagerAdapter() {
+    }
 
     @NonNull
     @Override

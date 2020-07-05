@@ -41,30 +41,30 @@ public class GestureImageView extends AppCompatImageView {
     private final ScaleGestureDetector mScaleGestureDetector;
 
     /** The matrix of the image in this view */
-    private final Matrix mImageMatrix = new Matrix();
+    /*synthetic*/ final Matrix mImageMatrix = new Matrix();
 
     /** A float array to receive the values of the matrix {@link #mImageMatrix} */
-    final float[] mImageMatrixValues = new float[9];
+    /*synthetic*/ final float[] mImageMatrixValues = new float[9];
 
     /** Used to temporarily cache the 4 corner coordinates of the image */
-    final RectF mImageBounds = new RectF();
+    /*package*/ final RectF mImageBounds = new RectF();
 
     // Avoid allocations...
-    final Matrix mTmpMatrix = new Matrix();
-    final PointF mTmpPointF = new PointF();
+    /*package*/ final Matrix mTmpMatrix = new Matrix();
+    /*package*/ final PointF mTmpPointF = new PointF();
 
     /** @see #getFitCenterImageScale() */
-    private float mFitCenterImageScale;
+    /*synthetic*/ float mFitCenterImageScale;
     /** @see #getFitWidthImageScale() */
     private float mFitWidthImageScale;
 
     /** @see #getImageMinScale() */
-    private float mImageMinScale;
+    /*synthetic*/ float mImageMinScale;
     /** @see #getImageMaxScale() */
-    private float mImageMaxScale;
+    /*synthetic*/ float mImageMaxScale;
 
     /** Image scale that the image will be zoomed in to when double tapped by the user. */
-    private float mDoubleTapMagnifiedImageScale;
+    /*synthetic*/ float mDoubleTapMagnifiedImageScale;
 
     /**
      * A multiplier of the maximum scale for the image {@link #mImageMaxScale}, means that
@@ -74,7 +74,7 @@ public class GestureImageView extends AppCompatImageView {
     @SuppressWarnings("JavaDoc")
     protected static final float IMAGE_OVERSCALE_TIMES_ON_MAXIMIZED = 1.5f;
 
-    private int mPrivateFlags;
+    /*synthetic*/ int mPrivateFlags;
 
     /**
      * A flag indicates that the user can scale or translate the image with zoom in and out
@@ -138,9 +138,9 @@ public class GestureImageView extends AppCompatImageView {
      * The distance by which this magnified image will be over-translated when we fling it
      * to some end, as measured in pixels.
      */
-    final float mImageOverTranslation; // 25dp
+    /*package*/ final float mImageOverTranslation; // 25dp
 
-    private float mOverTranslationX, mOverTranslationY;
+    /*synthetic*/ float mOverTranslationX, mOverTranslationY;
     private final Runnable mImageSpringBackRunnable = new Runnable() {
         @Override
         public void run() {
@@ -172,16 +172,16 @@ public class GestureImageView extends AppCompatImageView {
     private static final String PROPERTY_IMAGE_SCALES = "image_scales";
     private static final String PROPERTY_IMAGE_TRANSLATIONS = "image_translations";
 
-    private ValueAnimator mImageTransformer;
-    private PointF mFromScales, mToScales;
+    /*synthetic*/ ValueAnimator mImageTransformer;
+    /*synthetic*/ PointF mFromScales, mToScales;
     private PointF mFromTranslations, mToTranslations;
-    private float mLastAnimatedTransX, mLastAnimatedTransY;
+    /*synthetic*/ float mLastAnimatedTransX, mLastAnimatedTransY;
 
     /**
      * The scaling pivot point (relative to current view) of the image
      * while {@link #mImageTransformer} is running to scale it.
      */
-    private PointF mImageScalingPivot;
+    /*synthetic*/ PointF mImageScalingPivot;
 
     public GestureImageView(Context context) {
         this(context, null);
@@ -585,7 +585,7 @@ public class GestureImageView extends AppCompatImageView {
         mTouchY[mTouchY.length - 1] = y;
     }
 
-    private void requestParentDisallowInterceptTouchEvent() {
+    /*synthetic*/ void requestParentDisallowInterceptTouchEvent() {
         ViewParent parent = getParent();
         if (parent != null) {
             parent.requestDisallowInterceptTouchEvent(true);
@@ -911,7 +911,7 @@ public class GestureImageView extends AppCompatImageView {
      * Ensures our values of the matrix {@link #mImageMatrix} are equal to the values of
      * the current matrix of the image since they may have been changed in other class.
      */
-    private void ensureImageMatrix() {
+    /*synthetic*/ void ensureImageMatrix() {
         Matrix matrix = getImageMatrix();
         if (!mImageMatrix.equals(matrix))
             mImageMatrix.set(matrix);
@@ -922,7 +922,7 @@ public class GestureImageView extends AppCompatImageView {
      *
      * @param matrix the matrix used to measure this image
      */
-    void resolveImageBounds(Matrix matrix) {
+    /*package*/ void resolveImageBounds(Matrix matrix) {
         Drawable d = getDrawable();
         if (d == null) {
             mImageBounds.setEmpty();

@@ -22,9 +22,9 @@ public class InternalConsts {
     private InternalConsts() {
     }
 
-    static final boolean DEBUG = false;
+    /*package*/ static final boolean DEBUG = false;
 
-    static final boolean DEBUG_LISTENER = DEBUG && false;
+    /*package*/ static final boolean DEBUG_LISTENER = DEBUG && false;
 
     @RestrictTo(LIBRARY)
     public static final String EXTRA_MESSENGER = "extra_messenger";

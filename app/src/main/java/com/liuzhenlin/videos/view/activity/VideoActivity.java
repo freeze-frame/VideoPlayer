@@ -45,6 +45,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.bumptech.glide.util.Synthetic;
 import com.google.android.material.snackbar.Snackbar;
 import com.liuzhenlin.swipeback.SwipeBackActivity;
 import com.liuzhenlin.swipeback.SwipeBackLayout;
@@ -91,21 +92,21 @@ public class VideoActivity extends SwipeBackActivity {
     private static WeakReference<VideoActivity> sActivityInPiP;
 
     private View mStatusBarView;
-    private TextureVideoView mVideoView;
+    @Synthetic TextureVideoView mVideoView;
     private ImageView mLockUnlockOrientationButton;
 
-    private RecyclerView mPlayList;
-    private static final Object sRefreshVideoProgressPayload = new Object();
-    private static final Object sHighlightSelectedItemIfExistsPayload = new Object();
+    @Synthetic RecyclerView mPlayList;
+    @Synthetic static final Object sRefreshVideoProgressPayload = new Object();
+    @Synthetic static final Object sHighlightSelectedItemIfExistsPayload = new Object();
 
-    private IVideoPlayer mVideoPlayer;
+    @Synthetic IVideoPlayer mVideoPlayer;
 
-    private Video[] mVideos;
-    private int mVideoIndex = -1;
-    private int mVideoWidth;
-    private int mVideoHeight;
+    @Synthetic Video[] mVideos;
+    @Synthetic int mVideoIndex = -1;
+    @Synthetic int mVideoWidth;
+    @Synthetic int mVideoHeight;
 
-    private int mPrivateFlags;
+    @Synthetic int mPrivateFlags;
 
     private static final int PFLAG_SCREEN_NOTCH_SUPPORT = 1;
     private static final int PFLAG_SCREEN_NOTCH_SUPPORT_ON_EMUI = 1 << 1;
@@ -127,11 +128,11 @@ public class VideoActivity extends SwipeBackActivity {
     private ScreenNotchSwitchObserver mNotchSwitchObserver;
 
     private RotationObserver mRotationObserver;
-    private OnOrientationChangeListener mOnOrientationChangeListener;
-    private int mDeviceOrientation = SCREEN_ORIENTATION_PORTRAIT;
-    private int mScreenOrientation = SCREEN_ORIENTATION_PORTRAIT;
+    @Synthetic OnOrientationChangeListener mOnOrientationChangeListener;
+    @Synthetic int mDeviceOrientation = SCREEN_ORIENTATION_PORTRAIT;
+    @Synthetic int mScreenOrientation = SCREEN_ORIENTATION_PORTRAIT;
 
-    private Handler mHandler;
+    @Synthetic Handler mHandler;
 
     private final Runnable mHideLockUnlockOrientationButtonRunnable = new Runnable() {
         @Override
@@ -142,7 +143,7 @@ public class VideoActivity extends SwipeBackActivity {
     private static final int DELAY_TIME_HIDE_LOCK_UNLOCK_ORIENTATION_BUTTON = 2500;
 
     /** The arguments to be used for Picture-in-Picture mode. */
-    private PictureInPictureParams.Builder mPipParamsBuilder;
+    @Synthetic PictureInPictureParams.Builder mPipParamsBuilder;
 
     /** A {@link BroadcastReceiver} to receive action item events from Picture-in-Picture mode. */
     private BroadcastReceiver mReceiver;
@@ -177,17 +178,20 @@ public class VideoActivity extends SwipeBackActivity {
     private String mFastRewind;
     private String mLockOrientation;
     private String mUnlockOrientation;
-    private String mWatching;
+    @Synthetic String mWatching;
 
     private View.OnLayoutChangeListener mOnPipLayoutChangeListener;
 
-    private ProgressBar mVideoProgressInPiP;
+    @Synthetic ProgressBar mVideoProgressInPiP;
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private RefreshVideoProgressInPiPTask mRefreshVideoProgressInPiPTask;
+    @Synthetic RefreshVideoProgressInPiPTask mRefreshVideoProgressInPiPTask;
 
     @RequiresApi(Build.VERSION_CODES.O)
     private final class RefreshVideoProgressInPiPTask {
+        RefreshVideoProgressInPiPTask() {
+        }
+
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -617,7 +621,7 @@ public class VideoActivity extends SwipeBackActivity {
         });
     }
 
-    private void setVideoToPlay(Video video) {
+    @Synthetic void setVideoToPlay(Video video) {
         mVideoPlayer.setVideoPath(video.getPath());
         mVideoView.setTitle(FileUtils.getFileTitleFromFileName(video.getName()));
     }
@@ -785,7 +789,7 @@ public class VideoActivity extends SwipeBackActivity {
         }
     }
 
-    private void recordCurrVideoProgress() {
+    @Synthetic void recordCurrVideoProgress() {
         recordVideoProgress(mVideos[mVideoIndex]);
     }
 
@@ -829,7 +833,7 @@ public class VideoActivity extends SwipeBackActivity {
         }
     }
 
-    private void setScreenOrientationLocked(boolean locked) {
+    @Synthetic void setScreenOrientationLocked(boolean locked) {
         if (locked) {
             mPrivateFlags |= PFLAG_SCREEN_ORIENTATION_LOCKED;
             mLockUnlockOrientationButton.setImageResource(R.drawable.ic_unlock);
@@ -843,7 +847,7 @@ public class VideoActivity extends SwipeBackActivity {
         }
     }
 
-    private void showLockUnlockOrientationButton(boolean show) {
+    @Synthetic void showLockUnlockOrientationButton(boolean show) {
         mLockUnlockOrientationButton.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
@@ -857,7 +861,7 @@ public class VideoActivity extends SwipeBackActivity {
         }
     }
 
-    private void changeScreenOrientationIfNeeded(int orientation) {
+    @Synthetic void changeScreenOrientationIfNeeded(int orientation) {
         switch (mScreenOrientation) {
             case SCREEN_ORIENTATION_PORTRAIT:
                 if ((mPrivateFlags & PFLAG_DEVICE_SCREEN_ROTATION_ENABLED) != 0
@@ -933,7 +937,7 @@ public class VideoActivity extends SwipeBackActivity {
                 DELAY_TIME_HIDE_LOCK_UNLOCK_ORIENTATION_BUTTON);
     }
 
-    private void setFullscreenMode(boolean fullscreen) {
+    @Synthetic void setFullscreenMode(boolean fullscreen) {
         // Disable 'swipe back' in full screen mode
         getSwipeBackLayout().setGestureEnabled(!fullscreen);
 
@@ -956,7 +960,7 @@ public class VideoActivity extends SwipeBackActivity {
                 | (fullscreen ? PFLAG_LAST_VIDEO_LAYOUT_IS_FULLSCREEN : 0);
     }
 
-    private void setFullscreenModeManually(boolean fullscreen) {
+    @Synthetic void setFullscreenModeManually(boolean fullscreen) {
         if (mVideoView.isInFullscreenMode() == fullscreen) {
             return;
         }
@@ -971,7 +975,7 @@ public class VideoActivity extends SwipeBackActivity {
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
-    private void resizeVideoView() {
+    @Synthetic void resizeVideoView() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isInPictureInPictureMode()) {
             setVideoViewSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             return;
@@ -1109,7 +1113,7 @@ public class VideoActivity extends SwipeBackActivity {
      * Update the action items in Picture-in-Picture mode.
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    private void updatePictureInPictureActions(int pipActions) {
+    @Synthetic void updatePictureInPictureActions(int pipActions) {
         final List<RemoteAction> actions = new LinkedList<>();
         if ((pipActions & PIP_ACTION_FAST_REWIND) != 0) {
             actions.add(createPipAction(R.drawable.ic_fast_rewind_white_24dp,
@@ -1338,7 +1342,7 @@ public class VideoActivity extends SwipeBackActivity {
                 .setDataAndType(Uri.parse(path), FileUtils.getMimeTypeFromPath(path, "video/*")));
     }
 
-    private void notifyItemSelectionChanged(int oldPosition, int position, boolean checkNewItemVisibility) {
+    @Synthetic void notifyItemSelectionChanged(int oldPosition, int position, boolean checkNewItemVisibility) {
         if (mPlayList == null) return;
 
         RecyclerView.Adapter adapter = mPlayList.getAdapter();
@@ -1380,6 +1384,8 @@ public class VideoActivity extends SwipeBackActivity {
 
     private final class VideoEpisodesAdapter
             extends TextureVideoView.PlayListAdapter<VideoEpisodesAdapter.ViewHolder> {
+        VideoEpisodesAdapter() {
+        }
 
         @Override
         public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {

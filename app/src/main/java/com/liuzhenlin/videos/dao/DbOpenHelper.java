@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 /**
  * @author 刘振林
  */
-/*package*/ class DbOpenHelper extends SQLiteOpenHelper {
+class DbOpenHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_VIDEOS = "videos";
     public static final String VIDEOS_COL_ID = "_id";

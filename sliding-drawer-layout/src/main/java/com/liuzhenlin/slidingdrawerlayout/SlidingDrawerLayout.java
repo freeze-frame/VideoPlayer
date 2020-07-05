@@ -77,7 +77,7 @@ public class SlidingDrawerLayout extends ViewGroup {
      * The drawer currently being shown, maybe one of {@link #mLeftDrawer}, {@link #mRightDrawer}
      * or <code>null</code>.
      */
-    private View mShownDrawer;
+    /*synthetic*/ View mShownDrawer;
 
     /**
      * Used to temporarily cache the drawer to be opened in the touch events.
@@ -128,7 +128,7 @@ public class SlidingDrawerLayout extends ViewGroup {
     /** The maximum percentage of the widths of the drawers relative to current view's width. */
     public static final float MAXIMUM_DRAWER_WIDTH_PERCENT = 1.0f;
 
-    private int mFlags;
+    /*synthetic*/ int mFlags;
 
     /** No drawer is currently scrolling. */
     public static final int SCROLL_STATE_IDLE = 0;
@@ -295,7 +295,7 @@ public class SlidingDrawerLayout extends ViewGroup {
      * @see #getDuration()
      * @see #setDuration(int)
      */
-    private int mDuration;
+    /*synthetic*/ int mDuration;
 
     /**
      * Default duration of the animator used to open/close the drawers.
@@ -311,7 +311,7 @@ public class SlidingDrawerLayout extends ViewGroup {
      * @see ViewStub
      * @see OpenStubDrawerRunnable
      */
-    private OpenStubDrawerRunnable mOpenStubDrawerRunnable;
+    /*synthetic*/ OpenStubDrawerRunnable mOpenStubDrawerRunnable;
 
     /**
      * The Runnable to be executed for starting the drawer animator to normally open or close
@@ -336,7 +336,7 @@ public class SlidingDrawerLayout extends ViewGroup {
 
     @IntDef({Gravity.LEFT, Gravity.RIGHT, Gravity.START, Gravity.END})
     @Retention(RetentionPolicy.SOURCE)
-    @interface EdgeGravity {
+    /*package*/ @interface EdgeGravity {
     }
 
     private final class DrawerAnimator extends ValueAnimator {
@@ -393,10 +393,13 @@ public class SlidingDrawerLayout extends ViewGroup {
     }
 
     private final class DrawerRunnable implements Runnable {
-        private View drawer;
-        private boolean open;
+        View drawer;
+        boolean open;
 
         boolean isInMsgQueue;
+
+        DrawerRunnable() {
+        }
 
         void initForPost(View drawer, boolean open) {
             this.drawer = drawer;
@@ -1047,7 +1050,7 @@ public class SlidingDrawerLayout extends ViewGroup {
         }
     }
 
-    boolean resolveDrawerWidthPercentagesIfDirectionResolved(boolean preventLayout) {
+    private boolean resolveDrawerWidthPercentagesIfDirectionResolved(boolean preventLayout) {
         final boolean directionResolved = Utils.isLayoutDirectionResolved(this);
         if (directionResolved) {
             resolveDrawerWidthPercentages(ViewCompat.getLayoutDirection(this), preventLayout);
@@ -1055,7 +1058,7 @@ public class SlidingDrawerLayout extends ViewGroup {
         return directionResolved;
     }
 
-    void resolveDrawerWidthPercentages(int layoutDirection, boolean preventLayout) {
+    private void resolveDrawerWidthPercentages(int layoutDirection, boolean preventLayout) {
         if ((mFlags & FLAG_DRAWER_WIDTH_PERCENTAGES_RESOLVED) != 0) {
             return;
         }
@@ -1138,7 +1141,7 @@ public class SlidingDrawerLayout extends ViewGroup {
         }
     }
 
-    boolean resolveDrawerTouchAbilitiesIfDirectionResolved() {
+    private boolean resolveDrawerTouchAbilitiesIfDirectionResolved() {
         final boolean directionResolved = Utils.isLayoutDirectionResolved(this);
         if (directionResolved) {
             resolveDrawerTouchAbilities(ViewCompat.getLayoutDirection(this));
@@ -1146,7 +1149,7 @@ public class SlidingDrawerLayout extends ViewGroup {
         return directionResolved;
     }
 
-    void resolveDrawerTouchAbilities(int layoutDirection) {
+    private void resolveDrawerTouchAbilities(int layoutDirection) {
         if ((mFlags & FLAG_DRAWER_TOUCH_ABILITIES_RESOLVED) != 0) {
             return;
         }
@@ -1220,7 +1223,7 @@ public class SlidingDrawerLayout extends ViewGroup {
         mFlags |= FLAG_DRAWER_TOUCH_ABILITIES_RESOLVED;
     }
 
-    void traverseAllChildren() {
+    private void traverseAllChildren() {
         traverseAllChildren(getChildCount(), ViewCompat.getLayoutDirection(this));
     }
 
@@ -2270,7 +2273,7 @@ public class SlidingDrawerLayout extends ViewGroup {
      * @param drawer the drawer to scroll
      * @param x      the position on the X axis for the drawer to scroll to
      */
-    private void scrollDrawerTo(View drawer, int x) {
+    /*synthetic*/ void scrollDrawerTo(View drawer, int x) {
         scrollDrawerBy(drawer, x - drawer.getLeft());
     }
 
@@ -2360,13 +2363,13 @@ public class SlidingDrawerLayout extends ViewGroup {
          * The initial position of the left of the View to which these layout parameters belong,
          * as computed in this View's {@link #onLayout(boolean, int, int, int, int)} method.
          */
-        private int startLeft;
+        /*synthetic*/ int startLeft;
 
         /**
          * To a drawer: The position for its left to reach when it is completely opened.
          * To content View: The position for its left to reach when some drawer is completely opened.
          */
-        private int finalLeft;
+        /*synthetic*/ int finalLeft;
 
         public LayoutParams(@NonNull Context c, @Nullable AttributeSet attrs) {
             super(c, attrs);
@@ -2413,7 +2416,7 @@ public class SlidingDrawerLayout extends ViewGroup {
 
     private List<OnDrawerScrollListener> mOnDrawerScrollListeners;
 
-    static final OnDrawerScrollListener[] sEmptyOnDrawerScrollListenerArray = {};
+    private static final OnDrawerScrollListener[] sEmptyOnDrawerScrollListenerArray = {};
 
     public void addOnDrawerScrollListener(@NonNull OnDrawerScrollListener listener) {
         if (mOnDrawerScrollListeners == null) {
@@ -2453,7 +2456,7 @@ public class SlidingDrawerLayout extends ViewGroup {
         }
     }
 
-    private void dispatchDrawerScrollStateChangeIfNeeded(@ScrollState int state) {
+    /*synthetic*/ void dispatchDrawerScrollStateChangeIfNeeded(@ScrollState int state) {
         final int old = mFlags & SCROLL_STATE_MASK;
         if (state == old) return;
         mFlags = (mFlags & ~SCROLL_STATE_MASK) | state;
@@ -2699,7 +2702,7 @@ public class SlidingDrawerLayout extends ViewGroup {
     // --------------- Accessibility ------------------------
 
     /** Whether we can use NO_HIDE_DESCENDANTS accessibility importance. */
-    static final boolean CAN_HIDE_DESCENDANTS =
+    /*synthetic*/ static final boolean CAN_HIDE_DESCENDANTS =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
     private ChildAccessibilityDelegate mChildAccessibilityDelegate;
@@ -2780,7 +2783,7 @@ public class SlidingDrawerLayout extends ViewGroup {
         return SlidingDrawerLayout.class.getName();
     }
 
-    void updateChildrenImportantForAccessibility(boolean isDrawerOpen) {
+    private void updateChildrenImportantForAccessibility(boolean isDrawerOpen) {
         if (mContentView == null /* No child is added to this layout */) {
             return;
         }
@@ -2811,8 +2814,11 @@ public class SlidingDrawerLayout extends ViewGroup {
         }
     }
 
-    class AccessibilityDelegate extends AccessibilityDelegateCompat {
+    private final class AccessibilityDelegate extends AccessibilityDelegateCompat {
         private final Rect tmpRect = new Rect();
+
+        AccessibilityDelegate() {
+        }
 
         @Override
         public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfoCompat info) {
@@ -2926,13 +2932,16 @@ public class SlidingDrawerLayout extends ViewGroup {
      * platforms prior to KITKAT but we want to hide the entire content and the unopened drawer
      * (if any) if a drawer is open.
      */
-    static boolean includeChildForAccessibility(View child) {
+    /*synthetic*/ static boolean includeChildForAccessibility(View child) {
         final int ifa = ViewCompat.getImportantForAccessibility(child);
         return ifa != ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                 && ifa != ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO;
     }
 
-    static final class ChildAccessibilityDelegate extends AccessibilityDelegateCompat {
+    private static final class ChildAccessibilityDelegate extends AccessibilityDelegateCompat {
+        ChildAccessibilityDelegate() {
+        }
+
         @Override
         public void onInitializeAccessibilityNodeInfo(View child,
                                                       AccessibilityNodeInfoCompat info) {

@@ -9,6 +9,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.util.Synthetic;
+
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -41,7 +43,7 @@ public final class ParallelThreadExecutor extends ThreadPoolExecutor {
     private static final int BACKUP_POOL_SIZE = 5;
     private static final int KEEP_ALIVE_SECONDS = 3;
 
-    private static final ThreadFactory sThreadFactory = new ThreadFactory() {
+    @Synthetic static final ThreadFactory sThreadFactory = new ThreadFactory() {
         private final AtomicInteger count = new AtomicInteger();
 
         public Thread newThread(@NonNull Runnable r) {

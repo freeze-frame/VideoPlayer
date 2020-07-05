@@ -34,6 +34,7 @@ import androidx.core.view.ViewCompat;
 import androidx.customview.view.AbsSavedState;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.util.Synthetic;
 import com.google.android.exoplayer2.util.Util;
 import com.liuzhenlin.texturevideoview.utils.BitmapUtils;
 import com.liuzhenlin.texturevideoview.utils.Utils;
@@ -54,7 +55,7 @@ public class VideoClipView extends FrameLayout {
     /** @see #getThumbGalleryWidth() */
     private int mThumbGalleryWidth;
     /** @see #getThumbDisplayHeight() */
-    private final int mThumbDisplayHeight;
+    @Synthetic final int mThumbDisplayHeight;
 
     private final Drawable mClipBackwards;
     private final Drawable mClipBackwardsDark;
@@ -100,7 +101,7 @@ public class VideoClipView extends FrameLayout {
     private int mMinimumUnselectedClipDuration = DEFAULT_MIN_UNSELECTED_CLIP_DURATION;
 
     private final int[] mTmpSelectionInterval = sNoSelectionInterval.clone();
-    private static final int[] sNoSelectionInterval = {0, 0};
+    @Synthetic static final int[] sNoSelectionInterval = {0, 0};
 
     private boolean mFirstLayout = true;
     private boolean mInLayout;
@@ -1008,6 +1009,9 @@ public class VideoClipView extends FrameLayout {
     private final class ThumbsAdapter extends RecyclerView.Adapter<ThumbsAdapter.ViewHolder> {
 
         final List<Bitmap> thumbnails = new ArrayList<>();
+
+        ThumbsAdapter() {
+        }
 
         @NonNull
         @Override

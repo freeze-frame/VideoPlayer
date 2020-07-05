@@ -43,6 +43,7 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.util.Synthetic;
 import com.liuzhenlin.texturevideoview.InternalConsts;
 import com.liuzhenlin.texturevideoview.R;
 import com.liuzhenlin.texturevideoview.notification.NotificationChannelManager;
@@ -58,25 +59,25 @@ public class BackgroundPlaybackControllerService extends Service {
     private String mPlay;
     private String mPause;
     private String mPkgName;
-    private Bitmap mAppIcon;
-    private int mThumbMaxWidth;
-    private int mThumbMaxHeight;
+    @Synthetic Bitmap mAppIcon;
+    @Synthetic int mThumbMaxWidth;
+    @Synthetic int mThumbMaxHeight;
     @ColorInt
     private static int sNotificationActionIconTint = -1;
 
     private Messenger mMessenger;
 
-    private String mMediaTitle;
-    private Bitmap mVideoThumb;
-    private boolean mIsPlaying;
-    private boolean mIsBuffering;
-    private boolean mCanSkipToPrevious;
-    private boolean mCanSkipToNext;
-    private long mMediaProgress;
-    private long mMediaDuration;
+    @Synthetic String mMediaTitle;
+    @Synthetic Bitmap mVideoThumb;
+    @Synthetic boolean mIsPlaying;
+    @Synthetic boolean mIsBuffering;
+    @Synthetic boolean mCanSkipToPrevious;
+    @Synthetic boolean mCanSkipToNext;
+    @Synthetic long mMediaProgress;
+    @Synthetic long mMediaDuration;
 
-    private NotificationManager mNotificationManager;
-    private NotificationCompat.Builder mNotificationBuilder;
+    @Synthetic NotificationManager mNotificationManager;
+    @Synthetic NotificationCompat.Builder mNotificationBuilder;
     private static final int ID_NOTIFICATION = 20191203;
 
     private static final String EXTRA_CONTROLLER_ACTION = "extra_controllerAction";
@@ -101,9 +102,9 @@ public class BackgroundPlaybackControllerService extends Service {
 
     private ControllerActionReceiver mReceiver;
 
-    private boolean mIsForeground;
+    @Synthetic boolean mIsForeground;
 
-    private final Target<Bitmap> mGlideTarget = new CustomTarget<Bitmap>() {
+    @Synthetic final Target<Bitmap> mGlideTarget = new CustomTarget<Bitmap>() {
         @Override
         public void onResourceReady(@NonNull Bitmap icon, @Nullable Transition<? super Bitmap> transition) {
             mVideoThumb = icon;
@@ -211,7 +212,7 @@ public class BackgroundPlaybackControllerService extends Service {
         return false;
     }
 
-    private void postNotificationIfForeground() {
+    @Synthetic void postNotificationIfForeground() {
         Handler handler = InternalConsts.getMainThreadHandler();
         handler.removeCallbacks(mPostNotificationRunnable);
         if (mIsForeground) {
@@ -223,7 +224,7 @@ public class BackgroundPlaybackControllerService extends Service {
         }
     }
 
-    private void resetNotificationView() {
+    @Synthetic void resetNotificationView() {
         RemoteViews nv = createNotificationView();
         mNotificationBuilder.setCustomContentView(nv);
         mNotificationBuilder.setCustomBigContentView(nv);
@@ -312,7 +313,7 @@ public class BackgroundPlaybackControllerService extends Service {
                 0);
     }
 
-    private void sendMsg(int what) {
+    @Synthetic void sendMsg(int what) {
         Message msg = Message.obtain(null, what);
         try {
             mMessenger.send(msg);
@@ -388,6 +389,9 @@ public class BackgroundPlaybackControllerService extends Service {
     private final class ControllerActionReceiver extends BroadcastReceiver {
         static final String ACTION =
                 "action_BackgroundPlaybackControllerService$ControllerActionReceiver";
+
+        ControllerActionReceiver() {
+        }
 
         @Override
         public void onReceive(Context context, Intent intent) {
