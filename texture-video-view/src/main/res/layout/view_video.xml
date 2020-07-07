@@ -18,6 +18,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
+        <!--suppress AndroidUnresolvableTag -->
         <com.liuzhenlin.texturevideoview.SubtitleView
             android:id="@+id/subtitleView"
             android:layout_width="0dp"

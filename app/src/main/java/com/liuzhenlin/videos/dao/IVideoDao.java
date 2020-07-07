@@ -5,6 +5,7 @@
 
 package com.liuzhenlin.videos.dao;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -24,6 +25,7 @@ public interface IVideoDao {
     String VIDEO_NAME = MediaStore.Video.Media.DISPLAY_NAME;
     String VIDEO_PATH = MediaStore.Video.Media.DATA;
     String VIDEO_SIZE = MediaStore.Video.Media.SIZE;
+    @SuppressLint("InlinedApi")
     String VIDEO_DURATION = MediaStore.Video.Media.DURATION;
     String VIDEO_RESOLUTION = MediaStore.Video.Media.RESOLUTION;
     @RequiresApi(Build.VERSION_CODES.Q)

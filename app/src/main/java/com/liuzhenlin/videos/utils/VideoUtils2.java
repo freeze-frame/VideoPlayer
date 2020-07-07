@@ -125,6 +125,7 @@ public class VideoUtils2 {
     public static String concatVideoProgressAndDuration(int progress, int duration) {
         final StringBuilder result = new StringBuilder();
 
+        //noinspection ConstantConditions
         final boolean chinese = "zh".equals(
                 App.getInstanceUnsafe().getResources().getConfiguration().locale.getLanguage());
 

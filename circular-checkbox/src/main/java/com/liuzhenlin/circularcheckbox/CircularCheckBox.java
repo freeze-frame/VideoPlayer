@@ -491,6 +491,7 @@ public class CircularCheckBox extends View implements Checkable {
         }
 
         // Draw left of the tick
+        //noinspection IfStatementWithIdenticalBranches
         if (mTickLength < mTickLeftPartLength) {
             final float step = Math.max(mCenterPoint.x / 10f, 5f);
             mTickLength += step;

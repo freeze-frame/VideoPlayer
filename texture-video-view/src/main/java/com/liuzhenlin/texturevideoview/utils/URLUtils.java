@@ -57,7 +57,7 @@ public class URLUtils {
      * RFC 1035 Section 2.3.4 limits the labels to a maximum 63 octets.
      */
     private static final String IRI_LABEL =
-            "[" + LABEL_CHAR + "](?:[" + LABEL_CHAR + "_\\-]{0,61}[" + LABEL_CHAR + "]){0,1}";
+            "[" + LABEL_CHAR + "](?:[" + LABEL_CHAR + "_\\-]{0,61}[" + LABEL_CHAR + "])?";
 
     /**
      * RFC 3492 references RFC 1034 and limits Punycode algorithm output to 63 characters.

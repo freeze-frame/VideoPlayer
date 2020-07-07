@@ -278,6 +278,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
     }
   }
 
+  @SuppressWarnings("SameParameterValue")
   private void setTrackSelections(int videoTrack, int audioTrack, int subtitleTrack) {
     mTrackSelections =
         ((videoTrack << VIDEO_TRACK_SELECTION_MASK_SHIFT) & VIDEO_TRACK_SELECTION_MASK)
@@ -542,7 +543,8 @@ public abstract class VideoPlayer implements IVideoPlayer {
         // including removing itself from {@link mOnPlaybackStateChangeListeners} — and
         // that could cause problems if an iterator is used on the ArrayList.
         // To avoid such problems, just march thru the list in the reverse order.
-        for (int i = mOnPlaybackStateChangeListeners.size() - 1; i >= 0; i--) {
+        for (@SuppressWarnings("ConstantConditions")
+             int i = mOnPlaybackStateChangeListeners.size() - 1; i >= 0; i--) {
           mOnPlaybackStateChangeListeners.get(i).onPlaybackStateChange(oldState, newState);
         }
       }
@@ -568,6 +570,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
   @Override
   public void removeOnPlaybackStateChangeListener(@Nullable OnPlaybackStateChangeListener listener) {
     if (listener != null && hasOnPlaybackStateChangeListener()) {
+      //noinspection ConstantConditions
       mOnPlaybackStateChangeListeners.remove(listener);
     }
   }
@@ -591,6 +594,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
   @Override
   public void removeVideoListener(@Nullable VideoListener listener) {
     if (listener != null && hasVideoListener()) {
+      //noinspection ConstantConditions
       mVideoListeners.remove(listener);
     }
   }
@@ -606,7 +610,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
       }
 
       if (hasVideoListener()) {
-        for (int i = mVideoListeners.size() - 1; i >= 0; i--) {
+        for (@SuppressWarnings("ConstantConditions") int i = mVideoListeners.size() - 1; i >= 0; i--) {
           mVideoListeners.get(i).onVideoDurationChanged(duration);
         }
       }
@@ -623,7 +627,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
       }
 
       if (hasVideoListener()) {
-        for (int i = mVideoListeners.size() - 1; i >= 0; i--) {
+        for (@SuppressWarnings("ConstantConditions") int i = mVideoListeners.size() - 1; i >= 0; i--) {
           mVideoListeners.get(i).onVideoSizeChanged(width, height);
         }
       }
@@ -638,7 +642,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
     }
 
     if (hasVideoListener()) {
-      for (int i = mVideoListeners.size() - 1; i >= 0; i--) {
+      for (@SuppressWarnings("ConstantConditions") int i = mVideoListeners.size() - 1; i >= 0; i--) {
         mVideoListeners.get(i).onVideoStarted();
       }
     }
@@ -667,7 +671,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
     }
 
     if (hasVideoListener()) {
-      for (int i = mVideoListeners.size() - 1; i >= 0; i--) {
+      for (@SuppressWarnings("ConstantConditions") int i = mVideoListeners.size() - 1; i >= 0; i--) {
         mVideoListeners.get(i).onVideoStopped();
       }
     }
@@ -705,7 +709,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
       mVideoView.onVideoRepeat();
     }
     if (hasVideoListener()) {
-      for (int i = mVideoListeners.size() - 1; i >= 0; i--) {
+      for (@SuppressWarnings("ConstantConditions") int i = mVideoListeners.size() - 1; i >= 0; i--) {
         mVideoListeners.get(i).onVideoRepeat();
       }
     }
@@ -723,7 +727,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
       }
 
       if (hasVideoListener()) {
-        for (int i = mVideoListeners.size() - 1; i >= 0; i--) {
+        for (@SuppressWarnings("ConstantConditions") int i = mVideoListeners.size() - 1; i >= 0; i--) {
           mVideoListeners.get(i).onVideoBufferingStateChanged(buffering);
         }
       }

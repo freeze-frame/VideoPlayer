@@ -773,6 +773,7 @@ public class ExoVideoPlayer extends VideoPlayer {
         }
       }
     }
+    //noinspection ToArrayCallWithZeroLengthArrayArgument
     return trackInfos.toArray(new TrackInfo[trackInfos.size()]);
   }
 
@@ -820,8 +821,8 @@ public class ExoVideoPlayer extends VideoPlayer {
     if (mappedTrackInfo == null) return;
 
     int rendererIndex = -1;
-    int groupIndex = -1;
-    int trackIndex = -1;
+    @SuppressWarnings("UnusedAssignment") int groupIndex = -1;
+    @SuppressWarnings("UnusedAssignment") int trackIndex = -1;
     int globalTrackIndex = -1;
     outer:
     for (int rendererCount = mappedTrackInfo.getRendererCount();
@@ -846,6 +847,7 @@ public class ExoVideoPlayer extends VideoPlayer {
     }
   }
 
+  @SuppressWarnings("SameParameterValue")
   private void resetTracks(boolean enabled) {
     resetTrack(C.TRACK_TYPE_VIDEO, enabled);
     resetTrack(C.TRACK_TYPE_AUDIO, enabled);

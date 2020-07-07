@@ -26,6 +26,5 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$rootProject.ext.appcompatVersion"
 
     testImplementation "junit:junit:$rootProject.ext.testJunitVersion"
-    androidTestImplementation "androidx.test:runner:$rootProject.ext.androidTestRunnerVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.ext.androidTestEspressoVersion"
+    androidTestImplementation "androidx.test.ext:junit:$rootProject.ext.androidTestJunitVersion"
 }

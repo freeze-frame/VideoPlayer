@@ -16,6 +16,7 @@
 package com.google.android.exoplayer2.ext.vp9;
 
 import androidx.annotation.Nullable;
+
 import com.google.android.exoplayer2.ExoPlayerLibraryInfo;
 import com.google.android.exoplayer2.drm.ExoMediaCrypto;
 import com.google.android.exoplayer2.util.LibraryLoader;
@@ -76,6 +77,7 @@ public final class VpxLibrary {
    * Returns true if the underlying libvpx library supports high bit depth.
    */
   public static boolean isHighBitDepthSupported() {
+    //noinspection ConstantConditions
     String config = getBuildConfig();
     int indexHbd = config != null
         ? config.indexOf("--enable-vp9-highbitdepth") : -1;

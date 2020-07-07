@@ -68,7 +68,7 @@ public class Utils {
      */
     private static void convertActivityToTranslucentBeforeL(Activity activity) throws Exception {
         Class<?> translucentConversionListener = null;
-        for (Class clazz : Activity.class.getClasses()) {
+        for (Class<?> clazz : Activity.class.getClasses()) {
             if ("TranslucentConversionListener".equals(clazz.getSimpleName())) {
                 translucentConversionListener = clazz;
                 break;
@@ -92,7 +92,7 @@ public class Utils {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private static void convertActivityToTranslucentSinceL(Activity activity) throws Exception {
         Class<?> translucentConversionListener = null;
-        for (Class clazz : Activity.class.getClasses()) {
+        for (Class<?> clazz : Activity.class.getClasses()) {
             if ("TranslucentConversionListener".equals(clazz.getSimpleName())) {
                 translucentConversionListener = clazz;
                 break;

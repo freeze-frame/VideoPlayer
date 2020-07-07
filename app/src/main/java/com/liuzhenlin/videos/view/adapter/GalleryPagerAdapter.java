@@ -35,7 +35,7 @@ public class GalleryPagerAdapter<V extends View> extends PagerAdapter
     }
 
     public GalleryPagerAdapter(@Nullable Collection<V> views) {
-        this.views = views == null ? new ArrayList<V>(0) : new ArrayList<V>(views);
+        this.views = views == null ? new ArrayList<>(0) : new ArrayList<>(views);
     }
 
     @Override

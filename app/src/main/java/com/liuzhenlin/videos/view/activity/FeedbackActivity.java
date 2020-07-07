@@ -508,7 +508,7 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
 
         PictureGridAdapter(@NonNull Context context) {
             mContext = context;
-            //noinspection all
+            //noinspection ConstantConditions
             mPictures.add(BitmapUtils.drawableToBitmap(
                     AppCompatResources.getDrawable(context, R.drawable.ic_add_photo_gray_36dp)));
         }
@@ -562,7 +562,7 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
             final TextView pictureText;
 
             ViewHolder(ViewGroup adapterView) {
-                itemView = (ViewGroup) LayoutInflater.from(adapterView.getContext())
+                itemView = LayoutInflater.from(adapterView.getContext())
                         .inflate(R.layout.item_picture_grid, adapterView, false);
                 pictureImage = itemView.findViewById(R.id.image_picture);
                 pictureText = itemView.findViewById(R.id.text_picture);
@@ -588,7 +588,7 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
             final Window mWindow;
 
             final GalleryViewPager mGalleryViewPager;
-            final GalleryPagerAdapter mGalleryPagerAdapter;
+            final GalleryPagerAdapter<ImageView> mGalleryPagerAdapter;
             final FrameLayout mDeleteFrame;
 
             Dialog mConfirmDeletePictureDialog;
@@ -612,10 +612,10 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
                 mParentWindow = FeedbackActivity.this.getWindow();
                 mWindow = getWindow();
 
-                assert mWindow != null;
+                //noinspection ConstantConditions
                 View view = View.inflate(mContext,
                         R.layout.dialog_picture_preview,
-                        (ViewGroup) mWindow.getDecorView().findViewById(Window.ID_ANDROID_CONTENT));
+                        mWindow.getDecorView().findViewById(Window.ID_ANDROID_CONTENT));
 
                 List<ImageView> images = new ArrayList<>(mPictures.size() - 1);
                 for (int i = 0, count = mPictures.size() - 1; i < count; i++) {
@@ -748,6 +748,7 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
 
             @Override
             public boolean onLongClick(View v) {
+                //noinspection SwitchStatementWithTooFewBranches
                 switch (v.getId()) {
                     case R.id.image_picture:
                         if (mDeleteFrame.getVisibility() != View.VISIBLE) {

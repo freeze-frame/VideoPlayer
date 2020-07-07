@@ -16,6 +16,7 @@
 package com.google.android.exoplayer2.ext.ffmpeg;
 
 import androidx.annotation.Nullable;
+
 import com.google.android.exoplayer2.ExoPlayerLibraryInfo;
 import com.google.android.exoplayer2.util.LibraryLoader;
 import com.google.android.exoplayer2.util.Log;
@@ -69,6 +70,7 @@ public final class FfmpegLibrary {
     if (!isAvailable()) {
       return false;
     }
+    //noinspection ConstantConditions
     String codecName = getCodecName(mimeType);
     if (codecName == null) {
       return false;

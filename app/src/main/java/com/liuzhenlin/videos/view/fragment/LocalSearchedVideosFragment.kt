@@ -472,8 +472,8 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
         }
     }
 
-    private class DividerItemDecoration
-    @SuppressLint("LongLogTag") constructor(context: Context) : RecyclerView.ItemDecoration() {
+    @SuppressLint("LongLogTag")
+    private class DividerItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
         var mDivider: Drawable? = null
 

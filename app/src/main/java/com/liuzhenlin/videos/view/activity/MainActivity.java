@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private SlidingDrawerLayout mSlidingDrawerLayout;
 
-    @SuppressWarnings("FieldCanBeLocal")
     @Synthetic ScrollDisableViewPager mFragmentViewPager;
     private ViewGroup mActionBarContainer;
     private TabLayout mFragmentTabLayout;
@@ -271,6 +270,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
+                //noinspection ConstantConditions
                 Fragment fragment = ((FragmentPagerAdapter) mFragmentViewPager.getAdapter())
                         .getItem(position);
                 if (fragment instanceof LocalVideosFragment) {
@@ -382,6 +382,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        //noinspection SwitchStatementWithTooFewBranches
         switch (requestCode) {
             case REQUEST_CODE_CHOSE_DRAWER_BACKGROUND_PICTURE:
                 if (data != null && data.getData() != null) {
@@ -444,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             Drawable temp = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_forward);
-            assert temp != null;
+            //noinspection ConstantConditions
             mForwardDrawable = DrawableCompat.wrap(temp);
             DrawableCompat.setTintList(mForwardDrawable, null);
 
@@ -620,10 +621,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         StringBuilder text = null;
 
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(
-                    getAssets().open("updateLogs.txt"), "utf-8"));
+        //noinspection CharsetObjectCanBeUsed
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(getAssets().open("updateLogs.txt"), "utf-8"))) {
             final char[] buffer = new char[1024];
             int len;
             while ((len = reader.read(buffer)) != -1) {
@@ -635,14 +635,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (IOException e) {
             e.printStackTrace();
             return;
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    //
-                }
-            }
         }
 
         if (text == null) return;

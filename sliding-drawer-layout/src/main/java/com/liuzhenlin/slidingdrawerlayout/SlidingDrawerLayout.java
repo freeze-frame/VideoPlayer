@@ -272,6 +272,7 @@ public class SlidingDrawerLayout extends ViewGroup {
      * While that drawer is scrolling, we simultaneously make the content scroll at a higher speed
      * than the drawer's.
      */
+    @SuppressWarnings("PointlessArithmeticExpression")
     private static final int SCROLL_RATIO_CONTENT_TO_DRAWER = 3 / 1;
 
     /** @see #getScrollPercent() */
@@ -2456,6 +2457,7 @@ public class SlidingDrawerLayout extends ViewGroup {
         }
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     /*synthetic*/ void dispatchDrawerScrollStateChangeIfNeeded(@ScrollState int state) {
         final int old = mFlags & SCROLL_STATE_MASK;
         if (state == old) return;

@@ -46,7 +46,6 @@ public class NotificationChannelManager {
                 NotificationChannelManager.getPlaybackControlNotificationChannelId(context);
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     @Nullable
     public static NotificationChannel getDownloadNotificationChannel(@NonNull Context context) {
         NotificationChannel channel = null;
@@ -73,7 +72,6 @@ public class NotificationChannelManager {
         return channel;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     @Nullable
     public static NotificationChannel getMessageNotificationChannel(@NonNull Context context) {
         NotificationChannel channel = null;

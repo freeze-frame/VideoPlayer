@@ -44,7 +44,7 @@ public class FloatingWindowPermissionUtils {
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    private static boolean checkOp(Context context, int op) {
+    private static boolean checkOp(Context context, @SuppressWarnings("SameParameterValue") int op) {
         AppOpsManager aom = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
         try {
             Class<AppOpsManager> clazz = AppOpsManager.class;

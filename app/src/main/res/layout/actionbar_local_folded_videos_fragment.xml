@@ -27,7 +27,8 @@
         android:textSize="@dimen/subtitle_text_size"
         android:textColor="@android:color/white"
         style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:ignore="ButtonOrder" />
 
     <TextView
         android:id="@+id/text_title"

@@ -295,6 +295,7 @@ public class SwipeRefreshLayout extends ViewGroup
         reset();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private void setColorViewAlpha(int targetAlpha) {
         mCircleView.getBackground().setAlpha(targetAlpha);
         mProgress.setAlpha(targetAlpha);

@@ -57,6 +57,7 @@ public class DisplayCutoutUtils {
         try {
             Class<?> HwNotchSizeUtil = context.getClassLoader()
                     .loadClass("com.huawei.android.util.HwNotchSizeUtil");
+            //noinspection ConstantConditions
             return (int[]) HwNotchSizeUtil
                     .getMethod("getNotchSize")
                     .invoke(HwNotchSizeUtil);
@@ -114,6 +115,7 @@ public class DisplayCutoutUtils {
     public static int[] getNotchSizeForColorOS() {
         final String notchLocation = getNotchLocationOnScreenForColorOS();
         if (!TextUtils.isEmpty(notchLocation)) {
+            //noinspection ConstantConditions
             final int firstCommaIndex = notchLocation.indexOf(",");
             final int lastCommaIndex = notchLocation.lastIndexOf(",");
             final int colonIndex = notchLocation.indexOf(":");

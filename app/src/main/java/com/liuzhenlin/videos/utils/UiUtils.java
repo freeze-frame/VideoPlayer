@@ -137,11 +137,12 @@ public class UiUtils {
     @Nullable
     public static TextView getAlertDialogTitle(@NonNull android.app.AlertDialog dialog) {
         try {
-            @SuppressWarnings("JavaReflectionMemberAccess")
+            //noinspection JavaReflectionMemberAccess
             Field mAlert = android.app.AlertDialog.class.getDeclaredField("mAlert");
             mAlert.setAccessible(true);
 
             Object alertController = mAlert.get(dialog);
+            //noinspection ConstantConditions
             Field mTitleView = alertController.getClass().getDeclaredField("mTitleView");
             mTitleView.setAccessible(true);
 
@@ -159,6 +160,7 @@ public class UiUtils {
             mAlert.setAccessible(true);
 
             Object alertController = mAlert.get(dialog);
+            //noinspection ConstantConditions
             Field mTitleView = alertController.getClass().getDeclaredField("mTitleView");
             mTitleView.setAccessible(true);
 

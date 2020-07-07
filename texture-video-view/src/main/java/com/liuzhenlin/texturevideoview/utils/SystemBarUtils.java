@@ -55,7 +55,7 @@ public class SystemBarUtils {
     /**
      * 判断是否有虚拟按键
      */
-    @SuppressLint({"ObsoleteSdkInt", "PrivateApi"})
+    @SuppressLint("ObsoleteSdkInt")
     public static boolean hasNavigationBar(@NonNull Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             return false;
@@ -69,6 +69,7 @@ public class SystemBarUtils {
         }
         if (hasNavBar) {
             try {
+                @SuppressLint("PrivateApi")
                 Class<?> systemPropertiesClass = Class.forName("android.os.SystemProperties");
                 Method get = systemPropertiesClass.getMethod("get", String.class);
                 String navBarOverride = (String) get.invoke(

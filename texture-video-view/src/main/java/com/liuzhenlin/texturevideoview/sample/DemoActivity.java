@@ -105,6 +105,7 @@ public class DemoActivity extends AppCompatActivity {
             public void onViewModeChange(int oldMode, int newMode, boolean layoutMatches) {
                 switch (newMode) {
                     case TextureVideoView.VIEW_MODE_MINIMUM:
+                        //noinspection StatementWithEmptyBody
                         if (!layoutMatches) {
                             // do something like entering picture-in-picture mode
                         }

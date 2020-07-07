@@ -32,7 +32,6 @@ public class NotificationChannelManager {
         return sPlaybackControlNotificationChannelId;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     @Nullable
     public static NotificationChannel getPlaybackControlNotificationChannel(@NonNull Context context) {
         NotificationChannel channel = null;

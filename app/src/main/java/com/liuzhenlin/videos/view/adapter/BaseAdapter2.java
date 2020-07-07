@@ -7,6 +7,7 @@ package com.liuzhenlin.videos.view.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -17,12 +18,12 @@ import androidx.annotation.CallSuper;
  * @author 刘振林
  */
 public abstract class BaseAdapter2 extends BaseAdapter {
-    private AdapterView mAdapterView;
+    private AdapterView<? extends Adapter> mAdapterView;
 
     @CallSuper
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        mAdapterView = (AdapterView) parent;
+        mAdapterView = (AdapterView<? extends Adapter>) parent;
         return convertView;
     }
 

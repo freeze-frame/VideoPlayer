@@ -248,9 +248,7 @@ public class VlcVideoPlayer extends VideoPlayer {
             break;
 
           case MediaPlayer.Event.Playing:
-            break;
           case MediaPlayer.Event.Paused:
-            break;
           case MediaPlayer.Event.Stopped:
             break;
 
@@ -337,6 +335,7 @@ public class VlcVideoPlayer extends VideoPlayer {
     }
   }
 
+  @SuppressWarnings("SameParameterValue")
   private void showVideoErrorMsg(int errorType) {
     final int stringRes;
     switch (errorType) {
@@ -753,6 +752,7 @@ public class VlcVideoPlayer extends VideoPlayer {
         }
         trackInfos.add(trackInfo);
       }
+      //noinspection ToArrayCallWithZeroLengthArrayArgument
       return trackInfos.toArray(new TrackInfo[trackInfos.size()]);
     }
     return EMPTY_TRACK_INFOS;

@@ -78,7 +78,8 @@
                     android:maxLength="500"
                     android:maxLines="3"
                     android:inputType="textMultiLine"
-                    android:gravity="top" />
+                    android:gravity="top"
+                    tools:ignore="Autofill" />
 
                 <TextView
                     android:id="@+id/text_wordCountIndicator"
@@ -171,7 +172,8 @@
                     android:textColor="@android:color/black"
                     android:inputType="text"
                     android:singleLine="true"
-                    android:gravity="center_vertical" />
+                    android:gravity="center_vertical"
+                    tools:ignore="Autofill" />
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton

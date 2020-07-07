@@ -65,6 +65,8 @@ import com.liuzhenlin.texturevideoview.R;
  * @see NotificationCompat.DecoratedCustomViewStyle
  * @see androidx.media.app.NotificationCompat.MediaStyle
  */
+@SuppressLint("RestrictedApi")
+@SuppressWarnings("JavaDoc")
 public class DecoratedMediaCustomViewStyle extends NotificationCompat.Style {
 
     /*package*/ MediaSessionCompat.Token mToken;

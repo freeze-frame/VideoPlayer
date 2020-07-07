@@ -884,6 +884,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
             if (sListPopupField != null && sPopupField != null) {
                 try {
                     mSpinnerListPopup = (ListPopupWindow) sListPopupField.get(mSpeedSpinner);
+                    //noinspection ConstantConditions
                     mSpinnerListPopup.setForceIgnoreOutsideTouch(true);
 /*
                     // Works on platforms prior to P
@@ -901,6 +902,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                     // aftereffect be？Yeah，the system bars will become visible to the user and
                     // even affect the user to choose a reasonable speed for the player.
                     // For all of the reasons, we're supposed to prevent it from doing that.
+                    //noinspection ConstantConditions
                     mSpinnerPopup.setFocusable(false);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
@@ -1548,6 +1550,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                         mDragHelper = (ViewDragHelper) (absHG == Gravity.LEFT ?
                                 sLeftDraggerField.get(this) : sRightDraggerField.get(this));
                     }
+                    //noinspection ConstantConditions
                     if (mDragHelper.getViewDragState() == ViewDragHelper.STATE_SETTLING) {
                         mDragHelper.abort();
                     } else {
@@ -1910,8 +1913,10 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
             final float viewportH = mTextureView.getHeight();
 
             if (textBounds == null || textBounds.isEmpty() || viewportW == 0 || viewportH == 0) {
+                //noinspection ConstantConditions
                 cues.add(new Cue(text));
             } else {
+                //noinspection ConstantConditions
                 cues.add(
                         new Cue(text,
                                 /* textAlignment= */ null,
@@ -2314,14 +2319,17 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                     return;
                 }
 
+                //noinspection ConstantConditions
                 final String destDirectory = obtainAppExternalFilesDir()
                         + "/clips/" + (cutoutShortVideo ? "ShortVideos" : "GIFs");
+                //noinspection ConstantConditions
                 final String destName = mTitle + "_"
                         + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS") //@formatter:off
                                 .format(System.currentTimeMillis()) //@formatter:on
                         + (cutoutShortVideo ? ".mp4" : ".gif");
                 final String destPath = destDirectory + "/" + destName;
                 File destFile = null;
+                //noinspection ConstantConditions,StatementWithEmptyBody
                 if (cutoutShortVideo) {
                     try {
                         destFile = VideoUtils.clip(srcPath, destPath, interval[0], interval[1]);
@@ -2334,22 +2342,22 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                 if (destFile == null) {
                     Utils.showUserCancelableSnackbar(this,
                             R.string.clippingFailed, Snackbar.LENGTH_SHORT);
-
-                } else if (cutoutShortVideo) {
-                    FileUtils.recordMediaFileToDatabaseAndScan(mContext,
-                            MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                            destFile, "video/mp4");
-                    Utils.showUserCancelableSnackbar(this,
-                            mResources.getString(R.string.shortVideoHasBeenSavedTo, destName, destDirectory),
-                            true, Snackbar.LENGTH_INDEFINITE);
-                } else {
-                    FileUtils.recordMediaFileToDatabaseAndScan(mContext,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                            destFile, "image/gif");
-                    Utils.showUserCancelableSnackbar(this,
-                            mResources.getString(R.string.gifHasBeenSavedTo, destName, destDirectory),
-                            true, Snackbar.LENGTH_INDEFINITE);
-                }
+                } else //noinspection ConstantConditions
+                    if (cutoutShortVideo) {
+                        FileUtils.recordMediaFileToDatabaseAndScan(mContext,
+                                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                                destFile, "video/mp4");
+                        Utils.showUserCancelableSnackbar(this,
+                                mResources.getString(R.string.shortVideoHasBeenSavedTo, destName, destDirectory),
+                                true, Snackbar.LENGTH_INDEFINITE);
+                    } else {
+                        FileUtils.recordMediaFileToDatabaseAndScan(mContext,
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                destFile, "image/gif");
+                        Utils.showUserCancelableSnackbar(this,
+                                mResources.getString(R.string.gifHasBeenSavedTo, destName, destDirectory),
+                                true, Snackbar.LENGTH_INDEFINITE);
+                    }
             }
         };
         cutoutShortVideoButton.setOnClickListener(listener);
@@ -2638,7 +2646,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         }
     }
 
-    @SuppressWarnings("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void cancelDraggingVideoSeekBar(boolean seekPlaybackPosition) {
         if (!seekPlaybackPosition) {
@@ -2888,6 +2896,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                 // PFLAG_IGNORE_SHOW_CONTROLS_METHOD_CALLS flag keeps it from doing what the client wants).
                 mSpinnerPopup.setOnDismissListener(() -> {
                     // First, lets the internal one get notified to release some related resources
+                    //noinspection ConstantConditions
                     listener.onDismiss();
 
                     // Then, do what we want (hide the controls in both the vertical ends after
@@ -3084,14 +3093,16 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
             }
         }
 
-        int computeProgressOnTrackTouchHorizontally(ProgressBar progressBar, float deltaX, float sensitivity) {
+        int computeProgressOnTrackTouchHorizontally(ProgressBar progressBar, float deltaX,
+                                                    @SuppressWarnings("SameParameterValue") float sensitivity) {
             final int maxProgress = progressBar.getMax();
             final int progress = progressBar.getProgress()
                     + Math.round((float) maxProgress / mContentView.getWidth() * deltaX * sensitivity);
             return Util.constrainValue(progress, 0, maxProgress);
         }
 
-        int computeProgressOnTrackTouchVertically(ProgressBar progressBar, float deltaY, float sensitivity) {
+        int computeProgressOnTrackTouchVertically(ProgressBar progressBar, float deltaY,
+                                                  @SuppressWarnings("SameParameterValue") float sensitivity) {
             final int maxProgress = progressBar.getMax();
             final int progress = progressBar.getProgress()
                     + Math.round((float) maxProgress / mContentView.getHeight() * deltaY * sensitivity);
@@ -3576,6 +3587,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                         }
 
                         void updateLayer(int layerType, boolean isThumbVisible) {
+                            //noinspection StatementWithEmptyBody
                             if (isThumbVisible) {
                                 mSeekingVideoThumbText.setLayerType(layerType, null);
                                 if (ViewCompat.isAttachedToWindow(mSeekingVideoThumbText)) {
@@ -3974,6 +3986,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         checkButtonsAbilities();
 
         if (canAccessBackgroundPlaybackControllerService()) {
+            //noinspection ConstantConditions
             sBgPlaybackControllerServiceConn.service
                     .onMediaDurationChanged(mVideoPlayer.getVideoProgress(), duration);
         }
@@ -4008,6 +4021,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         }
 
         if (canAccessBackgroundPlaybackControllerService()) {
+            //noinspection ConstantConditions
             sBgPlaybackControllerServiceConn.service.onMediaPlay(mVideoPlayer.getVideoProgress());
         }
     }
@@ -4021,6 +4035,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         }
 
         if (canAccessBackgroundPlaybackControllerService()) {
+            //noinspection ConstantConditions
             sBgPlaybackControllerServiceConn.service.onMediaPause(mVideoPlayer.getVideoProgress());
         }
     }
@@ -4037,6 +4052,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         showLoadingView(buffering);
 
         if (canAccessBackgroundPlaybackControllerService()) {
+            //noinspection ConstantConditions
             sBgPlaybackControllerServiceConn.service
                     .onMediaBufferingStateChanged(buffering, mVideoPlayer.getVideoProgress());
         }

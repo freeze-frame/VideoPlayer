@@ -15,6 +15,7 @@
  */
 package com.liuzhenlin.texturevideoview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -110,7 +111,7 @@ import com.google.android.exoplayer2.util.Util;
   private int textPaddingX;
   private /*@MonotonicNonNull*/ Rect bitmapRect;
 
-  @SuppressWarnings("ResourceType")
+  @SuppressLint("ResourceType")
   public SubtitlePainter(Context context) {
     int[] viewAttr = {android.R.attr.lineSpacingExtra, android.R.attr.lineSpacingMultiplier};
     TypedArray styledAttributes = context.obtainStyledAttributes(null, viewAttr, 0, 0);
@@ -269,6 +270,7 @@ import com.google.android.exoplayer2.util.Util;
 
     // Remove embedded styling or font size if requested.
     if (!applyEmbeddedStyles) {
+      //noinspection ConstantConditions
       cueText = cueText.toString(); // Equivalent to erasing all spans.
     } else if (!applyEmbeddedFontSizes) {
       SpannableStringBuilder newCueText = new SpannableStringBuilder(cueText);
@@ -420,6 +422,7 @@ import com.google.android.exoplayer2.util.Util;
     float anchorX = parentLeft + (parentWidth * cuePosition);
     float anchorY = parentTop + (parentHeight * cueLine);
     int width = Math.round(parentWidth * cueSize);
+    //noinspection ConstantConditions
     int height = cueBitmapHeight != Cue.DIMEN_UNSET ? Math.round(parentHeight * cueBitmapHeight)
         : Math.round(width * ((float) cueBitmap.getHeight() / cueBitmap.getWidth()));
     int x =
@@ -497,6 +500,7 @@ import com.google.android.exoplayer2.util.Util;
 
 //  @RequiresNonNull({"cueBitmap", "bitmapRect"})
   private void drawBitmapLayout(Canvas canvas) {
+    //noinspection ConstantConditions
     canvas.drawBitmap(cueBitmap, /* src= */ null, bitmapRect, bitmapPaint);
   }
 
@@ -505,7 +509,6 @@ import com.google.android.exoplayer2.util.Util;
    * latter only checks the text of each sequence, and does not check for equality of styling that
    * may be embedded within the {@link CharSequence}s.
    */
-  @SuppressWarnings("UndefinedEquals")
   private static boolean areCharSequencesEqual(
       @Nullable CharSequence first, @Nullable CharSequence second) {
     // Some CharSequence implementations don't perform a cheap referential equality check in their

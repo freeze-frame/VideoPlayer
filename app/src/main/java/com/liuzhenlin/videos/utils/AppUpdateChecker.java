@@ -101,6 +101,7 @@ public final class AppUpdateChecker {
 
     private static final Singleton<Context, AppUpdateChecker> sAppUpdateCheckerSingleton =
             new Singleton<Context, AppUpdateChecker>() {
+                @SuppressLint("SyntheticAccessor")
                 @NonNull
                 @Override
                 protected AppUpdateChecker onCreate(Context... ctxs) {
@@ -168,6 +169,7 @@ public final class AppUpdateChecker {
                     conn.setConnectTimeout(TIMEOUT_CONNECTION);
                     conn.setReadTimeout(TIMEOUT_READ);
 
+                    //noinspection CharsetObjectCanBeUsed
                     reader = new BufferedReader(
                             new InputStreamReader(conn.getInputStream(), "utf-8"));
                     final char[] buffer = new char[1024];
@@ -204,6 +206,7 @@ public final class AppUpdateChecker {
                     }
                 }
 
+                //noinspection ConstantConditions
                 JsonObject appInfos = JsonParser.parseString(json.toString()).getAsJsonObject()
                         .get("appInfos").getAsJsonObject();
 

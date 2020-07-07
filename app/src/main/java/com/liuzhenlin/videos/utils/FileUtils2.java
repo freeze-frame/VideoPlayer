@@ -96,37 +96,17 @@ public class FileUtils2 {
             }
         }
 
-        BufferedInputStream in = null;
-        BufferedOutputStream out = null;
-        try {
-            in = new BufferedInputStream(new FileInputStream(srcFile));
-            out = new BufferedOutputStream(new FileOutputStream(desFile));
-
+        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(srcFile));
+             BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(desFile))) {
             final byte[] bytes = new byte[8 * 1024];
             int i;
             while ((i = in.read(bytes)) != -1) {
                 out.write(bytes, 0, i);
             }
-
             return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    //
-                }
-            }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    //
-                }
-            }
         }
     }
 
@@ -144,11 +124,7 @@ public class FileUtils2 {
         int readBytes;
         final byte[] buffer = new byte[8 * 1024];
 
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            in = new BufferedInputStream(new FileInputStream(file));
-
+        try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
             for (int i = 1; i <= splitCount; i++) {
                 filePart = new File(directory, fileName + i + extension);
                 if (filePart.exists()) {
@@ -158,8 +134,7 @@ public class FileUtils2 {
                 //noinspection ResultOfMethodCallIgnored
                 filePart.createNewFile();
 
-                try {
-                    out = new BufferedOutputStream(new FileOutputStream(filePart));
+                try (OutputStream out = new BufferedOutputStream(new FileOutputStream(filePart))) {
                     while (true) {
                         filePartLength = filePart.length();
                         remainingBytesToWrite = filePartLengthLimit - filePartLength;
@@ -175,28 +150,11 @@ public class FileUtils2 {
                 } catch (IOException e) {
                     e.printStackTrace();
                     return 0;
-                } finally {
-                    if (out != null) {
-                        try {
-                            out.close();
-                            out = null;
-                        } catch (IOException e) {
-                            //
-                        }
-                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    //
-                }
-            }
         }
 
         return splitCount;
@@ -215,15 +173,10 @@ public class FileUtils2 {
             return false;
         }
 
-        final byte[] buffer = new byte[8 * 1024];
-
-        BufferedInputStream in = null;
-        BufferedOutputStream out = null;
-        try {
-            out = new BufferedOutputStream(new FileOutputStream(dstFile));
+        try (BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(dstFile))) {
+            final byte[] buffer = new byte[8 * 1024];
             for (File file : files) {
-                try {
-                    in = new BufferedInputStream(new FileInputStream(file));
+                try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
                     int len;
                     while ((len = in.read(buffer)) != -1) {
                         out.write(buffer, 0, len);
@@ -231,28 +184,11 @@ public class FileUtils2 {
                 } catch (IOException e) {
                     e.printStackTrace();
                     return false;
-                } finally {
-                    if (in != null) {
-                        try {
-                            in.close();
-                            in = null;
-                        } catch (IOException e) {
-                            //
-                        }
-                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    //
-                }
-            }
         }
 
         if (deleteInputs) {
@@ -300,10 +236,7 @@ public class FileUtils2 {
             return null;
         }
 
-        InputStream in = null;
-        try {
-            in = new FileInputStream(file);
-
+        try (InputStream in = new FileInputStream(file)) {
             MessageDigest digest = MessageDigest.getInstance(algorithm);
 
             int len;
@@ -311,18 +244,11 @@ public class FileUtils2 {
             while ((len = in.read(buffer)) != -1) {
                 digest.update(buffer, 0, len);
             }
+
             return new BigInteger(1, digest.digest()).toString(16);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    //
-                }
-            }
         }
     }
 }

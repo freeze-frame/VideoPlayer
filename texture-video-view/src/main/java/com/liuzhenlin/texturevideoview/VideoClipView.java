@@ -281,10 +281,12 @@ public class VideoClipView extends FrameLayout {
         mClipForward = ContextCompat.getDrawable(context, R.drawable.ic_clip_forward);
         mClipForwardDark = ContextCompat.getDrawable(context, R.drawable.ic_clip_forward_dark);
 
+        //noinspection ConstantConditions
         mDrawableWidth = mClipBackwards.getIntrinsicWidth();
         mThumbDisplayHeight = mClipBackwards.getIntrinsicHeight();
 
         mFrameBarColor = BitmapUtils.getDominantColorOrThrow(BitmapUtils.drawableToBitmap(mClipBackwards));
+        //noinspection ConstantConditions
         mFrameBarDarkColor = BitmapUtils.getDominantColorOrThrow(BitmapUtils.drawableToBitmap(mClipBackwardsDark));
 
         mFrameBarPaint = new Paint();
@@ -540,7 +542,7 @@ public class VideoClipView extends FrameLayout {
         final int height = getHeight();
 
         final float progressCenterX = progressPercentToProgressCenterX(mProgressPercent);
-        //noinspection SuspiciousNameCombination
+        //noinspection SuspiciousNameCombination,UnnecessaryLocalVariable
         final float progressTop = mProgressHeaderFooterStrokeWidth;
         final float progressBottom = height - mProgressHeaderFooterStrokeWidth;
         // Draw the progress
@@ -550,7 +552,7 @@ public class VideoClipView extends FrameLayout {
         final float headerFooterStart = progressCenterX - mProgressHeaderFooterLength / 2f;
         final float headerFooterEnd = headerFooterStart + mProgressHeaderFooterLength;
         final float halfOfProgressHeaderFooterStrokeWidth = mProgressHeaderFooterStrokeWidth / 2f;
-        //noinspection SuspiciousNameCombination
+        //noinspection SuspiciousNameCombination,UnnecessaryLocalVariable
         final float headerCenterY = halfOfProgressHeaderFooterStrokeWidth;
         final float footerCenterY = height - halfOfProgressHeaderFooterStrokeWidth;
         // Draw header & footer of the progress

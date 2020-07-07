@@ -16,9 +16,10 @@
 package com.google.android.exoplayer2.ext.ffmpeg;
 
 import android.os.Handler;
+
 import androidx.annotation.Nullable;
+
 import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.audio.AudioProcessor;
 import com.google.android.exoplayer2.audio.AudioRendererEventListener;
@@ -29,6 +30,7 @@ import com.google.android.exoplayer2.drm.DrmSessionManager;
 import com.google.android.exoplayer2.drm.ExoMediaCrypto;
 import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.MimeTypes;
+
 import java.util.Collections;
 //import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
@@ -44,6 +46,7 @@ public final class FfmpegAudioRenderer extends SimpleDecoderAudioRenderer {
 
   private final boolean enableFloatOutput;
 
+  @SuppressWarnings("NotNullFieldNotInitialized")
   private /*@MonotonicNonNull*/ FfmpegDecoder decoder;
 
   public FfmpegAudioRenderer() {
@@ -109,7 +112,7 @@ public final class FfmpegAudioRenderer extends SimpleDecoderAudioRenderer {
 
   @Override
   @AdaptiveSupport
-  public final int supportsMixedMimeTypeAdaptation() throws ExoPlaybackException {
+  public final int supportsMixedMimeTypeAdaptation() {
     return ADAPTIVE_NOT_SEAMLESS;
   }
 

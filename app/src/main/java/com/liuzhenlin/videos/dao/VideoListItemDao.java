@@ -72,6 +72,7 @@ public final class VideoListItemDao implements IVideoListItemDao {
 
     private static final Singleton<Context, VideoListItemDao> sVideoListItemDaoSingleton =
             new Singleton<Context, VideoListItemDao>() {
+                @SuppressLint("SyntheticAccessor")
                 @NonNull
                 @Override
                 protected VideoListItemDao onCreate(Context... ctxs) {

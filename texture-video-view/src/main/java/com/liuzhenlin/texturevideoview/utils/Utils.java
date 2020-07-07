@@ -206,6 +206,7 @@ public class Utils {
             return null;
         }
 
+        //noinspection ConstantConditions
         final int endIndex = codecs.indexOf('.');
         return endIndex == -1 ? codecs : codecs.substring(0, endIndex);
     }
@@ -322,6 +323,7 @@ public class Utils {
      * Returns whether the {@link rg.videolan.libvlc.MediaPlayer} can be used on
      * the system of the user device.
      */
+    @SuppressWarnings("JavadocReference")
     public static boolean canUseVlcPlayer() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
     }

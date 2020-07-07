@@ -1,4 +1,4 @@
-package com.google.android.exoplayer2.ext.vp9;
+package com.google.android.exoplayer2.ext.ffmpeg;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.google.android.exoplayer2.ext.vp9.test", appContext.getPackageName());
+        assertEquals("com.google.android.exoplayer2.ext.ffmpeg.test", appContext.getPackageName());
     }
 }

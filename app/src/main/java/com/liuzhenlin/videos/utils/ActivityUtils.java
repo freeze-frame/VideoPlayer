@@ -20,6 +20,7 @@ import java.util.Map;
 /**
  * @author 刘振林
  */
+@SuppressWarnings("rawtypes")
 public class ActivityUtils {
     private ActivityUtils() {
     }
@@ -85,6 +86,7 @@ public class ActivityUtils {
                     activityField.setAccessible(true);
                 }
                 Activity activity = (Activity) activityField.get(activityRecord);
+                //noinspection ConstantConditions
                 if (activity.getClass().getName().equals(activityClsName)) {
                     return activity;
                 }
@@ -122,6 +124,7 @@ public class ActivityUtils {
                     activityField.setAccessible(true);
                 }
                 Activity activity = (Activity) activityField.get(activityRecord);
+                //noinspection ConstantConditions
                 if (activity.getClass().getName().equals(activityClsName)) {
                     if (result == null) {
                         result = new ArrayList<>(1);
@@ -142,9 +145,10 @@ public class ActivityUtils {
         try {
             // public final class ActivityThread...
             @SuppressLint("PrivateApi")
-            Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
+            Class activityThreadClass = Class.forName("android.app.ActivityThread");
 
             // public static ActivityThread currentActivityThread() {...}
+            @SuppressWarnings("unchecked")
             Object currentActivityThread = activityThreadClass
                     .getMethod("currentActivityThread")
                     .invoke(activityThreadClass);

@@ -62,5 +62,5 @@
         android:textSize="@dimen/primary_text_size"
         android:singleLine="true"
         android:gravity="center_horizontal"
-        tools:ignore="HardcodedText" />
+        tools:ignore="Autofill,HardcodedText" />
 </LinearLayout>

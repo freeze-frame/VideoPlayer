@@ -31,6 +31,7 @@ public class AlgorithmUtil {
         // 此处的棋盘长度要比字符串长度多加1，需要多存储一行0和一列0
         final int[][] array = new int[chars1.length + 1][chars2.length + 1];
 
+        //noinspection ExplicitArrayFilling
         for (int i = 0; i < array[0].length; i++) { // 第0行第i列全部赋值为0
             array[0][i] = 0;
         }

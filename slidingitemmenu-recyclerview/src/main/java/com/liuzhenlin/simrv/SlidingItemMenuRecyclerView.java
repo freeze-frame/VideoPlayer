@@ -474,6 +474,7 @@ public class SlidingItemMenuRecyclerView extends RecyclerView {
             return false;
         }
         // The layout's orientation may not be vertical.
+        //noinspection ConstantConditions
         if (getLayoutManager().canScrollHorizontally()) {
             return false;
         }
@@ -673,7 +674,7 @@ public class SlidingItemMenuRecyclerView extends RecyclerView {
         }
     }
 
-    private void translateItemViewXTo(ViewGroup itemView, float x) {
+    private void translateItemViewXTo(ViewGroup itemView, @SuppressWarnings("SameParameterValue") float x) {
         translateItemViewXBy(itemView, x - itemView.getChildAt(0).getTranslationX());
     }
 
@@ -755,6 +756,7 @@ public class SlidingItemMenuRecyclerView extends RecyclerView {
                     }
                 }
 
+                @SuppressLint("ObsoleteSdkInt")
                 @Override
                 public void onAnimationStart(Animator animation) {
                     ensureChildrenLayerTypes();
