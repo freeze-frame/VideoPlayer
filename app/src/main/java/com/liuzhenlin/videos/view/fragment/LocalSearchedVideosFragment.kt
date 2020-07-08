@@ -113,7 +113,7 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
                 mInteractionCallback.isRefreshLayoutRefreshing = false
             }
 
-            override fun onLoadCanceled(result: MutableList<Video>?) {
+            override fun onLoadCanceled() {
                 mInteractionCallback.isRefreshLayoutRefreshing = false
             }
         })

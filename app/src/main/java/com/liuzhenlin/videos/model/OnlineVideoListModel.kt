@@ -7,6 +7,7 @@ package com.liuzhenlin.videos.model
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.AsyncTask
 import androidx.core.util.AtomicFile
 import com.google.gson.Gson
 import com.liuzhenlin.texturevideoview.InternalConsts
@@ -22,28 +23,15 @@ import java.net.URL
  */
 class OnlineVideoListModel(context: Context) : BaseModel<Array<TVGroup>?>(context) {
 
-    @Volatile
-    private var mLoader: LoadTVsAsyncTask? = null
-
-    override fun startLoader() {
-        // 不在加载时才加载
-        if (mLoader == null) {
-            val loader = LoadTVsAsyncTask()
-            mLoader = loader
-            loader.executeOnExecutor(ParallelThreadExecutor.getSingleton(), mContext)
-        }
-    }
-
-    override fun stopLoader() {
-        val loader = mLoader
-        if (loader != null) {
-            mLoader = null
-            loader.cancel()
-        }
+    override fun createAndStartLoader(): AsyncTask<*, *, *> {
+        val loader = LoadTVsAsyncTask()
+        loader.executeOnExecutor(ParallelThreadExecutor.getSingleton(), mContext)
+        return loader
     }
 
     @SuppressLint("StaticFieldLeak")
     private inner class LoadTVsAsyncTask : Loader<Context, Unit>() {
+
         override fun doInBackground(vararg ctxs: Context): Array<TVGroup>? {
             var json: StringBuilder? = null
 
@@ -122,38 +110,15 @@ class OnlineVideoListModel(context: Context) : BaseModel<Array<TVGroup>?>(contex
                 }
             }
 
-            if (json != null) {
-                return Gson().fromJson(json.toString(), Array<TVGroup>::class.java)
-            } else {
-                if (ioException != null) {
-                    InternalConsts.getMainThreadHandler().post {
-                        mOnLoadListeners?.let {
-                            for (listener in it.toTypedArray()) {
-                                listener.onLoadError(ioException)
-                            }
-                        }
-                    }
-                }
-                cancel()
+            when {
+                json != null ->
+                    return Gson().fromJson(json.toString(), Array<TVGroup>::class.java)
+
+                ioException != null ->
+                    InternalConsts.getMainThreadHandler().post { onLoadError(ioException) }
             }
 
             return null
-        }
-
-        fun cancel() {
-            mLoader = null
-            cancel(false)
-        }
-
-        override fun onCancelled(result: Array<TVGroup>?) {
-            if (mLoader == null) {
-                super.onCancelled(result)
-            }
-        }
-
-        override fun onPostExecute(result: Array<TVGroup>?) {
-            mLoader = null
-            super.onPostExecute(result)
         }
     }
 

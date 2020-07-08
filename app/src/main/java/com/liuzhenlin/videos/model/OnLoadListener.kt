@@ -13,7 +13,7 @@ interface OnLoadListener<R> {
 
     fun onLoadFinish(result: R) {}
 
-    fun onLoadCanceled(result: R) {}
+    fun onLoadCanceled(/*result: R*/) {}
 
     fun onLoadError(cause: Throwable) {}
 }

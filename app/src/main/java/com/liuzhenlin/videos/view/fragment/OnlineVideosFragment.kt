@@ -72,7 +72,7 @@ class OnlineVideosFragment : Fragment(), View.OnClickListener,
                 }
             }
 
-            override fun onLoadCanceled(result: Array<TVGroup>?) {
+            override fun onLoadCanceled() {
                 mSwipeRefreshLayout.isRefreshing = false
             }
 

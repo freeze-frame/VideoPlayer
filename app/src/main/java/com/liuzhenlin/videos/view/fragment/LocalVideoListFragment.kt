@@ -191,7 +191,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
                 mInteractionCallback.isRefreshLayoutRefreshing = false
             }
 
-            override fun onLoadCanceled(result: MutableList<VideoListItem>?) {
+            override fun onLoadCanceled() {
                 mRecyclerView.isItemDraggable = true
                 mInteractionCallback.isRefreshLayoutRefreshing = false
             }

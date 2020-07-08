@@ -150,7 +150,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
                     mInteractionCallback.isRefreshLayoutRefreshing = false
                 }
 
-                override fun onLoadCanceled(result: MutableList<Video>?) {
+                override fun onLoadCanceled() {
                     mRecyclerView.isItemDraggable = true
                     mInteractionCallback.isRefreshLayoutRefreshing = false
                 }
