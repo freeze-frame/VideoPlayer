@@ -303,11 +303,13 @@ public class SystemVideoPlayer extends VideoPlayer {
   }
 
   private void stopVideo() {
-    mMediaPlayer.stop();
-    mMediaPlayer.reset();
-    onVideoBufferingStateChanged(false);
-    if (mVideoView != null) {
-      mVideoView.showSubtitles(null);
+    if (getPlaybackState() != PLAYBACK_STATE_IDLE) {
+      mMediaPlayer.stop();
+      mMediaPlayer.reset();
+      onVideoBufferingStateChanged(false);
+      if (mVideoView != null) {
+        mVideoView.showSubtitles(null);
+      }
     }
   }
 
@@ -461,20 +463,25 @@ public class SystemVideoPlayer extends VideoPlayer {
     if (mVideoView != null) {
       mVideoView.cancelDraggingVideoSeekBar(innerPlayerCreated);
     }
-    if (innerPlayerCreated) {
-      final boolean playing = isPlaying();
 
-      if (mSeekOnPlay == TIME_UNSET && getPlaybackState() != PLAYBACK_STATE_COMPLETED) {
-        mSeekOnPlay = getVideoProgress();
+    if (innerPlayerCreated) {
+      final int playbackState = getPlaybackState();
+      final boolean playing = playbackState == PLAYBACK_STATE_PLAYING;
+
+      if (playbackState != PLAYBACK_STATE_IDLE) {
+        if (mSeekOnPlay == TIME_UNSET && playbackState != PLAYBACK_STATE_COMPLETED) {
+          mSeekOnPlay = getVideoProgress();
+        }
+        saveTrackSelections();
+
+//        pause(fromUser);
+        if (playing) {
+          mMediaPlayer.pause();
+          mInternalFlags = mInternalFlags & ~$FLAG_VIDEO_PAUSED_BY_USER
+              | (fromUser ? $FLAG_VIDEO_PAUSED_BY_USER : 0);
+        }
+        mMediaPlayer.stop();
       }
-      saveTrackSelections();
-//      pause(fromUser);
-      if (playing) {
-        mMediaPlayer.pause();
-        mInternalFlags = mInternalFlags & ~$FLAG_VIDEO_PAUSED_BY_USER
-            | (fromUser ? $FLAG_VIDEO_PAUSED_BY_USER : 0);
-      }
-      mMediaPlayer.stop();
       mMediaPlayer.release();
       mMediaPlayer = null;
       // Not clear the $FLAG_VIDEO_DURATION_DETERMINED flag
@@ -574,7 +581,8 @@ public class SystemVideoPlayer extends VideoPlayer {
       mUserPlaybackSpeed = speed;
       // When video is not playing or has no tendency of to be started, we prefer recording
       // the user request to forcing the player to start at that given speed.
-      if (getPlaybackState() == PLAYBACK_STATE_PREPARING || isPlaying()) {
+      final int playbackState = getPlaybackState();
+      if (playbackState == PLAYBACK_STATE_PLAYING || playbackState == PLAYBACK_STATE_PREPARING) {
         setPlaybackSpeedInternal(speed);
       }
     }

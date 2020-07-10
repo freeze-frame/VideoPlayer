@@ -356,13 +356,15 @@ public class IjkVideoPlayer extends VideoPlayer {
   }
 
   private void stopVideo() {
-    mIjkPlayer.setSurface(null);
-    mIjkPlayer.stop();
-    mIjkPlayer.reset();
-    resetIjkPlayerParams();
-    onVideoBufferingStateChanged(false);
-    if (mVideoView != null) {
-      mVideoView.showSubtitles(null);
+    if (getPlaybackState() != PLAYBACK_STATE_IDLE) {
+      mIjkPlayer.setSurface(null);
+      mIjkPlayer.stop();
+      mIjkPlayer.reset();
+      resetIjkPlayerParams();
+      onVideoBufferingStateChanged(false);
+      if (mVideoView != null) {
+        mVideoView.showSubtitles(null);
+      }
     }
   }
 
@@ -513,18 +515,23 @@ public class IjkVideoPlayer extends VideoPlayer {
     if (mVideoView != null) {
       mVideoView.cancelDraggingVideoSeekBar(innerPlayerCreated);
     }
-    if (innerPlayerCreated) {
-      final boolean playing = isPlaying();
 
-      if (mSeekOnPlay == TIME_UNSET && getPlaybackState() != PLAYBACK_STATE_COMPLETED) {
-        mSeekOnPlay = getVideoProgress();
-      }
-      saveTrackSelections();
-//      pause(fromUser);
-      if (playing) {
-        mIjkPlayer.pause();
-        mInternalFlags = mInternalFlags & ~$FLAG_VIDEO_PAUSED_BY_USER
-            | (fromUser ? $FLAG_VIDEO_PAUSED_BY_USER : 0);
+    if (innerPlayerCreated) {
+      final int playbackState = getPlaybackState();
+      final boolean playing = playbackState == PLAYBACK_STATE_PLAYING;
+
+      if (playbackState != PLAYBACK_STATE_IDLE) {
+        if (mSeekOnPlay == TIME_UNSET && playbackState != PLAYBACK_STATE_COMPLETED) {
+          mSeekOnPlay = getVideoProgress();
+        }
+        saveTrackSelections();
+
+//        pause(fromUser);
+        if (playing) {
+          mIjkPlayer.pause();
+          mInternalFlags = mInternalFlags & ~$FLAG_VIDEO_PAUSED_BY_USER
+              | (fromUser ? $FLAG_VIDEO_PAUSED_BY_USER : 0);
+        }
       }
       releaseIjkPlayer();
       // Not clear the $FLAG_VIDEO_DURATION_DETERMINED flag
@@ -552,8 +559,10 @@ public class IjkVideoPlayer extends VideoPlayer {
 
   private void releaseIjkPlayer() {
     mSurface = null;
-    mIjkPlayer.setSurface(null);
-    mIjkPlayer.stop();
+    if (getPlaybackState() != PLAYBACK_STATE_IDLE) {
+      mIjkPlayer.setSurface(null);
+      mIjkPlayer.stop();
+    }
     mIjkPlayer.release();
     mIjkPlayer = null;
   }

@@ -410,9 +410,11 @@ public class VlcVideoPlayer extends VideoPlayer {
   }
 
   private void resetVlcPlayer() {
-    mMediaPlayer.stop();
-//    mMediaPlayer.reset();
-    onVideoBufferingStateChanged(false);
+    if (getPlaybackState() != PLAYBACK_STATE_IDLE) {
+      mMediaPlayer.stop();
+//      mMediaPlayer.reset();
+      onVideoBufferingStateChanged(false);
+    }
   }
 
   @Override
@@ -533,18 +535,23 @@ public class VlcVideoPlayer extends VideoPlayer {
     if (mVideoView != null) {
       mVideoView.cancelDraggingVideoSeekBar(innerPlayerCreated);
     }
-    if (innerPlayerCreated) {
-      final boolean playing = isPlaying();
 
-      if (mSeekOnPlay == TIME_UNSET && getPlaybackState() != PLAYBACK_STATE_COMPLETED) {
-        mSeekOnPlay = getVideoProgress();
-      }
-      saveTrackSelections();
-//      pause(fromUser);
-      if (playing) {
-        mMediaPlayer.pause();
-        mInternalFlags = mInternalFlags & ~$FLAG_VIDEO_PAUSED_BY_USER
-            | (fromUser ? $FLAG_VIDEO_PAUSED_BY_USER : 0);
+    if (innerPlayerCreated) {
+      final int playbackState = getPlaybackState();
+      final boolean playing = playbackState == PLAYBACK_STATE_PLAYING;
+
+      if (playbackState != PLAYBACK_STATE_IDLE) {
+        if (mSeekOnPlay == TIME_UNSET && playbackState != PLAYBACK_STATE_COMPLETED) {
+          mSeekOnPlay = getVideoProgress();
+        }
+        saveTrackSelections();
+
+//        pause(fromUser);
+        if (playing) {
+          mMediaPlayer.pause();
+          mInternalFlags = mInternalFlags & ~$FLAG_VIDEO_PAUSED_BY_USER
+              | (fromUser ? $FLAG_VIDEO_PAUSED_BY_USER : 0);
+        }
       }
       releaseMediaPlayer();
       // Not clear the $FLAG_VIDEO_DURATION_DETERMINED flag
@@ -565,7 +572,9 @@ public class VlcVideoPlayer extends VideoPlayer {
 
   private void releaseMediaPlayer() {
     mMediaPlayer.getVLCVout().detachViews();
-    mMediaPlayer.stop();
+    if (getPlaybackState() != PLAYBACK_STATE_IDLE) {
+      mMediaPlayer.stop();
+    }
     mMediaPlayer.release();
     mMediaPlayer = null;
     mLibVLC.release();
