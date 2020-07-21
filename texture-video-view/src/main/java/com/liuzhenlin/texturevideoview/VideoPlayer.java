@@ -389,7 +389,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
    */
   protected abstract void onVideoSurfaceChanged(@Nullable Surface surface);
 
-  /** @see #openVideo(boolean) */
+  /** See {@link #openVideo(boolean) openVideo(false)} */
   @Override
   public final void openVideo() {
     openVideo(false);

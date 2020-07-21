@@ -67,14 +67,16 @@ public class Utils {
     }
 
     /**
-     * @see #roundDecimalToString(double, int, int, boolean)
+     * See {@link #roundDecimalToString(double, int, int, boolean)
+     *             roundDecimalToString(value, 0, maxFractionDigits, false)}
      */
     public static String roundDecimalToString(double value, int maxFractionDigits) {
         return roundDecimalToString(value, 0, maxFractionDigits);
     }
 
     /**
-     * @see #roundDecimalToString(double, int, int, boolean)
+     * See {@link #roundDecimalToString(double, int, int, boolean)
+     *             roundDecimalToString(value, minFractionDigits, maxFractionDigits, false)}
      */
     public static String roundDecimalToString(double value, int minFractionDigits, int maxFractionDigits) {
         return roundDecimalToString(value, minFractionDigits, maxFractionDigits, false);

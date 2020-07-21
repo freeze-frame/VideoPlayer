@@ -990,7 +990,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
     }
 
     /**
-     * @see #setVideoPlayer(VideoPlayer, boolean)
+     * See {@link #setVideoPlayer(VideoPlayer, boolean) setVideoPlayer(videoPlayer, true)}
      */
     public void setVideoPlayer(@Nullable VideoPlayer videoPlayer) {
         setVideoPlayer(videoPlayer, true);
@@ -1694,7 +1694,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         return (mPrivateFlags & PFLAG_LOCKED) != 0;
     }
 
-    /** @see #setLocked(boolean, boolean) */
+    /** See {@link #setLocked(boolean, boolean) setLocked(locked, true)} */
     public void setLocked(boolean locked) {
         setLocked(locked, true);
     }
@@ -1765,7 +1765,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         return (mPrivateFlags & PFLAG_CONTROLS_SHOWING) != 0;
     }
 
-    /** @see #showControls(boolean, boolean) */
+    /** See {@link #showControls(boolean, boolean) showControls(show, true)} */
     public void showControls(boolean show) {
         showControls(show, true);
     }
