@@ -261,9 +261,6 @@ public class SystemVideoPlayer extends VideoPlayer {
       case MediaPlayer.MEDIA_ERROR_MALFORMED:
         stringRes = R.string.videoInThisFormatIsNotSupported;
         break;
-      case MediaPlayer.MEDIA_ERROR_TIMED_OUT:
-        stringRes = R.string.loadTimeout;
-        break;
       default:
         stringRes = R.string.unknownErrorOccurredWhenVideoIsPlaying;
         break;

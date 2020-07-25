@@ -53,7 +53,6 @@
     <string name="vlc_mediaplayer">VLC MediaPlayer (recommended)</string>
     <string name="videoIsLoading">Video is loading…</string>
     <string name="failedToLoadThisVideo">Failed to load this video!</string>
-    <string name="loadTimeout">Load timeout</string>
     <string name="videoInThisFormatIsNotSupported">Video in this format is not supported!</string>
     <string name="unknownErrorOccurredWhenVideoIsPlaying">
         Unknown error occurs while the video is playing!</string>

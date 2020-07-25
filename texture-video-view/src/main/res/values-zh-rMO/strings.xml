@@ -47,8 +47,7 @@
     <string name="playerEngine">播放引擎：</string>
     <string name="vlc_mediaplayer">VLC MediaPlayer（推荐）</string>
     <string name="videoIsLoading">载入视频…</string>
-    <string name="failedToLoadThisVideo">无法加载此视频！</string>
-    <string name="loadTimeout">加载超时！</string>
+    <string name="failedToLoadThisVideo">加载视频失败！</string>
     <string name="videoInThisFormatIsNotSupported">不支持该格式视频！</string>
     <string name="unknownErrorOccurredWhenVideoIsPlaying">视频播放时发生未知错误！</string>
     <string name="undo">取消</string>

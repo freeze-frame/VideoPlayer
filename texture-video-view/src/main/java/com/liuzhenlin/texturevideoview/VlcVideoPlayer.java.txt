@@ -346,9 +346,6 @@ public class VlcVideoPlayer extends VideoPlayer {
       case org.videolan.libvlc.media.MediaPlayer.MEDIA_ERROR_MALFORMED:
         stringRes = R.string.videoInThisFormatIsNotSupported;
         break;
-      case org.videolan.libvlc.media.MediaPlayer.MEDIA_ERROR_TIMED_OUT:
-        stringRes = R.string.loadTimeout;
-        break;
       default:
         stringRes = R.string.unknownErrorOccurredWhenVideoIsPlaying;
         break;

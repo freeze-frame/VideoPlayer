@@ -315,9 +315,6 @@ public class IjkVideoPlayer extends VideoPlayer {
       case IMediaPlayer.MEDIA_ERROR_MALFORMED:
         stringRes = R.string.videoInThisFormatIsNotSupported;
         break;
-      case IMediaPlayer.MEDIA_ERROR_TIMED_OUT:
-        stringRes = R.string.loadTimeout;
-        break;
       default:
         stringRes = R.string.unknownErrorOccurredWhenVideoIsPlaying;
         break;
