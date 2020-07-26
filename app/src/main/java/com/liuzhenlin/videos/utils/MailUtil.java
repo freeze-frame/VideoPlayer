@@ -24,14 +24,14 @@ import com.liuzhenlin.videos.bean.MailInfo;
  * @author 刘振林
  */
 public class MailUtil {
-    // qq
-    private static final String HOST = "smtp.qq.com";
+    // 163
+    private static final String HOST = "smtp.163.com";
     private static final String PORT = "465";
-    private static final String USER_NAME = "QQ";
-    private static final String FROM_ADDR = "2233788867@qq.com"; // 发送方邮箱
-    private static final String FROM_PSW = "ssybmrsloivdeabf";// 发送方邮箱授权码
+    private static final String USER_NAME = "apps-mail-sender";
+    private static final String FROM_ADDR = "apps_mail_sender@163.com"; // 发送方邮箱
+    private static final String FROM_PSW = "APYDOSTDPDUOEEHQ";// 发送方邮箱授权码
 
-    private static final String TO_ADDR = "lzl18779912456@outlook.com"; // 接收方邮箱
+    private static final String TO_ADDR = "2233788867@qq.com"; // 接收方邮箱
 
     private MailUtil() {
     }
