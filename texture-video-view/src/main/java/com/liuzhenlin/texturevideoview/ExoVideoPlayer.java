@@ -304,9 +304,8 @@ public class ExoVideoPlayer extends VideoPlayer {
 
         @Override
         public void onPlayerError(ExoPlaybackException error) {
-          if (InternalConsts.DEBUG) {
-            Log.e(TAG, "playback error", error);
-          }
+          Log.e(TAG, "playback error", error);
+          // Show video error toast
           final int stringRes;
           if (error.type == ExoPlaybackException.TYPE_SOURCE) {
             stringRes = R.string.failedToLoadThisVideo;
@@ -534,9 +533,7 @@ public class ExoVideoPlayer extends VideoPlayer {
         //@formatter:on
         switch (result) {
           case AudioManager.AUDIOFOCUS_REQUEST_FAILED:
-            if (InternalConsts.DEBUG) {
-              Log.w(TAG, "Failed to request audio focus");
-            }
+            Log.w(TAG, "Failed to request audio focus");
             // Starts to play video even if the audio focus is not gained, but it is
             // best not to happen.
           case AudioManager.AUDIOFOCUS_REQUEST_GRANTED:

@@ -2311,11 +2311,9 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
 
                 final String srcPath = FileUtils.UriResolver.getPath(mContext, videoUri);
                 if (srcPath == null) {
+                    Log.e(TAG, "Failed to resolve the path of the video being clipped.");
                     Utils.showUserCancelableSnackbar(this,
                             R.string.clippingFailed, Snackbar.LENGTH_SHORT);
-                    if (InternalConsts.DEBUG) {
-                        Log.e(TAG, "Failed to resolve the path of the video being clipped.");
-                    }
                     return;
                 }
 

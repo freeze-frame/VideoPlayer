@@ -242,10 +242,8 @@ public class IjkVideoPlayer extends VideoPlayer {
       mIjkPlayer.setOnBufferingUpdateListener(
           (mp, percent) -> mBuffering = (int) (mVideoDuration * percent / 100f + 0.5f));
       mIjkPlayer.setOnErrorListener((mp, what, extra) -> {
-        if (InternalConsts.DEBUG) {
-          Log.e(TAG, "Error occurred while playing video: what= " + what + "; extra= " + extra);
-        }
-        showVideoErrorMsg(extra);
+        Log.e(TAG, "Error occurred while playing video: what= " + what + "; extra= " + extra);
+        showVideoErrorToast(extra);
 
         onVideoBufferingStateChanged(false);
         final boolean playing = isPlaying();
@@ -305,7 +303,7 @@ public class IjkVideoPlayer extends VideoPlayer {
     }
   }
 
-  private void showVideoErrorMsg(int errorType) {
+  private void showVideoErrorToast(int errorType) {
     final int stringRes;
     switch (errorType) {
       case IMediaPlayer.MEDIA_ERROR_IO:
@@ -344,7 +342,7 @@ public class IjkVideoPlayer extends VideoPlayer {
         mIjkPlayer.prepareAsync();
       } catch (IOException e) {
         e.printStackTrace();
-        showVideoErrorMsg(IMediaPlayer.MEDIA_ERROR_IO);
+        showVideoErrorToast(IMediaPlayer.MEDIA_ERROR_IO);
         setPlaybackState(PLAYBACK_STATE_ERROR);
       }
     } else {
@@ -456,9 +454,7 @@ public class IjkVideoPlayer extends VideoPlayer {
         //@formatter:on
         switch (result) {
           case AudioManager.AUDIOFOCUS_REQUEST_FAILED:
-            if (InternalConsts.DEBUG) {
-              Log.w(TAG, "Failed to request audio focus");
-            }
+            Log.w(TAG, "Failed to request audio focus");
             // Starts to play video even if the audio focus is not gained, but it is
             // best not to happen.
           case AudioManager.AUDIOFOCUS_REQUEST_GRANTED:
