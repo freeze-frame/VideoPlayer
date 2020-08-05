@@ -157,4 +157,23 @@ public class VideoUtils {
 
         return timeOfSyncSamples[timeOfSyncSamples.length - 1];
     }
+
+    @NonNull
+    public static int[] correctedVideoSize(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
+        int videoW = width;
+        int videoH = height;
+
+        final boolean videoSwapped =
+                unappliedRotationDegrees == 90 || unappliedRotationDegrees == 270;
+        if (videoSwapped) {
+            int swap = videoW;
+            videoW = videoH;
+            videoH = swap;
+        }
+        if (pixelWidthHeightRatio > 0.0f && pixelWidthHeightRatio != 1.0f) {
+            videoW = (int) (videoW * pixelWidthHeightRatio + 0.5f);
+        }
+
+        return new int[] {videoW, videoH};
+    }
 }

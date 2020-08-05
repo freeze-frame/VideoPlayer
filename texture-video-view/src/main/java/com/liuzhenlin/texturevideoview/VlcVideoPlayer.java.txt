@@ -33,6 +33,7 @@ import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventHandler;
 import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventReceiver;
 import com.liuzhenlin.texturevideoview.utils.URLUtils;
 import com.liuzhenlin.texturevideoview.utils.Utils;
+import com.liuzhenlin.texturevideoview.utils.VideoUtils;
 
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
@@ -285,25 +286,23 @@ public class VlcVideoPlayer extends VideoPlayer {
               Media.VideoTrack vtrack = mMediaPlayer.getCurrentVideoTrack();
               if (vtrack == null) break;
 
-              int videoW = vtrack.width;
-              int videoH = vtrack.height;
-
-              final boolean videoSwapped =
-                  vtrack.orientation == Media.VideoTrack.Orientation.LeftBottom
-                      || vtrack.orientation == Media.VideoTrack.Orientation.RightTop;
-              if (videoSwapped) {
-                int swap = videoW;
-                videoW = videoH;
-                videoH = swap;
+              final int unappliedRotationDegrees;
+              switch (vtrack.orientation) {
+                case Media.VideoTrack.Orientation.LeftBottom:
+                  unappliedRotationDegrees = 90;
+                  break;
+                case Media.VideoTrack.Orientation.RightTop:
+                  unappliedRotationDegrees = 270;
+                  break;
+                default:
+                  unappliedRotationDegrees = 0;
+                  break;
               }
               final float pixelWidthHeightRatio = (float) vtrack.sarNum / vtrack.sarDen;
-              if (pixelWidthHeightRatio > 0.0f && pixelWidthHeightRatio != 1.0f) {
-                videoW = (int) (videoW * pixelWidthHeightRatio + 0.5f);
-              }
 
-              if (videoW != mVideoWidth || videoH != mVideoHeight) {
-                onVideoSizeChanged(videoW, videoH);
-              }
+              final int[] videoSize = VideoUtils.correctedVideoSize(
+                  vtrack.width, vtrack.height, unappliedRotationDegrees, pixelWidthHeightRatio);
+              onVideoSizeChanged(videoSize[0], videoSize[1]);
             }
             break;
 
@@ -710,24 +709,26 @@ public class VlcVideoPlayer extends VideoPlayer {
           case Media.Track.Type.Video:
             Media.VideoTrack vtrack = (Media.VideoTrack) track;
 
-            int videoWidth = vtrack.width;
-            int videoHeight = vtrack.height;
-
-            final boolean videoSwapped =
-                vtrack.orientation == Media.VideoTrack.Orientation.LeftBottom
-                    || vtrack.orientation == Media.VideoTrack.Orientation.RightTop;
-            if (videoSwapped) {
-              int swap = videoWidth;
-              //noinspection SuspiciousNameCombination
-              videoWidth = videoHeight;
-              videoHeight = swap;
+            final int unappliedRotationDegrees;
+            switch (vtrack.orientation) {
+              case Media.VideoTrack.Orientation.LeftBottom:
+                unappliedRotationDegrees = 90;
+                break;
+              case Media.VideoTrack.Orientation.RightTop:
+                unappliedRotationDegrees = 270;
+                break;
+              default:
+                unappliedRotationDegrees = 0;
+                break;
             }
+            final int[] videoSize = VideoUtils.correctedVideoSize(
+                vtrack.width, vtrack.height, unappliedRotationDegrees, 1.0f);
 
             final float fps = vtrack.frameRateNum > 0 && vtrack.frameRateDen > 0
                 ? (float) vtrack.frameRateNum / vtrack.frameRateDen : 0;
 
             trackInfo = new VideoTrackInfo(track.codec,
-                videoWidth, videoHeight,
+                videoSize[0], videoSize[1],
                 fps,
                 track.bitrate);
 

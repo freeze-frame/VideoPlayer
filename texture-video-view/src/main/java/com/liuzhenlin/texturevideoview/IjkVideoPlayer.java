@@ -30,6 +30,7 @@ import com.liuzhenlin.texturevideoview.receiver.HeadsetEventsReceiver;
 import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventHandler;
 import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventReceiver;
 import com.liuzhenlin.texturevideoview.utils.Utils;
+import com.liuzhenlin.texturevideoview.utils.VideoUtils;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -192,18 +193,9 @@ public class IjkVideoPlayer extends VideoPlayer {
         play(false);
       });
       mIjkPlayer.setOnVideoSizeChangedListener((mp, width, height, sarNum, sarDen) -> {
-        final boolean videoSwapped = mVideoRotation == 90 || mVideoRotation == 270;
-        if (videoSwapped) {
-          int swap = width;
-          //noinspection SuspiciousNameCombination
-          width = height;
-          height = swap;
-        }
-        final float pixelWidthHeightRatio = (float) sarNum / sarDen;
-        if (pixelWidthHeightRatio > 0.0f && pixelWidthHeightRatio != 1.0f) {
-          width = (int) (width * pixelWidthHeightRatio + 0.5f);
-        }
-        onVideoSizeChanged(width, height);
+        final int[] videoSize = VideoUtils.correctedVideoSize(
+                width, height, mVideoRotation, (float) sarNum / sarDen);
+        onVideoSizeChanged(videoSize[0], videoSize[1]);
       });
       mIjkPlayer.setOnSeekCompleteListener(mp -> {
         mInternalFlags &= ~$FLAG_SEEKING;
@@ -227,14 +219,11 @@ public class IjkVideoPlayer extends VideoPlayer {
             break;
           case IMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
             mVideoRotation = extra;
-            if (extra == 90 || extra == 270) {
-              final int videoWidth = mp.getVideoWidth();
-              final int videoHeight = mp.getVideoHeight();
-              if (videoWidth != 0 || videoHeight != 0) {
-                //noinspection SuspiciousNameCombination
-                onVideoSizeChanged(videoHeight, videoWidth);
-              }
-            }
+            final int[] videoSize = VideoUtils.correctedVideoSize(
+                mp.getVideoWidth(), mp.getVideoHeight(),
+                extra,
+                (float) mp.getVideoSarNum() / mp.getVideoSarDen());
+            onVideoSizeChanged(videoSize[0], videoSize[1]);
             break;
         }
         return false;

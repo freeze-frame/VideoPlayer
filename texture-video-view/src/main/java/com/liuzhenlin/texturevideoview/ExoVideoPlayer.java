@@ -59,6 +59,7 @@ import com.liuzhenlin.texturevideoview.receiver.HeadsetEventsReceiver;
 import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventHandler;
 import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventReceiver;
 import com.liuzhenlin.texturevideoview.utils.Utils;
+import com.liuzhenlin.texturevideoview.utils.VideoUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -328,21 +329,9 @@ public class ExoVideoPlayer extends VideoPlayer {
       mExoPlayer.addVideoListener(new com.google.android.exoplayer2.video.VideoListener() {
         @Override
         public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
-          int videoW = width;
-          int videoH = height;
-
-          final boolean videoSwapped =
-              unappliedRotationDegrees == 90 || unappliedRotationDegrees == 270;
-          if (videoSwapped) {
-            int swap = videoW;
-            videoW = videoH;
-            videoH = swap;
-          }
-          if (pixelWidthHeightRatio > 0.0f && pixelWidthHeightRatio != 1.0f) {
-            videoW = (int) (videoW * pixelWidthHeightRatio + 0.5f);
-          }
-
-          ExoVideoPlayer.this.onVideoSizeChanged(videoW, videoH);
+          final int[] videoSize = VideoUtils.correctedVideoSize(
+              width, height, unappliedRotationDegrees, pixelWidthHeightRatio);
+          ExoVideoPlayer.this.onVideoSizeChanged(videoSize[0], videoSize[1]);
         }
       });
       mExoPlayer.addTextOutput(cues -> {
@@ -749,15 +738,13 @@ public class ExoVideoPlayer extends VideoPlayer {
           Format trackFormat = trackGroup.getFormat(trackIndex);
           switch (rendererType) {
             case C.TRACK_TYPE_VIDEO:
-              boolean videoSwapped =
-                  trackFormat.rotationDegrees == 90 || trackFormat.rotationDegrees == 270;
-              int videoWidth = videoSwapped ? trackFormat.height : trackFormat.width;
-              int videoHeight = videoSwapped ? trackFormat.width : trackFormat.height;
+              final int[] videoSize = VideoUtils.correctedVideoSize(
+                  trackFormat.width, trackFormat.height, trackFormat.rotationDegrees, 1.0f);
               trackInfos.add(
                   new VideoTrackInfo(
                       Utils.getExoTrackShortCodec(trackFormat.codecs),
-                      videoWidth,
-                      videoHeight,
+                      videoSize[0],
+                      videoSize[1],
                       trackFormat.frameRate,
                       trackFormat.bitrate));
               break;
