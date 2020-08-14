@@ -86,7 +86,7 @@ class LocalVideoListModel(context: Context) : BaseModel<MutableList<VideoListIte
                 videodirCursor.close()
             }
 
-            return arrayOf(items, arrayListOf(videos))
+            return arrayOf(items, arrayListOf(*videos!!.toTypedArray()))
         }
 
         override fun onPostExecute(result: Array<*>?) {
