@@ -69,6 +69,8 @@ public class IjkVideoPlayer extends VideoPlayer {
    */
   private static final int $FLAG_BUFFERING = 1 << 29;
 
+  private static final long MEDIA_CODEC_ENABLED = 1L;
+
   @Synthetic IjkMediaPlayer mIjkPlayer;
   private Surface mSurface;
 
@@ -270,22 +272,28 @@ public class IjkVideoPlayer extends VideoPlayer {
   }
 
   private void resetIjkPlayerParams() {
-    mIjkPlayer.setSurface(mSurface);
-    mIjkPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+    IjkMediaPlayer ijkPlayer = mIjkPlayer;
+    ijkPlayer.setSurface(mSurface);
+    ijkPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //      mMediaPlayer.setAudioAttributes(sDefaultAudioAttrs.getAudioAttributesV21());
 //    } else {
 //      mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 //    }
-    // Add hw acceleration media options to use hw decoder
-    mIjkPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1);
-    mIjkPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-auto-rotate", 1);
-    mIjkPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", 1);
-    // Enable accurate seek & fast seek
-    mIjkPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1);
-    mIjkPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "fflags", "fastseek");
+    ijkPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 0);
+    // We prefer the hw decoder
+    ijkPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER,
+            "mediacodec-all-videos", MEDIA_CODEC_ENABLED);
+    ijkPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER,
+            "mediacodec-auto-rotate", MEDIA_CODEC_ENABLED);
+    ijkPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER,
+            "mediacodec-handle-resolution-change", MEDIA_CODEC_ENABLED);
+    ijkPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER,
+            "mediacodec-sync", MEDIA_CODEC_ENABLED);
+    // Enable accurate seek
+    ijkPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1);
     // Enable subtitles
-    mIjkPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "subtitle", 1);
+    ijkPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "subtitle", 1);
 //    mIjkPlayer.setLooping(isSingleVideoLoopPlayback());
     if (mUserPlaybackSpeed != mPlaybackSpeed) {
       setPlaybackSpeed(mUserPlaybackSpeed);
