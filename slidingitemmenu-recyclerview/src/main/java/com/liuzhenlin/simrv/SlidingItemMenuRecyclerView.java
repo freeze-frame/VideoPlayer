@@ -188,7 +188,7 @@ public class SlidingItemMenuRecyclerView extends RecyclerView {
             setItemDraggable(ta.getBoolean(R.styleable
                     .SlidingItemMenuRecyclerView_itemDraggable, true));
         } else {
-            // Libraries with version code prior to 6 use the itemScrollingEnabled attr only.
+            // Libraries with version code prior to 5 use the itemScrollingEnabled attr only.
             setItemDraggable(ta.getBoolean(R.styleable
                     .SlidingItemMenuRecyclerView_itemScrollingEnabled /* deprecated */, true));
         }

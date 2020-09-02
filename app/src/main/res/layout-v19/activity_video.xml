@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:background="@drawable/bg_actionbar"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:ignore="InconsistentLayout" />
 
     <com.liuzhenlin.texturevideoview.TextureVideoView
         android:id="@+id/videoview"

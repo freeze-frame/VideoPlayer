@@ -291,7 +291,7 @@ public class BackgroundPlaybackControllerService extends Service {
             nv.setImageViewIcon(viewId,
                     IconCompat.createWithResource(this, resId)
                             .setTint(sNotificationActionIconTint)
-                            .toIcon());
+                            .toIcon(this));
         } else {
             // Creates a bitmap from a tinted retrieved drawable instead,
             // for compatibility of vector drawable resource that can not be directly created

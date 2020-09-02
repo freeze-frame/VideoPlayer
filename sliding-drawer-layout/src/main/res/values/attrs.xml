@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="SlidingDrawerLayout">
-        <attr name="widthPercent_leftDrawer" format="float">
+        <attr name="widthPercent_leftDrawer" format="float|fraction">
             <enum name="unspecified" value="0" />
         </attr>
-        <attr name="widthPercent_rightDrawer" format="float">
+        <attr name="widthPercent_rightDrawer" format="float|fraction">
             <enum name="unspecified" value="0" />
         </attr>
-        <attr name="widthPercent_startDrawer" format="float">
+        <attr name="widthPercent_startDrawer" format="float|fraction">
             <enum name="unspecified" value="0" />
         </attr>
-        <attr name="widthPercent_endDrawer" format="float">
+        <attr name="widthPercent_endDrawer" format="float|fraction">
             <enum name="unspecified" value="0" />
         </attr>
 

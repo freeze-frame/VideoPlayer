@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
@@ -25,7 +26,8 @@
         android:textSize="@dimen/primary_text_size"
         android:textIsSelectable="true"
         android:textAlignment="viewStart"
-        android:gravity="start" />
+        android:gravity="start"
+        tools:ignore="UseCompatTextViewDrawableXml" />
 
     <TextView
         android:id="@+id/text_videoSize"

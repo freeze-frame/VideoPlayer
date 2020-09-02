@@ -1165,7 +1165,7 @@ public class VideoActivity extends SwipeBackActivity {
                 requestCode,
                 new Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_PIP_ACTION, pipAction),
                 0);
-        Icon icon = IconCompat.createWithResource(this, iconId).toIcon();
+        Icon icon = IconCompat.createWithResource(this, iconId).toIcon(this);
         return new RemoteAction(icon, title, title, intent);
     }
 

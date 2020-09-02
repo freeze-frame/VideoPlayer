@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:background="@drawable/bg_actionbar"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:ignore="InconsistentLayout" />
 
     <com.liuzhenlin.texturevideoview.TextureVideoView
         android:id="@+id/videoview"
@@ -25,7 +26,8 @@
         android:minHeight="0dp"
         android:layout_below="@id/videoview"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:ignore="InconsistentLayout" />
 
     <ImageView
         android:id="@+id/btn_lockUnlockOrientation"

@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
  * @author 刘振林
  */
 
+@Suppress("SimplifyBooleanWithConstants")
 @JvmField
 internal val DEBUG_APP_UPDATE = BuildConfig.DEBUG && false
 

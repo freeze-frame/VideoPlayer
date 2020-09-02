@@ -26,7 +26,8 @@
             android:text="@string/back"
             android:textSize="@dimen/title_text_size"
             android:textColor="@color/color_selector_color_accent"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            tools:ignore="UseCompatTextViewDrawableXml" />
 
         <TextView
             android:id="@+id/text_adviceAndFeedback"

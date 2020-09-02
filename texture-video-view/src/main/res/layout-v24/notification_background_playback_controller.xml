@@ -103,5 +103,6 @@
         android:layout_gravity="end|bottom"
         android:countDown="true"
         android:singleLine="true"
-        android:textAppearance="@style/TextAppearance.Compat.Notification.Time.Media" />
+        android:textAppearance="@style/TextAppearance.Compat.Notification.Time.Media"
+        tools:ignore="InconsistentLayout" />
 </FrameLayout>

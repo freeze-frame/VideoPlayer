@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.Scroller;
 
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
 
 /**
  * @author 刘振林
@@ -62,7 +63,7 @@ public class ScrollerLinearLayout extends LinearLayout implements ScrollerView {
         // Override to implement the smooth scrolling logic
         if (mScroller.computeScrollOffset()) {
             scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
-            invalidate();
+            ViewCompat.postInvalidateOnAnimation(this);
         }
     }
 }
