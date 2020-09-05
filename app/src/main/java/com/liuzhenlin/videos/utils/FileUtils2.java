@@ -96,8 +96,8 @@ public class FileUtils2 {
             }
         }
 
-        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(srcFile));
-             BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(desFile))) {
+        try (InputStream in = new FileInputStream(srcFile);
+             OutputStream out = new FileOutputStream(desFile)) {
             final byte[] bytes = new byte[8 * 1024];
             int i;
             while ((i = in.read(bytes)) != -1) {
@@ -134,7 +134,7 @@ public class FileUtils2 {
                 //noinspection ResultOfMethodCallIgnored
                 filePart.createNewFile();
 
-                try (OutputStream out = new BufferedOutputStream(new FileOutputStream(filePart))) {
+                try (OutputStream out = new FileOutputStream(filePart)) {
                     while (true) {
                         filePartLength = filePart.length();
                         remainingBytesToWrite = filePartLengthLimit - filePartLength;
@@ -173,10 +173,10 @@ public class FileUtils2 {
             return false;
         }
 
-        try (BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(dstFile))) {
+        try (OutputStream out = new BufferedOutputStream(new FileOutputStream(dstFile))) {
             final byte[] buffer = new byte[8 * 1024];
             for (File file : files) {
-                try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
+                try (InputStream in = new FileInputStream(file)) {
                     int len;
                     while ((len = in.read(buffer)) != -1) {
                         out.write(buffer, 0, len);
