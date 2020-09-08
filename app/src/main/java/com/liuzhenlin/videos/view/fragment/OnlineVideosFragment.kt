@@ -77,6 +77,7 @@ class OnlineVideosFragment : Fragment(), View.OnClickListener,
             }
 
             override fun onLoadError(cause: Throwable) {
+                mSwipeRefreshLayout.isRefreshing = false
                 when (cause) {
                     // 连接服务器超时
                     is @kotlin.Suppress("DEPRECATION") org.apache.http.conn.ConnectTimeoutException ->

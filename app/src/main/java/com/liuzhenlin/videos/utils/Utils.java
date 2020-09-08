@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,5 +63,38 @@ public class Utils {
         ClipData cd = ClipData.newPlainText(label, text);
         // 将ClipData内容放到系统剪贴板里
         cm.setPrimaryClip(cd);
+    }
+
+    /**
+     * Waits for the given action to complete on the thread the handler targets to.
+     */
+    public static void runOnHandlerSync(@NonNull Handler handler, @NonNull Runnable action) {
+        if (Thread.currentThread() != handler.getLooper().getThread()) {
+            final Object lock = new Object();
+            final boolean[] runOver = {false};
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    action.run();
+                    synchronized (lock) {
+                        runOver[0] = true;
+                        lock.notify();
+                    }
+                }
+            });
+
+            synchronized (lock) {
+                while (!runOver[0]) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else {
+            action.run();
+        }
     }
 }
