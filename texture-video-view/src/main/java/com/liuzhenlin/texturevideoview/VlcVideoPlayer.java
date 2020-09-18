@@ -21,98 +21,98 @@ import com.liuzhenlin.texturevideoview.bean.TrackInfo;
  */
 public class VlcVideoPlayer extends VideoPlayer {
 
-  public VlcVideoPlayer(@NonNull Context context) {
-    super(context);
-  }
+    public VlcVideoPlayer(@NonNull Context context) {
+        super(context);
+    }
 
-  @Override
-  protected boolean isInnerPlayerCreated() {
-    return false;
-  }
+    @Override
+    protected boolean isInnerPlayerCreated() {
+        return false;
+    }
 
-  @Override
-  protected void onVideoSurfaceChanged(@Nullable Surface surface) {
+    @Override
+    protected void onVideoSurfaceChanged(@Nullable Surface surface) {
 
-  }
+    }
 
-  @Override
-  protected void openVideoInternal(@Nullable Surface surface) {
+    @Override
+    protected void openVideoInternal(@Nullable Surface surface) {
 
-  }
+    }
 
-  @Override
-  protected void closeVideoInternal(boolean fromUser) {
+    @Override
+    protected void closeVideoInternal(boolean fromUser) {
 
-  }
+    }
 
-  @Override
-  public void setVideoResourceId(int resId) {
+    @Override
+    public void setVideoResourceId(int resId) {
 
-  }
+    }
 
-  @Override
-  public void restartVideo() {
-    restartVideo(true);
-  }
+    @Override
+    public void restartVideo() {
+        restartVideo(true);
+    }
 
-  @Override
-  protected void restartVideo(boolean restoreTrackSelections) {
+    @Override
+    protected void restartVideo(boolean restoreTrackSelections) {
 
-  }
+    }
 
-  @Override
-  public void play(boolean fromUser) {
+    @Override
+    public void play(boolean fromUser) {
 
-  }
+    }
 
-  @Override
-  public void pause(boolean fromUser) {
+    @Override
+    public void pause(boolean fromUser) {
 
-  }
+    }
 
-  @Override
-  public void seekTo(int positionMs, boolean fromUser) {
+    @Override
+    public void seekTo(int positionMs, boolean fromUser) {
 
-  }
+    }
 
-  @Override
-  public int getVideoProgress() {
-    return 0;
-  }
+    @Override
+    public int getVideoProgress() {
+        return 0;
+    }
 
-  @Override
-  public int getVideoBufferProgress() {
-    return 0;
-  }
+    @Override
+    public int getVideoBufferProgress() {
+        return 0;
+    }
 
-  @Override
-  public boolean hasTrack(int trackType) {
-    return false;
-  }
+    @Override
+    public boolean hasTrack(int trackType) {
+        return false;
+    }
 
-  @NonNull
-  @Override
-  public TrackInfo[] getTrackInfos() {
-    return EMPTY_TRACK_INFOS;
-  }
+    @NonNull
+    @Override
+    public TrackInfo[] getTrackInfos() {
+        return EMPTY_TRACK_INFOS;
+    }
 
-  @Override
-  public void selectTrack(int index) {
+    @Override
+    public void selectTrack(int index) {
 
-  }
+    }
 
-  @Override
-  public void deselectTrack(int index) {
+    @Override
+    public void deselectTrack(int index) {
 
-  }
+    }
 
-  @Override
-  public int getSelectedTrackIndex(int trackType) {
-    return INVALID_TRACK_INDEX;
-  }
+    @Override
+    public int getSelectedTrackIndex(int trackType) {
+        return INVALID_TRACK_INDEX;
+    }
 
-  @Override
-  public void addSubtitleSource(@NonNull Uri uri, @NonNull String mimeType, @Nullable String language) {
+    @Override
+    public void addSubtitleSource(@NonNull Uri uri, @NonNull String mimeType, @Nullable String language) {
 
-  }
+    }
 }

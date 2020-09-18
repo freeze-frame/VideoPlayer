@@ -14,75 +14,75 @@ import androidx.collection.SparseArrayCompat;
  */
 public final class ComparableSparseArray<E> extends SparseArray<E> implements Cloneable {
 
-  public ComparableSparseArray() {
-  }
-
-  public ComparableSparseArray(int initialCapacity) {
-    super(initialCapacity);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this)
-      return true;
-
-    if (o instanceof SparseArray) {
-      SparseArray<?> m = (SparseArray<?>) o;
-
-      int s = m.size();
-      if (s != size())
-        return false;
-
-      for (int i = 0; i < s; i++) {
-        int key = keyAt(i);
-        E value = valueAt(i);
-        if (value == null) {
-          if (!(m.get(key) == null && m.indexOfKey(key) >= 0))
-            return false;
-        } else {
-          if (!value.equals(m.get(key)))
-            return false;
-        }
-      }
-      return true;
-
-    } else if (o instanceof SparseArrayCompat) {
-      SparseArrayCompat<?> m = (SparseArrayCompat<?>) o;
-
-      int s = m.size();
-      if (s != size())
-        return false;
-
-      for (int i = 0; i < s; i++) {
-        int key = keyAt(i);
-        E value = valueAt(i);
-        if (value == null) {
-          if (!(m.get(key) == null && m.indexOfKey(key) >= 0))
-            return false;
-        } else {
-          if (!value.equals(m.get(key)))
-            return false;
-        }
-      }
-      return true;
+    public ComparableSparseArray() {
     }
 
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    int result = 0;
-    for (int i = 0, s = size(); i < s; i++) {
-      int key = keyAt(i);
-      E value = valueAt(i);
-      result += key ^ (value == null ? 0 : value.hashCode());
+    public ComparableSparseArray(int initialCapacity) {
+        super(initialCapacity);
     }
-    return result;
-  }
 
-  @Override
-  public ComparableSparseArray<E> clone() {
-    return (ComparableSparseArray<E>) super.clone();
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+
+        if (o instanceof SparseArray) {
+            SparseArray<?> m = (SparseArray<?>) o;
+
+            int s = m.size();
+            if (s != size())
+                return false;
+
+            for (int i = 0; i < s; i++) {
+                int key = keyAt(i);
+                E value = valueAt(i);
+                if (value == null) {
+                    if (!(m.get(key) == null && m.indexOfKey(key) >= 0))
+                        return false;
+                } else {
+                    if (!value.equals(m.get(key)))
+                        return false;
+                }
+            }
+            return true;
+
+        } else if (o instanceof SparseArrayCompat) {
+            SparseArrayCompat<?> m = (SparseArrayCompat<?>) o;
+
+            int s = m.size();
+            if (s != size())
+                return false;
+
+            for (int i = 0; i < s; i++) {
+                int key = keyAt(i);
+                E value = valueAt(i);
+                if (value == null) {
+                    if (!(m.get(key) == null && m.indexOfKey(key) >= 0))
+                        return false;
+                } else {
+                    if (!value.equals(m.get(key)))
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 0;
+        for (int i = 0, s = size(); i < s; i++) {
+            int key = keyAt(i);
+            E value = valueAt(i);
+            result += key ^ (value == null ? 0 : value.hashCode());
+        }
+        return result;
+    }
+
+    @Override
+    public ComparableSparseArray<E> clone() {
+        return (ComparableSparseArray<E>) super.clone();
+    }
 }

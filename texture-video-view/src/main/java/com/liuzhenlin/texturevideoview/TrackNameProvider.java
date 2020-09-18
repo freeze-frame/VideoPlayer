@@ -12,7 +12,7 @@ import com.liuzhenlin.texturevideoview.bean.TrackInfo;
 /** Converts {@link TrackInfo}s to user readable track names. */
 public interface TrackNameProvider {
 
-  /** Returns a user readable track name for the given {@link TrackInfo}. */
-  @NonNull
-  String getTrackName(@NonNull TrackInfo info);
+    /** Returns a user readable track name for the given {@link TrackInfo}. */
+    @NonNull
+    String getTrackName(@NonNull TrackInfo info);
 }
