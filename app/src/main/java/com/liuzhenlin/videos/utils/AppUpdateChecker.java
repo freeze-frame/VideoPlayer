@@ -469,7 +469,7 @@ public final class AppUpdateChecker {
                 String channelId = NotificationChannelManager.getDownloadNotificationChannelId(mContext);
                 RemoteViews nv = createNotificationView();
                 mNotificationBuilder = new NotificationCompat.Builder(mContext, channelId)
-                        .setSmallIcon(mContext.getApplicationInfo().icon)
+                        .setSmallIcon(R.drawable.ic_media_app_notification)
                         .setTicker(mContext.getString(R.string.downloadingUpdates))
                         .setCustomContentView(nv)
                         .setCustomBigContentView(nv)

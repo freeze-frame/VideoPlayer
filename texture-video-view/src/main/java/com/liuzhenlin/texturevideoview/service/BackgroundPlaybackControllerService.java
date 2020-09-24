@@ -35,6 +35,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.graphics.drawable.IconCompat;
 
@@ -59,9 +60,9 @@ public class BackgroundPlaybackControllerService extends Service {
     private String mPlay;
     private String mPause;
     private String mPkgName;
-    @Synthetic Bitmap mAppIcon;
-    @Synthetic int mThumbMaxWidth;
-    @Synthetic int mThumbMaxHeight;
+    @Synthetic Bitmap mDefThumb;
+    private int mThumbMaxWidth;
+    private int mThumbMaxHeight;
     @ColorInt
     private static int sNotificationActionIconTint = -1;
 
@@ -104,7 +105,7 @@ public class BackgroundPlaybackControllerService extends Service {
 
     @Synthetic boolean mIsForeground;
 
-    @Synthetic final Target<Bitmap> mGlideTarget = new CustomTarget<Bitmap>() {
+    private final Target<Bitmap> mGlideTarget = new CustomTarget<Bitmap>() {
         @Override
         public void onResourceReady(@NonNull Bitmap icon, @Nullable Transition<? super Bitmap> transition) {
             mVideoThumb = icon;
@@ -113,7 +114,7 @@ public class BackgroundPlaybackControllerService extends Service {
 
         @Override
         public void onLoadCleared(@Nullable Drawable placeholder) {
-            mVideoThumb = mAppIcon;
+            mVideoThumb = mDefThumb;
             postNotificationIfForeground();
         }
     };
@@ -135,7 +136,9 @@ public class BackgroundPlaybackControllerService extends Service {
         mPlay = res.getString(R.string.play);
         mPause = res.getString(R.string.pause);
         mPkgName = getPackageName();
-        mAppIcon = BitmapUtils.drawableToBitmap(getApplicationInfo().loadIcon(getPackageManager()));
+        //noinspection ConstantConditions
+        mDefThumb = BitmapUtils.drawableToBitmap(
+                ContextCompat.getDrawable(this, R.drawable.ic_default_thumb));
         mThumbMaxWidth = res.getDimensionPixelSize(R.dimen.notification_thumb_max_width);
         mThumbMaxHeight = res.getDimensionPixelSize(R.dimen.notification_thumb_max_height);
         if (sNotificationActionIconTint == -1) {
@@ -171,7 +174,7 @@ public class BackgroundPlaybackControllerService extends Service {
 
         String channelId = NotificationChannelManager.getPlaybackControlNotificationChannelId(this);
         mNotificationBuilder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(getApplicationInfo().icon)
+                .setSmallIcon(R.drawable.ic_media_app_notification)
                 .setTicker(mMediaTitle)
                 .setStyle(new DecoratedMediaCustomViewStyle())
                 .setDefaults(0)
@@ -185,14 +188,7 @@ public class BackgroundPlaybackControllerService extends Service {
                             Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             mNotificationBuilder.setContentIntent(PendingIntent.getActivity(this, 0, it, 0));
         }
-        if (mediaUri != null) {
-            Glide.with(this)
-                    .asBitmap()
-                    .load(mediaUri.toString())
-                    .override(mThumbMaxWidth, mThumbMaxHeight)
-                    .fitCenter()
-                    .into(mGlideTarget);
-        }
+        loadMediaThumb(mediaUri);
         resetNotificationView();
         startForeground(ID_NOTIFICATION, mNotificationBuilder.build());
         mIsForeground = true;
@@ -210,6 +206,20 @@ public class BackgroundPlaybackControllerService extends Service {
         mIsForeground = false;
         Glide.with(this).clear(mGlideTarget);
         return false;
+    }
+
+    @Synthetic void loadMediaThumb(Uri mediaUri) {
+        RequestManager rm = Glide.with(this);
+        if (mediaUri == null) {
+            rm.clear(mGlideTarget);
+        } else {
+            rm
+                    .asBitmap()
+                    .load(mediaUri.toString())
+                    .override(mThumbMaxWidth, mThumbMaxHeight)
+                    .fitCenter()
+                    .into(mGlideTarget);
+        }
     }
 
     @Synthetic void postNotificationIfForeground() {
@@ -236,7 +246,7 @@ public class BackgroundPlaybackControllerService extends Service {
         RemoteViews nv = new RemoteViews(
                 mPkgName, R.layout.notification_background_playback_controller);
 
-        nv.setImageViewBitmap(R.id.image_videoThumb, mVideoThumb == null ? mAppIcon : mVideoThumb);
+        nv.setImageViewBitmap(R.id.image_videoThumb, mVideoThumb == null ? mDefThumb : mVideoThumb);
 
         nv.setTextViewText(R.id.text_mediaTitle, mMediaTitle);
 
@@ -332,18 +342,7 @@ public class BackgroundPlaybackControllerService extends Service {
         public void onMediaUriChange(@Nullable Uri uri) {
             mMediaProgress = 0L;
             mMediaDuration = 0L;
-
-            RequestManager rm = Glide.with(BackgroundPlaybackControllerService.this);
-            if (uri == null) {
-                rm.clear(mGlideTarget);
-            } else {
-                rm
-                        .asBitmap()
-                        .load(uri.toString())
-                        .override(mThumbMaxWidth, mThumbMaxHeight)
-                        .fitCenter()
-                        .into(mGlideTarget);
-            }
+            loadMediaThumb(uri);
         }
 
         public void onMediaDurationChanged(long progress, long duration) {
