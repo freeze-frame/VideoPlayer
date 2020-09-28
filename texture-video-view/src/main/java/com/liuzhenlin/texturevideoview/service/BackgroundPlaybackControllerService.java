@@ -25,19 +25,14 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.SystemClock;
-import android.text.style.TextAppearanceSpan;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.core.graphics.drawable.IconCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -47,9 +42,11 @@ import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.util.Synthetic;
 import com.liuzhenlin.texturevideoview.InternalConsts;
 import com.liuzhenlin.texturevideoview.R;
+import com.liuzhenlin.texturevideoview.compat.RemoteViewsCompat;
 import com.liuzhenlin.texturevideoview.notification.NotificationChannelManager;
 import com.liuzhenlin.texturevideoview.notification.style.DecoratedMediaCustomViewStyle;
 import com.liuzhenlin.texturevideoview.utils.BitmapUtils;
+import com.liuzhenlin.texturevideoview.utils.ThemeUtils;
 
 /**
  * @author 刘振林
@@ -63,8 +60,7 @@ public class BackgroundPlaybackControllerService extends Service {
     @Synthetic Bitmap mDefThumb;
     private int mThumbMaxWidth;
     private int mThumbMaxHeight;
-    @ColorInt
-    private static int sNotificationActionIconTint = -1;
+    private int mNotificationActionIconTint;
 
     private Messenger mMessenger;
 
@@ -101,7 +97,7 @@ public class BackgroundPlaybackControllerService extends Service {
     public static final int MSG_SKIP_TO_NEXT = Integer.MAX_VALUE - 3;
     public static final int MSG_CLOSE = Integer.MAX_VALUE - 4;
 
-    private ControllerActionReceiver mReceiver;
+    private final ControllerActionReceiver mReceiver = new ControllerActionReceiver();
 
     @Synthetic boolean mIsForeground;
 
@@ -141,19 +137,22 @@ public class BackgroundPlaybackControllerService extends Service {
                 ContextCompat.getDrawable(this, R.drawable.ic_default_thumb));
         mThumbMaxWidth = res.getDimensionPixelSize(R.dimen.notification_thumb_max_width);
         mThumbMaxHeight = res.getDimensionPixelSize(R.dimen.notification_thumb_max_height);
-        if (sNotificationActionIconTint == -1) {
-            sNotificationActionIconTint =
-                    new TextAppearanceSpan(this, R.style.TextAppearance_Compat_Notification_Media)
-                            .getTextColor()
-                            .getDefaultColor();
-        }
+        mNotificationActionIconTint = getNotificationActionIconTint();
     }
 
     @Override
     public void onCreate() {
-        super.onCreate();
+        String channelId = NotificationChannelManager.getPlaybackControlNotificationChannelId(this);
         mNotificationManager = (NotificationManager)
                 getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationBuilder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.ic_media_app_notification)
+                .setStyle(new DecoratedMediaCustomViewStyle())
+                .setDefaults(0)
+                .setOnlyAlertOnce(true)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
     }
 
     @Nullable
@@ -172,16 +171,7 @@ public class BackgroundPlaybackControllerService extends Service {
         mMediaProgress = intent.getLongExtra(InternalConsts.EXTRA_MEDIA_PROGRESS, 0L);
         mMediaDuration = intent.getLongExtra(InternalConsts.EXTRA_MEDIA_DURATION, 0L);
 
-        String channelId = NotificationChannelManager.getPlaybackControlNotificationChannelId(this);
-        mNotificationBuilder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.ic_media_app_notification)
-                .setTicker(mMediaTitle)
-                .setStyle(new DecoratedMediaCustomViewStyle())
-                .setDefaults(0)
-                .setOnlyAlertOnce(true)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        mNotificationBuilder.setTicker(mMediaTitle).setContentIntent(null);
         if (playbackActivityClass != null) {
             Intent it = new Intent(this, playbackActivityClass)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
@@ -193,7 +183,6 @@ public class BackgroundPlaybackControllerService extends Service {
         startForeground(ID_NOTIFICATION, mNotificationBuilder.build());
         mIsForeground = true;
 
-        mReceiver = new ControllerActionReceiver();
         registerReceiver(mReceiver, new IntentFilter(ControllerActionReceiver.ACTION));
 
         return new Proxy();
@@ -242,6 +231,7 @@ public class BackgroundPlaybackControllerService extends Service {
 
     private RemoteViews createNotificationView() {
         final boolean playing = mIsPlaying && !mIsBuffering;
+        final int tint = mNotificationActionIconTint;
 
         RemoteViews nv = new RemoteViews(
                 mPkgName, R.layout.notification_background_playback_controller);
@@ -250,9 +240,10 @@ public class BackgroundPlaybackControllerService extends Service {
 
         nv.setTextViewText(R.id.text_mediaTitle, mMediaTitle);
 
-        setNotificationActionIconResource(nv,
+        RemoteViewsCompat.setImageViewResourceWithTint(this, nv,
                 R.id.btn_toggle,
-                playing ? R.drawable.ic_pause_white_24dp : R.drawable.ic_play_white_24dp);
+                playing ? R.drawable.ic_pause_white_24dp : R.drawable.ic_play_white_24dp,
+                tint);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
             nv.setContentDescription(R.id.btn_toggle, playing ? mPause : mPlay);
         }
@@ -263,8 +254,8 @@ public class BackgroundPlaybackControllerService extends Service {
 
         nv.setViewVisibility(R.id.btn_skipPrevious, mCanSkipToPrevious ? View.VISIBLE : View.GONE);
         if (mCanSkipToPrevious) {
-            setNotificationActionIconResource(
-                    nv, R.id.btn_skipPrevious, R.drawable.ic_skip_previous_white_24dp);
+            RemoteViewsCompat.setImageViewResourceWithTint(this, nv,
+                    R.id.btn_skipPrevious, R.drawable.ic_skip_previous_white_24dp, tint);
             nv.setOnClickPendingIntent(R.id.btn_skipPrevious,
                     createNotificationActionIntent(
                             CONTROLLER_ACTION_SKIP_TO_PREVIOUS, REQUEST_SKIP_TO_PREVIOUS));
@@ -272,14 +263,15 @@ public class BackgroundPlaybackControllerService extends Service {
 
         nv.setViewVisibility(R.id.btn_skipNext, mCanSkipToNext ? View.VISIBLE : View.GONE);
         if (mCanSkipToNext) {
-            setNotificationActionIconResource(
-                    nv, R.id.btn_skipNext, R.drawable.ic_skip_next_white_24dp);
+            RemoteViewsCompat.setImageViewResourceWithTint(this, nv,
+                    R.id.btn_skipNext, R.drawable.ic_skip_next_white_24dp, tint);
             nv.setOnClickPendingIntent(R.id.btn_skipNext,
                     createNotificationActionIntent(
                             CONTROLLER_ACTION_SKIP_TO_NEXT, REQUEST_SKIP_TO_NEXT));
         }
 
-        setNotificationActionIconResource(nv, R.id.btn_close, R.drawable.ic_close_white_20dp);
+        RemoteViewsCompat.setImageViewResourceWithTint(this, nv,
+                R.id.btn_close, R.drawable.ic_close_white_20dp, tint);
         nv.setOnClickPendingIntent(R.id.btn_close,
                 createNotificationActionIntent(CONTROLLER_ACTION_CLOSE, REQUEST_CLOSE));
 
@@ -296,23 +288,12 @@ public class BackgroundPlaybackControllerService extends Service {
         return nv;
     }
 
-    private void setNotificationActionIconResource(RemoteViews nv, int viewId, int resId) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            nv.setImageViewIcon(viewId,
-                    IconCompat.createWithResource(this, resId)
-                            .setTint(sNotificationActionIconTint)
-                            .toIcon(this));
-        } else {
-            // Creates a bitmap from a tinted retrieved drawable instead,
-            // for compatibility of vector drawable resource that can not be directly created
-            // via BitmapFactory.decodeResource(Resources, int)
-            @SuppressWarnings("ConstantConditions")
-            Drawable drawable = DrawableCompat.wrap(AppCompatResources.getDrawable(this, resId));
-            DrawableCompat.setTint(drawable, sNotificationActionIconTint);
-            Bitmap bitmap = BitmapUtils.drawableToBitmap(drawable);
-            DrawableCompat.setTintList(drawable, null);
-            nv.setImageViewBitmap(viewId, bitmap);
-        }
+    /**
+     * Gets the notification action icon tint relying on the current theme. Do NOT cache statically!
+     */
+    private int getNotificationActionIconTint() {
+        return ThemeUtils.getTextAppearanceDefaultTextColor(
+                this, R.style.TextAppearance_Compat_Notification_Media);
     }
 
     private PendingIntent createNotificationActionIntent(int action, int requestCode) {
