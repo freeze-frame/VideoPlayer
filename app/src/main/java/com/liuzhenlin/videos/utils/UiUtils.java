@@ -124,13 +124,13 @@ public class UiUtils {
         }
     }
 
-    public static void showUserCancelableSnackbar(@NonNull View view, @StringRes int resId,
-                                                  @Snackbar.Duration int duration) {
+    public static void showUserCancelableSnackbar(
+            @NonNull View view, @StringRes int resId, @Snackbar.Duration int duration) {
         Utils.showUserCancelableSnackbar(view, resId, duration);
     }
 
-    public static void showUserCancelableSnackbar(@NonNull View view, @NonNull CharSequence text,
-                                                  @Snackbar.Duration int duration) {
+    public static void showUserCancelableSnackbar(
+            @NonNull View view, @NonNull CharSequence text, @Snackbar.Duration int duration) {
         Utils.showUserCancelableSnackbar(view, text, duration);
     }
 

@@ -422,25 +422,29 @@ public class Utils {
         }
     }
 
-    public static void showUserCancelableSnackbar(@NonNull View view, @StringRes int resId,
-                                                  @Snackbar.Duration int duration) {
+    public static void showUserCancelableSnackbar(
+            @NonNull View view, @StringRes int resId, @Snackbar.Duration int duration) {
         showUserCancelableSnackbar(view, resId, false, duration);
     }
 
-    public static void showUserCancelableSnackbar(@NonNull View view, @StringRes int resId,
-                                                  boolean shownTextSelectable,
-                                                  @Snackbar.Duration int duration) {
+    public static void showUserCancelableSnackbar(
+            @NonNull View view,
+            @StringRes int resId,
+            boolean shownTextSelectable,
+            @Snackbar.Duration int duration) {
         showUserCancelableSnackbar(view, view.getResources().getText(resId), shownTextSelectable, duration);
     }
 
-    public static void showUserCancelableSnackbar(@NonNull View view, @NonNull CharSequence text,
-                                                  @Snackbar.Duration int duration) {
+    public static void showUserCancelableSnackbar(
+            @NonNull View view, @NonNull CharSequence text, @Snackbar.Duration int duration) {
         showUserCancelableSnackbar(view, text, false, duration);
     }
 
-    public static void showUserCancelableSnackbar(@NonNull View view, @NonNull CharSequence text,
-                                                  boolean shownTextSelectable,
-                                                  @Snackbar.Duration int duration) {
+    public static void showUserCancelableSnackbar(
+            @NonNull View view,
+            @NonNull CharSequence text,
+            boolean shownTextSelectable,
+            @Snackbar.Duration int duration) {
         Snackbar snackbar = Snackbar.make(view, text, duration);
 
         TextView snackbarText = snackbar.getView().findViewById(R.id.snackbar_text);

@@ -735,7 +735,8 @@ public class VlcVideoPlayer extends VideoPlayer {
                         final float fps = vtrack.frameRateNum > 0 && vtrack.frameRateDen > 0
                                 ? (float) vtrack.frameRateNum / vtrack.frameRateDen : 0;
 
-                        trackInfo = new VideoTrackInfo(track.codec,
+                        trackInfo = new VideoTrackInfo(
+                                track.codec,
                                 videoSize[0], videoSize[1],
                                 fps,
                                 track.bitrate);
@@ -745,7 +746,8 @@ public class VlcVideoPlayer extends VideoPlayer {
 
                     case Media.Track.Type.Audio:
                         Media.AudioTrack atrack = (Media.AudioTrack) track;
-                        trackInfo = new AudioTrackInfo(track.codec,
+                        trackInfo = new AudioTrackInfo(
+                                track.codec,
                                 track.language,
                                 atrack.channels,
                                 atrack.rate,

@@ -532,8 +532,7 @@ public class SlidingDrawerLayout extends ViewGroup {
 //        setFocusableInTouchMode(true);
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
 
-        ViewCompat.setImportantForAccessibility(this,
-                ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES);
+        ViewCompat.setImportantForAccessibility(this, ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES);
         ViewCompat.setAccessibilityDelegate(this, new AccessibilityDelegate());
         if (!CAN_HIDE_DESCENDANTS) {
             mChildAccessibilityDelegate = new ChildAccessibilityDelegate();
@@ -1357,8 +1356,7 @@ public class SlidingDrawerLayout extends ViewGroup {
             // Update children's accessibility importances in case they are changed. This happens,
             // for example, a new drawer is added or an existing one is removed or some child is
             // replaced with another view.
-            updateChildrenImportantForAccessibility(
-                    (mFlags & FLAG_DRAWER_HAS_BEEN_OPENED) != 0);
+            updateChildrenImportantForAccessibility((mFlags & FLAG_DRAWER_HAS_BEEN_OPENED) != 0);
         }
     }
 
@@ -1436,7 +1434,8 @@ public class SlidingDrawerLayout extends ViewGroup {
             }
         }
 
-        setMeasuredDimension(resolveSizeAndState(maxWidth, widthMeasureSpec, childrenState),
+        setMeasuredDimension(
+                resolveSizeAndState(maxWidth, widthMeasureSpec, childrenState),
                 resolveSizeAndState(maxHeight, heightMeasureSpec,
                         childrenState << MEASURED_HEIGHT_STATE_SHIFT));
     }
@@ -1451,8 +1450,8 @@ public class SlidingDrawerLayout extends ViewGroup {
 
     @Override
     protected void measureChildWithMargins(View child, int parentWidthMeasureSpec,
-                                           int widthUsed,
-                                           int parentHeightMeasureSpec, int heightUsed) {
+                                           int widthUsed, int parentHeightMeasureSpec,
+                                           int heightUsed) {
         // Child does not have any margin
         final int horizontalPaddings = getPaddingLeft() + getPaddingRight() + widthUsed;
         final int verticalPaddings = getPaddingTop() + getPaddingBottom() + heightUsed;

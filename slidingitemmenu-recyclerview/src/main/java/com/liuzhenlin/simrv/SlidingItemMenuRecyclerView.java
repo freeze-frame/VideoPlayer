@@ -416,7 +416,8 @@ public class SlidingItemMenuRecyclerView extends RecyclerView {
                         // while user was scrolling itemView towards the horizontal start,
                         // make it automatically scroll to open and show its menu.
                         if (dx < 0 && velocityX >= mItemMinimumFlingVelocity) {
-                            smoothTranslateItemViewXTo(mActiveItem,
+                            smoothTranslateItemViewXTo(
+                                    mActiveItem,
                                     rtl ? itemMenuWidth : -itemMenuWidth,
                                     mItemScrollDuration);
                             mFullyOpenedItem = mActiveItem;
@@ -442,7 +443,8 @@ public class SlidingItemMenuRecyclerView extends RecyclerView {
 
                             // else open its menu.
                         } else {
-                            smoothTranslateItemViewXTo(mActiveItem,
+                            smoothTranslateItemViewXTo(
+                                    mActiveItem,
                                     rtl ? itemMenuWidth : -itemMenuWidth,
                                     mItemScrollDuration);
                             mFullyOpenedItem = mActiveItem;
@@ -620,7 +622,8 @@ public class SlidingItemMenuRecyclerView extends RecyclerView {
                 releaseItemView(animate);
             }
 
-            smoothTranslateItemViewXTo(itemView,
+            smoothTranslateItemViewXTo(
+                    itemView,
                     Utils.isLayoutRtl(itemView)
                             ? (int) itemView.getTag(TAG_ITEM_MENU_WIDTH)
                             : -(int) (itemView.getTag(TAG_ITEM_MENU_WIDTH)),

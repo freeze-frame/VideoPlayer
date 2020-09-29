@@ -297,7 +297,8 @@ public class BackgroundPlaybackControllerService extends Service {
     }
 
     private PendingIntent createNotificationActionIntent(int action, int requestCode) {
-        return PendingIntent.getBroadcast(this,
+        return PendingIntent.getBroadcast(
+                this,
                 requestCode,
                 new Intent(ControllerActionReceiver.ACTION)
                         .putExtra(EXTRA_CONTROLLER_ACTION, action),

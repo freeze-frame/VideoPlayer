@@ -92,7 +92,8 @@ public final class VideoListItemDao implements IVideoListItemDao {
 
     private void ensureResolutionSeparator() {
         if (sResolutionSeparator == null) {
-            Cursor cursor = mContentResolver.query(VIDEO_URI,
+            Cursor cursor = mContentResolver.query(
+                    VIDEO_URI,
                     new String[]{VIDEO_RESOLUTION},
                     VIDEO_DURATION + " IS NOT NULL", null,
                     "NULL LIMIT 1");
@@ -172,7 +173,8 @@ public final class VideoListItemDao implements IVideoListItemDao {
     @Nullable
     @Override
     public Video queryVideoById(long id) {
-        Cursor cursor = mContentResolver.query(VIDEO_URI,
+        Cursor cursor = mContentResolver.query(
+                VIDEO_URI,
                 PROJECTION_VIDEO_URI,
                 VIDEO_ID + "=" + id, null,
                 null);
@@ -193,7 +195,8 @@ public final class VideoListItemDao implements IVideoListItemDao {
     public Video queryVideoByPath(@Nullable String path) {
         if (path == null) return null;
 
-        Cursor cursor = mContentResolver.query(VIDEO_URI,
+        Cursor cursor = mContentResolver.query(
+                VIDEO_URI,
                 PROJECTION_VIDEO_URI,
                 VIDEO_PATH + "='" + escapedComparisionString(path) + "' COLLATE NOCASE", null,
                 null);
@@ -225,7 +228,8 @@ public final class VideoListItemDao implements IVideoListItemDao {
         if (directory == null) return null;
 
         final int strlength = directory.length();
-        return mContentResolver.query(VIDEO_URI,
+        return mContentResolver.query(
+                VIDEO_URI,
                 PROJECTION_VIDEO_URI,
                 "SUBSTR(" + VIDEO_PATH + ",1," + strlength + ")='" +
                         escapedComparisionString(directory) + "' COLLATE NOCASE " +
@@ -249,9 +253,9 @@ public final class VideoListItemDao implements IVideoListItemDao {
     public boolean deleteVideoDir(@Nullable String directory) {
         if (directory == null) return false;
 
-        return mDB.delete(TABLE_VIDEODIRS,
-                VIDEODIRS_COL_PATH + "='" + escapedComparisionString(directory) + "'", null)
-                == 1;
+        return 1 == mDB.delete(
+                TABLE_VIDEODIRS,
+                VIDEODIRS_COL_PATH + "='" + escapedComparisionString(directory) + "'", null);
     }
 
     @Override
@@ -261,10 +265,10 @@ public final class VideoListItemDao implements IVideoListItemDao {
         ContentValues values = new ContentValues(2);
         values.put(VIDEODIRS_COL_NAME, videodir.getName());
         values.put(VIDEODIRS_COL_IS_TOPPED, videodir.isTopped() ? 1 : 0);
-        return mDB.update(TABLE_VIDEODIRS,
+        return 1 == mDB.update(
+                TABLE_VIDEODIRS,
                 values,
-                VIDEODIRS_COL_PATH + "='" + escapedComparisionString(videodir.getPath()) + "'", null)
-                == 1;
+                VIDEODIRS_COL_PATH + "='" + escapedComparisionString(videodir.getPath()) + "'", null);
     }
 
     @Nullable
@@ -465,10 +469,10 @@ public final class VideoListItemDao implements IVideoListItemDao {
             return mDB.insert(TABLE_VIDEOS, null, values) != Consts.NO_ID;
         } else /* if (item instanceof VideoDirectory) */ {
             values.put(VIDEODIRS_COL_IS_TOPPED, topped ? 1 : 0);
-            return mDB.update(TABLE_VIDEODIRS,
+            return 1 == mDB.update(
+                    TABLE_VIDEODIRS,
                     values,
-                    VIDEODIRS_COL_PATH + "='" + escapedComparisionString(item.getPath()) + "'", null)
-                    == 1;
+                    VIDEODIRS_COL_PATH + "='" + escapedComparisionString(item.getPath()) + "'", null);
         }
     }
 

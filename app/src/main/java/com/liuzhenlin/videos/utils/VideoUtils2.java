@@ -85,7 +85,8 @@ public class VideoUtils2 {
         if (thumb != null) {
             final float ratio = res.getDisplayMetrics().widthPixels / 1080f;
             if (ratio != 1) {
-                thumb = ThumbnailUtils.extractThumbnail(thumb,
+                thumb = ThumbnailUtils.extractThumbnail(
+                        thumb,
                         (int) (thumb.getWidth() * ratio + 0.5f),
                         (int) (thumb.getHeight() * ratio + 0.5f),
                         ThumbnailUtils.OPTIONS_RECYCLE_INPUT);

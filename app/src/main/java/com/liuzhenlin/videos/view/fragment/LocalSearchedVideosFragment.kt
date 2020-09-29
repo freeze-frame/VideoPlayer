@@ -294,7 +294,8 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
         super.onDetach()
         mLifecycleCallback?.onFragmentDetached(this)
 
-        targetFragment?.onActivityResult(targetRequestCode,
+        targetFragment?.onActivityResult(
+                targetRequestCode,
                 RESULT_CODE_LOCAL_SEARCHED_VIDEOS_FRAGMENT,
                 Intent().putParcelableArrayListExtra(KEY_VIDEOS, mVideos))
     }

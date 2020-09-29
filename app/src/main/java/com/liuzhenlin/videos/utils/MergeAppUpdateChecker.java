@@ -507,7 +507,8 @@ public final class MergeAppUpdateChecker {
         @Synthetic RemoteViews createNotificationView() {
             RemoteViews nv = new RemoteViews(mPkgName, R.layout.notification_download_app);
             nv.setOnClickPendingIntent(R.id.btn_cancel_danv,
-                    PendingIntent.getBroadcast(mContext,
+                    PendingIntent.getBroadcast(
+                            mContext,
                             0,
                             new Intent(CancelAppUpdateReceiver.ACTION),
                             0));
@@ -729,7 +730,8 @@ public final class MergeAppUpdateChecker {
 
             String title = mContext.getString(R.string.newAppDownloaded);
             PendingIntent pi = PendingIntent.getActivity(mContext, 0, it, 0);
-            mNotificationManager.notify(ID_NOTIFICATION,
+            mNotificationManager.notify(
+                    ID_NOTIFICATION,
                     mNotificationBuilder
                             .setChannelId(NotificationChannelManager.getMessageNotificationChannelId(mContext))
                             .setTicker(title)

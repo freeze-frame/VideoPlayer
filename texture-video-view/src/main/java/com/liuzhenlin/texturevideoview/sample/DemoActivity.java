@@ -129,8 +129,8 @@ public class DemoActivity extends AppCompatActivity {
 
             @Override
             public void onShareCapturedVideoPhoto(@NonNull File photo) {
-                ShareUtils.shareFile(DemoActivity.this,
-                        getPackageName() + ".provider", photo, "image/*");
+                ShareUtils.shareFile(DemoActivity.this, getPackageName() + ".provider",
+                        photo, "image/*");
             }
         });
         mVideoView.setOpCallback(new TextureVideoView.OpCallback() {

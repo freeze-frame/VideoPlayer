@@ -1161,7 +1161,8 @@ public class VideoActivity extends SwipeBackActivity {
         // This is the PendingIntent that is invoked when a user clicks on the action item.
         // You need to use distinct request codes for play, pause, fast forward, and fast rewind,
         // or the PendingIntent won't be properly updated.
-        PendingIntent intent = PendingIntent.getBroadcast(this,
+        PendingIntent intent = PendingIntent.getBroadcast(
+                this,
                 requestCode,
                 new Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_PIP_ACTION, pipAction),
                 0);
@@ -1280,7 +1281,8 @@ public class VideoActivity extends SwipeBackActivity {
                     if (videoAspectRatio != cachedVideoAspectRatio
                             || sizeRatio > RATIO_TOLERANCE_PIP_LAYOUT_SIZE
                             || sizeRatio < 1.0f / RATIO_TOLERANCE_PIP_LAYOUT_SIZE) {
-                        final int progressHeight = Math.max(progressMinHeight,
+                        final int progressHeight = Math.max(
+                                progressMinHeight,
                                 Math.min(progressMaxHeight,
                                         (int) (size * ratioOfProgressHeightToVideoSize + 0.5f)));
                         if (BuildConfig.DEBUG) {

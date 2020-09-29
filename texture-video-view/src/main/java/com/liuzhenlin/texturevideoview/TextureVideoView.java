@@ -1917,15 +1917,14 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                 cues.add(new Cue(text));
             } else {
                 //noinspection ConstantConditions
-                cues.add(
-                        new Cue(text,
-                                /* textAlignment= */ null,
-                                /* line= */(float) textBounds.top / viewportH,
-                                /* lineType= */ Cue.LINE_TYPE_FRACTION,
-                                /* lineAnchor= */ Cue.ANCHOR_TYPE_START,
-                                /* position= */(float) textBounds.left / viewportW,
-                                /* positionAnchor= */ Cue.ANCHOR_TYPE_START,
-                                /* size= */  (float) textBounds.width() / viewportW));
+                cues.add(new Cue(text,
+                        /* textAlignment= */ null,
+                        /* line= */(float) textBounds.top / viewportH,
+                        /* lineType= */ Cue.LINE_TYPE_FRACTION,
+                        /* lineAnchor= */ Cue.ANCHOR_TYPE_START,
+                        /* position= */(float) textBounds.left / viewportW,
+                        /* positionAnchor= */ Cue.ANCHOR_TYPE_START,
+                        /* size= */  (float) textBounds.width() / viewportW));
             }
         }
         mSubtitleView.setCues(cues);
@@ -2105,10 +2104,13 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                     @SuppressLint("SimpleDateFormat")
                     @Override
                     public File doInBackground(Void... voids) {
-                        return FileUtils.saveBitmapToDisk(mContext,
-                                bitmap, Bitmap.CompressFormat.PNG, 100,
-                                appExternalFilesDir + "/screenshots",
-                                mTitle + "_"
+                        return FileUtils.saveBitmapToDisk(
+                                mContext,
+                                bitmap,
+                                /* format= */ Bitmap.CompressFormat.PNG,
+                                /* quality= */ 100,
+                                /* directory= */ appExternalFilesDir + "/screenshots",
+                                /* fileName= */ mTitle + "_"
                                         + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS") //@formatter:off
                                                 .format(System.currentTimeMillis()) //@formatter:on
                                         + ".png");
@@ -2595,10 +2597,11 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         if ((mOnChildTouchListener.touchFlags & OnChildTouchListener.TFLAG_ADJUSTING_BRIGHTNESS)
                 == OnChildTouchListener.TFLAG_ADJUSTING_BRIGHTNESS) {
             final boolean brightnessFollowsSystem = progress == -1;
-            mBrightnessOrVolumeText.setText(brightnessFollowsSystem
-                    ? mStringBrightnessFollowsSystem
-                    : mResources.getString(R.string.brightnessProgress,
-                    (float) progress / MAX_BRIGHTNESS * 100f));
+            mBrightnessOrVolumeText.setText(
+                    brightnessFollowsSystem
+                            ? mStringBrightnessFollowsSystem
+                            : mResources.getString(R.string.brightnessProgress, //@formatter:off
+                                    (float) progress / MAX_BRIGHTNESS * 100f)); //@formatter:on
             mBrightnessOrVolumeProgress.setProgress(brightnessFollowsSystem ? 0 : progress);
         }
     }
@@ -2606,8 +2609,9 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
     @Synthetic void refreshVolumeProgress(int progress) {
         if ((mOnChildTouchListener.touchFlags & OnChildTouchListener.TFLAG_ADJUSTING_VOLUME)
                 == OnChildTouchListener.TFLAG_ADJUSTING_VOLUME) {
-            mBrightnessOrVolumeText.setText(mResources.getString(R.string.volumeProgress,
-                    (float) progress / volumeToProgress(mMaxVolume) * 100f));
+            mBrightnessOrVolumeText.setText(
+                    mResources.getString(R.string.volumeProgress,
+                            (float) progress / volumeToProgress(mMaxVolume) * 100f));
             mBrightnessOrVolumeProgress.setProgress(progress);
         }
     }
@@ -3093,16 +3097,18 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
             }
         }
 
-        int computeProgressOnTrackTouchHorizontally(ProgressBar progressBar, float deltaX,
-                                                    @SuppressWarnings("SameParameterValue") float sensitivity) {
+        int computeProgressOnTrackTouchHorizontally(
+                ProgressBar progressBar, float deltaX,
+                @SuppressWarnings("SameParameterValue") float sensitivity) {
             final int maxProgress = progressBar.getMax();
             final int progress = progressBar.getProgress()
                     + Math.round((float) maxProgress / mContentView.getWidth() * deltaX * sensitivity);
             return Util.constrainValue(progress, 0, maxProgress);
         }
 
-        int computeProgressOnTrackTouchVertically(ProgressBar progressBar, float deltaY,
-                                                  @SuppressWarnings("SameParameterValue") float sensitivity) {
+        int computeProgressOnTrackTouchVertically(
+                ProgressBar progressBar, float deltaY,
+                @SuppressWarnings("SameParameterValue") float sensitivity) {
             final int maxProgress = progressBar.getMax();
             final int progress = progressBar.getProgress()
                     + Math.round((float) maxProgress / mContentView.getHeight() * deltaY * sensitivity);
