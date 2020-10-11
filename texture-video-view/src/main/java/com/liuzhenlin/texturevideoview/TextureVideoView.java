@@ -1913,10 +1913,10 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
             final float viewportH = mTextureView.getHeight();
 
             if (textBounds == null || textBounds.isEmpty() || viewportW == 0 || viewportH == 0) {
-                //noinspection ConstantConditions
+                //noinspection ConstantConditions,deprecation
                 cues.add(new Cue(text));
             } else {
-                //noinspection ConstantConditions
+                //noinspection ConstantConditions,deprecation
                 cues.add(new Cue(text,
                         /* textAlignment= */ null,
                         /* line= */(float) textBounds.top / viewportH,

@@ -16,7 +16,6 @@
 package com.google.android.exoplayer2.ext.vp9;
 
 import androidx.annotation.Nullable;
-
 import com.google.android.exoplayer2.ExoPlayerLibraryInfo;
 import com.google.android.exoplayer2.drm.ExoMediaCrypto;
 import com.google.android.exoplayer2.util.LibraryLoader;
@@ -89,7 +88,7 @@ public final class VpxLibrary {
    * protected content.
    */
   public static boolean matchesExpectedExoMediaCryptoType(
-      @Nullable Class<? extends ExoMediaCrypto> exoMediaCryptoType) {
+      Class<? extends ExoMediaCrypto> exoMediaCryptoType) {
     return Util.areEqual(VpxLibrary.exoMediaCryptoType, exoMediaCryptoType);
   }
 

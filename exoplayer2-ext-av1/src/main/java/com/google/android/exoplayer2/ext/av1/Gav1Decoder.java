@@ -15,19 +15,17 @@
  */
 package com.google.android.exoplayer2.ext.av1;
 
+import static java.lang.Runtime.getRuntime;
+
 import android.view.Surface;
-
 import androidx.annotation.Nullable;
-
 import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.decoder.DecoderInputBuffer;
 import com.google.android.exoplayer2.decoder.SimpleDecoder;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoDecoderInputBuffer;
 import com.google.android.exoplayer2.video.VideoDecoderOutputBuffer;
-
 import java.nio.ByteBuffer;
-
-import static java.lang.Runtime.getRuntime;
 
 /** Gav1 decoder. */
 /* package */ final class Gav1Decoder
@@ -86,18 +84,9 @@ import static java.lang.Runtime.getRuntime;
     return "libgav1";
   }
 
-  /**
-   * Sets the output mode for frames rendered by the decoder.
-   *
-   * @param outputMode The output mode.
-   */
-  public void setOutputMode(@C.VideoOutputMode int outputMode) {
-    this.outputMode = outputMode;
-  }
-
   @Override
   protected VideoDecoderInputBuffer createInputBuffer() {
-    return new VideoDecoderInputBuffer();
+    return new VideoDecoderInputBuffer(DecoderInputBuffer.BUFFER_REPLACEMENT_MODE_DIRECT);
   }
 
   @Override
@@ -105,10 +94,10 @@ import static java.lang.Runtime.getRuntime;
     return new VideoDecoderOutputBuffer(this::releaseOutputBuffer);
   }
 
-  @Nullable
   @Override
+  @Nullable
   protected Gav1DecoderException decode(
-          VideoDecoderInputBuffer inputBuffer, VideoDecoderOutputBuffer outputBuffer, boolean reset) {
+      VideoDecoderInputBuffer inputBuffer, VideoDecoderOutputBuffer outputBuffer, boolean reset) {
     ByteBuffer inputData = Util.castNonNull(inputBuffer.data);
     int inputSize = inputData.limit();
     if (gav1Decode(gav1DecoderContext, inputData, inputSize) == GAV1_ERROR) {
@@ -131,7 +120,7 @@ import static java.lang.Runtime.getRuntime;
       outputBuffer.addFlag(C.BUFFER_FLAG_DECODE_ONLY);
     }
     if (!decodeOnly) {
-      outputBuffer.colorInfo = inputBuffer.colorInfo;
+      outputBuffer.format = inputBuffer.format;
     }
 
     return null;
@@ -156,6 +145,15 @@ import static java.lang.Runtime.getRuntime;
       gav1ReleaseFrame(gav1DecoderContext, buffer);
     }
     super.releaseOutputBuffer(buffer);
+  }
+
+  /**
+   * Sets the output mode for frames rendered by the decoder.
+   *
+   * @param outputMode The output mode.
+   */
+  public void setOutputMode(@C.VideoOutputMode int outputMode) {
+    this.outputMode = outputMode;
   }
 
   /**
@@ -209,10 +207,10 @@ import static java.lang.Runtime.getRuntime;
    * @param context Decoder context.
    * @param outputBuffer Output buffer for the decoded frame.
    * @return {@link #GAV1_OK} if successful, {@link #GAV1_DECODE_ONLY} if successful but the frame
-   *         is decode-only, {@link #GAV1_ERROR} if an error occurred.
+   *     is decode-only, {@link #GAV1_ERROR} if an error occurred.
    */
   private native int gav1GetFrame(
-          long context, VideoDecoderOutputBuffer outputBuffer, boolean decodeOnly);
+      long context, VideoDecoderOutputBuffer outputBuffer, boolean decodeOnly);
 
   /**
    * Renders the frame to the surface. Used with {@link C#VIDEO_OUTPUT_MODE_SURFACE_YUV} only.
@@ -220,7 +218,7 @@ import static java.lang.Runtime.getRuntime;
    * @param context Decoder context.
    * @param surface Output surface.
    * @param outputBuffer Output buffer with the decoded frame.
-   * @return {@link #GAV1_OK} if successful, {@link #GAV1_ERROR} if an error occured.
+   * @return {@link #GAV1_OK} if successful, {@link #GAV1_ERROR} if an error occurred.
    */
   private native int gav1RenderFrame(
       long context, Surface surface, VideoDecoderOutputBuffer outputBuffer);
@@ -242,10 +240,10 @@ import static java.lang.Runtime.getRuntime;
   private native String gav1GetErrorMessage(long context);
 
   /**
-   * Returns whether an error occured.
+   * Returns whether an error occurred.
    *
    * @param context Decoder context.
-   * @return {@link #GAV1_OK} if there was no error, {@link #GAV1_ERROR} if an error occured.
+   * @return {@link #GAV1_OK} if there was no error, {@link #GAV1_ERROR} if an error occurred.
    */
   private native int gav1CheckError(long context);
 

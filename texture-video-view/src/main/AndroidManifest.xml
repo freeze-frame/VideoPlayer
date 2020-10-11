@@ -9,6 +9,8 @@
 
     <uses-sdk tools:overrideLibrary="
             com.google.android.exoplayer2.core,
+            com.google.android.exoplayer2.common,
+            com.google.android.exoplayer2.extractor,
             com.google.android.exoplayer2.source.dash,
             com.google.android.exoplayer2.source.hls,
             com.google.android.exoplayer2.source.smoothstreaming,

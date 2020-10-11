@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.MediaSourceFactory;
@@ -234,7 +235,7 @@ import java.io.IOException;
                 mediaSourceFactory = new ProgressiveMediaSource.Factory(
                         new DefaultDataSourceFactory(context, userAgent));
             }
-            mMediaSource = mediaSourceFactory.createMediaSource(videoUri);
+            mMediaSource = mediaSourceFactory.createMediaSource(MediaItem.fromUri(videoUri));
         }
 
         @Override
@@ -290,7 +291,8 @@ import java.io.IOException;
                 mExoPlayer = new SimpleExoPlayer.Builder(mContext).build();
                 mExoPlayer.setVideoSurfaceHolder(mSurfaceHolder);
                 mExoPlayer.setAudioAttributes(VideoPlayer.sDefaultAudioAttrs, true);
-                mExoPlayer.prepare(mMediaSource);
+                mExoPlayer.setMediaSource(mMediaSource);
+                mExoPlayer.prepare();
             }
         }
 
