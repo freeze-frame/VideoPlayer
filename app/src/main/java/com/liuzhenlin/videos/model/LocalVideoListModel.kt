@@ -20,7 +20,7 @@ import java.util.*
 /**
  * @author 刘振林
  */
-class LocalVideoListModel(context: Context) : BaseModel<MutableList<VideoListItem>?>(context) {
+class LocalVideoListModel(context: Context) : BaseModel<Nothing, MutableList<VideoListItem>?>(context) {
 
     private var mOnReloadVideosListeners: MutableList<OnReloadVideosListener>? = null
 

@@ -179,7 +179,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
         }
         mLifecycleCallback?.onFragmentAttached(this)
 
-        model.addOnLoadListener(object : OnLoadListener<MutableList<VideoListItem>?> {
+        model.addOnLoadListener(object : OnLoadListener<Nothing, MutableList<VideoListItem>?> {
             override fun onLoadStart() {
                 mRecyclerView.releaseItemView(false)
                 mRecyclerView.isItemDraggable = false

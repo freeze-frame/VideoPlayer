@@ -138,7 +138,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
         val videodir = mVideoDir
         if (videodir != null) {
             mModel = LocalFoldedVideoListModel(videodir, context)
-            mModel!!.addOnLoadListener(object : OnLoadListener<MutableList<Video>?> {
+            mModel!!.addOnLoadListener(object : OnLoadListener<Nothing, MutableList<Video>?> {
                 override fun onLoadStart() {
                     mRecyclerView.isItemDraggable = false
                     mRecyclerView.releaseItemView(false)

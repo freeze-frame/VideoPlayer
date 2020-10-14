@@ -56,7 +56,7 @@ class OnlineVideosFragment : Fragment(), View.OnClickListener,
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mModel = OnlineVideoListModel(context)
-        mModel.addOnLoadListener(object : OnLoadListener<Array<TVGroup>?> {
+        mModel.addOnLoadListener(object : OnLoadListener<Nothing, Array<TVGroup>?> {
             override fun onLoadStart() {
                 mSwipeRefreshLayout.isRefreshing = true
             }

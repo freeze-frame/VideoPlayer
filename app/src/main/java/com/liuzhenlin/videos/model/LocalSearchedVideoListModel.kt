@@ -16,7 +16,7 @@ import com.liuzhenlin.videos.sortByElementName
 /**
  * @author 刘振林
  */
-class LocalSearchedVideoListModel(context: Context) : BaseModel<MutableList<Video>?>(context) {
+class LocalSearchedVideoListModel(context: Context) : BaseModel<Nothing, MutableList<Video>?>(context) {
 
     override fun createAndStartLoader(): AsyncTask<*, *, *> {
         val loader = LoadVideosTask()
@@ -25,7 +25,7 @@ class LocalSearchedVideoListModel(context: Context) : BaseModel<MutableList<Vide
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class LoadVideosTask : Loader<Void, Void>() {
+    private inner class LoadVideosTask : Loader<Void>() {
 
         override fun doInBackground(vararg voids: Void): MutableList<Video>? {
             val dao = VideoListItemDao.getSingleton(mContext)

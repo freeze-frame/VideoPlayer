@@ -8,12 +8,14 @@ package com.liuzhenlin.videos.model
 /**
  * @author 刘振林
  */
-interface OnLoadListener<R> {
+interface OnLoadListener<Progress, Result> {
     fun onLoadStart() {}
 
-    fun onLoadFinish(result: R) {}
+    fun onLoadFinish(result: Result) {}
 
-    fun onLoadCanceled(/*result: R*/) {}
+    fun onLoadCanceled(/*result: Result*/) {}
 
     fun onLoadError(cause: Throwable) {}
+
+    fun onLoadingProgressUpdate(progress: Progress) {}
 }

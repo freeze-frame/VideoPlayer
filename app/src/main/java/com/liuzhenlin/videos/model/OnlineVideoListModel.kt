@@ -22,7 +22,7 @@ import java.net.URL
 /**
  * @author 刘振林
  */
-class OnlineVideoListModel(context: Context) : BaseModel<Array<TVGroup>?>(context) {
+class OnlineVideoListModel(context: Context) : BaseModel<Nothing, Array<TVGroup>?>(context) {
 
     override fun createAndStartLoader(): AsyncTask<*, *, *> {
         val loader = LoadTVsAsyncTask()
@@ -31,7 +31,7 @@ class OnlineVideoListModel(context: Context) : BaseModel<Array<TVGroup>?>(contex
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class LoadTVsAsyncTask : Loader<Context, Unit>() {
+    private inner class LoadTVsAsyncTask : Loader<Context>() {
 
         override fun doInBackground(vararg ctxs: Context): Array<TVGroup>? {
             var json: StringBuilder? = null
@@ -95,29 +95,35 @@ class OnlineVideoListModel(context: Context) : BaseModel<Array<TVGroup>?>(contex
                 conn?.disconnect()
             }
 
-            if (ioException != null) {
-                if (jsonFileOut != null) {
-                    jsonFile.failWrite(jsonFileOut)
+            if (!isCancelled) {
+                if (ioException != null) {
+                    if (jsonFileOut != null) {
+                        jsonFile.failWrite(jsonFileOut)
+                    }
+
+                    val jsonString = try {
+                        jsonFile.readFully().toString(Charsets.UTF_8)
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                        null
+                    }
+                    if (jsonString?.isNotEmpty() == true) {
+                        json = StringBuilder(jsonString.length).append(jsonString)
+                    }
                 }
 
-                val jsonString = try {
-                    jsonFile.readFully().toString(Charsets.UTF_8)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                    null
-                }
-                if (jsonString?.isNotEmpty() == true) {
-                    json = StringBuilder(jsonString.length).append(jsonString)
-                }
-            }
+                if (!isCancelled) {
+                    when {
+                        json != null ->
+                            return Gson().fromJson(json.toString(), Array<TVGroup>::class.java)
 
-            when {
-                json != null ->
-                    return Gson().fromJson(json.toString(), Array<TVGroup>::class.java)
-
-                ioException != null -> {
-                    Utils.runOnHandlerSync(InternalConsts.getMainThreadHandler()) {
-                        onLoadError(ioException) }
+                        ioException != null ->
+                            Utils.runOnHandlerSync(InternalConsts.getMainThreadHandler()) {
+                                if (!isCancelled) {
+                                    onLoadError(ioException)
+                                }
+                            }
+                    }
                 }
             }
 

@@ -19,7 +19,7 @@ import java.util.*
  * @author 刘振林
  */
 class LocalFoldedVideoListModel(private val videodir: VideoDirectory, context: Context)
-    : BaseModel<MutableList<Video>?>(context) {
+    : BaseModel<Nothing, MutableList<Video>?>(context) {
 
     override fun createAndStartLoader(): AsyncTask<*, *, *> {
         val loader = LoadDirectoryVideosTask()
@@ -28,7 +28,7 @@ class LocalFoldedVideoListModel(private val videodir: VideoDirectory, context: C
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class LoadDirectoryVideosTask : Loader<Void, Void>() {
+    private inner class LoadDirectoryVideosTask : Loader<Void>() {
 
         override fun doInBackground(vararg params: Void?): MutableList<Video>? {
             val dao = VideoListItemDao.getSingleton(mContext)

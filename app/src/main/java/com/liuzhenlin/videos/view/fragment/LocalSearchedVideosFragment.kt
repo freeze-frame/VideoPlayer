@@ -107,7 +107,7 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
         mLifecycleCallback?.onFragmentAttached(this)
 
         mModel = LocalSearchedVideoListModel(context)
-        mModel.addOnLoadListener(object : OnLoadListener<MutableList<Video>?> {
+        mModel.addOnLoadListener(object : OnLoadListener<Nothing, MutableList<Video>?> {
             override fun onLoadFinish(result: MutableList<Video>?) {
                 onReloadVideos(result)
                 mInteractionCallback.isRefreshLayoutRefreshing = false
