@@ -647,6 +647,8 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
                 deleteButton.setOnClickListener(this@LocalFoldedVideosFragment)
 
                 itemVisibleFrame.setOnLongClickListener(this@LocalFoldedVideosFragment)
+
+                VideoUtils2.adjustVideoThumbView(videoImage)
             }
         }
     }

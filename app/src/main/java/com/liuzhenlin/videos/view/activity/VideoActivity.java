@@ -1496,6 +1496,7 @@ public class VideoActivity extends SwipeBackActivity {
                 videoImage = itemView.findViewById(R.id.image_video);
                 videoNameText = itemView.findViewById(R.id.text_videoName);
                 videoProgressDurationText = itemView.findViewById(R.id.text_videoProgressAndDuration);
+                VideoUtils2.adjustVideoThumbView(videoImage);
             }
         }
     }

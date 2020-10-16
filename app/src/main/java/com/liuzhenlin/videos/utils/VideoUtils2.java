@@ -8,10 +8,9 @@ package com.liuzhenlin.videos.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -52,17 +51,11 @@ public class VideoUtils2 {
                                                            @NonNull ImageView view,
                                                            @NonNull String path) {
         Context context = view.getContext();
-        Resources res = context.getResources();
-
 //        final float aspectRatio = (float) video.getWidth() / (float) video.getHeight();
         final int thumbWidth = App.getInstance(context).getVideoThumbWidth();
 //        final int height = (int) ((float) thumbWidth / aspectRatio + 0.5f);
         final int thumbHeight /* maxHeight */ = (int) (thumbWidth * 9f / 16f + 0.5f);
 //        final int thumbHeight = height > maxHeight ? maxHeight : height;
-
-        Bitmap bitmap = BitmapUtils2.createScaledBitmap(
-                BitmapFactory.decodeResource(res, R.drawable.ic_default_thumb),
-                thumbWidth, thumbHeight, true);
 
         RequestManager requestManager;
         if (fragment != null) {
@@ -74,8 +67,21 @@ public class VideoUtils2 {
                 .load(path)
                 .override(thumbWidth, thumbHeight)
                 .centerCrop()
-                .placeholder(new BitmapDrawable(res, bitmap))
+                .placeholder(R.drawable.ic_default_thumb)
                 .into(view);
+    }
+
+    public static void adjustVideoThumbView(@NonNull ImageView view) {
+        final int thumbWidth = App.getInstance(view.getContext()).getVideoThumbWidth();
+        final int thumbHeight = (int) (thumbWidth * 9f / 16f + 0.5f);
+
+        ViewGroup.LayoutParams lp = view.getLayoutParams();
+        if (lp.width != thumbWidth || lp.height != thumbHeight) {
+            lp.width = thumbWidth;
+            lp.height = thumbHeight;
+            view.setLayoutParams(lp);
+        }
+        view.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
 
     @Nullable

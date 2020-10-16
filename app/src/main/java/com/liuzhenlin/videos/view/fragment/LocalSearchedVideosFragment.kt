@@ -469,6 +469,7 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
                 itemView.setOnTouchListener(this@LocalSearchedVideosFragment)
                 itemView.setOnClickListener(this@LocalSearchedVideosFragment)
                 itemView.setOnLongClickListener(this@LocalSearchedVideosFragment)
+                VideoUtils2.adjustVideoThumbView(videoImage)
             }
         }
     }
