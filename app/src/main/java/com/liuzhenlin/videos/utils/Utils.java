@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
-import com.liuzhenlin.videos.App;
+import com.liuzhenlin.videos.Files;
 
 import java.io.File;
 
@@ -40,8 +40,7 @@ public class Utils {
         // Android 7.0 共享文件需要通过 FileProvider 添加临时权限，否则系统会抛出 FileUriExposedException.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Uri contentUri = FileProvider.getUriForFile(
-                    context, App.getInstance(context).getAuthority(), apk);
+            Uri contentUri = FileProvider.getUriForFile(context, Files.PROVIDER_AUTHORITY, apk);
             it.setData(contentUri);
         } else {
             it.setData(Uri.fromFile(apk));

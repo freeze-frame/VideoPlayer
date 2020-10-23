@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.liuzhenlin.videos.Consts;
+import com.liuzhenlin.videos.Files;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class FeedbackSavedPrefs {
 
     @SuppressLint("CommitPrefEdits")
     public FeedbackSavedPrefs(@NonNull Context context) {
-        mSP = context.getSharedPreferences("SavedFeedback.sp", Context.MODE_PRIVATE);
+        mSP = context.getSharedPreferences(Files.SAVED_FEEDBACK_PREFS, Context.MODE_PRIVATE);
         mEditor = mSP.edit();
     }
 

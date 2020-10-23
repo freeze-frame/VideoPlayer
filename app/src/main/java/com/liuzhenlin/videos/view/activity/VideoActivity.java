@@ -61,6 +61,7 @@ import com.liuzhenlin.texturevideoview.utils.Utils;
 import com.liuzhenlin.videos.App;
 import com.liuzhenlin.videos.BuildConfig;
 import com.liuzhenlin.videos.Consts;
+import com.liuzhenlin.videos.Files;
 import com.liuzhenlin.videos.R;
 import com.liuzhenlin.videos.bean.Video;
 import com.liuzhenlin.videos.dao.VideoListItemDao;
@@ -597,8 +598,7 @@ public class VideoActivity extends SwipeBackActivity {
             @Override
             public void onShareCapturedVideoPhoto(@NonNull File photo) {
                 Context context = VideoActivity.this;
-                ShareUtils.shareFile(context, App.getInstance(context).getAuthority(),
-                        photo, "image/*");
+                ShareUtils.shareFile(context, Files.PROVIDER_AUTHORITY, photo, "image/*");
             }
         });
         mVideoView.setOpCallback(new TextureVideoView.OpCallback() {

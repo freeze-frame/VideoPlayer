@@ -185,7 +185,7 @@ fun Context?.shareVideo(video: Video) {
                 FileUtils.getFileTitleFromFileName(video.name) + "：" + video.path,
                 "text/plain")
     } else {
-        ShareUtils.shareFile(context, app.authority, File(video.path), "video/*")
+        ShareUtils.shareFile(context, Files.PROVIDER_AUTHORITY, File(video.path), "video/*")
     }
 }
 

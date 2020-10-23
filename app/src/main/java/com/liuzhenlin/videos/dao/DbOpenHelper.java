@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.NonNull;
 
+import com.liuzhenlin.videos.Files;
+
 /**
  * @author 刘振林
  */
@@ -27,7 +29,7 @@ class DbOpenHelper extends SQLiteOpenHelper {
     public static final String VIDEODIRS_COL_IS_TOPPED = "isTopped";
 
     public DbOpenHelper(@NonNull Context context) {
-        super(context, "Videos.db", null, 1);
+        super(context, Files.DB, null, 1);
     }
 
     @Override

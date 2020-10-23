@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.liuzhenlin.texturevideoview.utils.Singleton;
+import com.liuzhenlin.videos.Files;
 
 /**
  * @author 刘振林
@@ -41,7 +42,7 @@ public final class AppPrefs {
 
     private AppPrefs(Context context) {
         context = context.getApplicationContext();
-        mSP = context.getSharedPreferences("Videos.sp", Context.MODE_PRIVATE);
+        mSP = context.getSharedPreferences(Files.SHARED_PREFS, Context.MODE_PRIVATE);
     }
 
     @Nullable

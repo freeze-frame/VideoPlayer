@@ -29,8 +29,6 @@ public class App extends Application {
 
     private static App sApp;
 
-    private volatile String mAuthority;
-
     private int mStatusHeight;
 
     private volatile int mScreenWidth = -1;
@@ -81,24 +79,12 @@ public class App extends Application {
 
     @NonNull
     public static File getAppExternalFilesDir() {
-        File dir = new File(Environment.getExternalStorageDirectory(), "videos_lzl");
+        File dir = new File(Environment.getExternalStorageDirectory(), Files.EXTERNAL_FILES_FOLDER);
         if (!dir.exists()) {
             //noinspection ResultOfMethodCallIgnored
             dir.mkdirs();
         }
         return dir;
-    }
-
-    @NonNull
-    public String getAuthority() {
-        if (mAuthority == null) {
-            synchronized (this) {
-                if (mAuthority == null) {
-                    mAuthority = getPackageName() + ".provider";
-                }
-            }
-        }
-        return mAuthority;
     }
 
     public int getStatusHeightInPortrait() {
