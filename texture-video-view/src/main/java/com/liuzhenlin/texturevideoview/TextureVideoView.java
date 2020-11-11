@@ -96,6 +96,7 @@ import com.google.android.exoplayer2.text.CaptionStyleCompat;
 import com.google.android.exoplayer2.text.Cue;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.material.snackbar.Snackbar;
+import com.liuzhenlin.texturevideoview.adapter.ImageLoadingListAdapter;
 import com.liuzhenlin.texturevideoview.drawable.CircularProgressDrawable;
 import com.liuzhenlin.texturevideoview.service.BackgroundPlaybackControllerService;
 import com.liuzhenlin.texturevideoview.utils.BitmapUtils;
@@ -239,7 +240,8 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         }
     }
 
-    public static abstract class PlayListAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+    public static abstract class PlayListAdapter<VH extends RecyclerView.ViewHolder>
+            extends ImageLoadingListAdapter<VH> {
         TextureVideoView videoView;
         ViewGroup drawerView;
         RecyclerView playlist;
@@ -261,6 +263,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         @CallSuper
         @Override
         public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
             playlist = recyclerView;
             drawerView = (ViewGroup) recyclerView.getParent();
             videoView = (TextureVideoView) drawerView.getParent();
@@ -269,6 +272,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         @CallSuper
         @Override
         public void onViewAttachedToWindow(@NonNull VH holder) {
+            super.onViewAttachedToWindow(holder);
             holder.itemView.setOnClickListener(onClickListener);
             holder.itemView.setOnLongClickListener(onLongClickListener);
         }
@@ -276,6 +280,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         @CallSuper
         @Override
         public void onViewDetachedFromWindow(@NonNull VH holder) {
+            super.onViewDetachedFromWindow(holder);
             holder.itemView.setOnClickListener(null);
             holder.itemView.setOnLongClickListener(null);
         }

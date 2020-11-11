@@ -39,6 +39,7 @@ import com.liuzhenlin.circularcheckbox.CircularCheckBox
 import com.liuzhenlin.floatingmenu.DensityUtils
 import com.liuzhenlin.simrv.SlidingItemMenuRecyclerView
 import com.liuzhenlin.swipeback.SwipeBackFragment
+import com.liuzhenlin.texturevideoview.adapter.ImageLoadingListAdapter
 import com.liuzhenlin.texturevideoview.utils.FileUtils
 import com.liuzhenlin.videos.*
 import com.liuzhenlin.videos.bean.Video
@@ -447,7 +448,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
         }
     }
 
-    private inner class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoListViewHolder>() {
+    private inner class VideoListAdapter : ImageLoadingListAdapter<VideoListAdapter.VideoListViewHolder>() {
 
         override fun getItemCount() = mVideoListItems.size
 
@@ -503,10 +504,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
                             VideoUtils2.concatVideoProgressAndDuration(progress, duration)
                 }
                 if (payload and PAYLOAD_REFRESH_VIDEODIR_THUMB != 0) {
-                    val vh = holder as VideoDirViewHolder
-                    val videos = (item as VideoDirectory).videos
-                    VideoUtils2.loadVideoThumbIntoFragmentImageView(
-                            this@LocalVideoListFragment, vh.videodirImage, videos[0])
+                    loadItemImagesIfNotScrolling(holder)
                 }
                 if (payload and PAYLOAD_REFRESH_VIDEODIR_SIZE_AND_VIDEO_COUNT != 0) {
                     val vh = holder as VideoDirViewHolder
@@ -518,6 +516,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
         }
 
         override fun onBindViewHolder(holder: VideoListViewHolder, position: Int) {
+            super.onBindViewHolder(holder, position)
             holder.itemVisibleFrame.tag = position
             holder.checkBox.tag = position
             holder.topButton.tag = position
@@ -537,8 +536,6 @@ class LocalVideoListFragment : SwipeBackFragment(),
                     val vh = holder as VideoViewHolder
                     val video = item as Video
 
-                    VideoUtils2.loadVideoThumbIntoFragmentImageView(
-                            this@LocalVideoListFragment, vh.videoImage, video)
                     vh.videoNameText.text = item.name
                     vh.videoSizeText.text = FileUtils2.formatFileSize(item.size.toDouble())
                     vh.videoProgressAndDurationText.text =
@@ -553,6 +550,38 @@ class LocalVideoListFragment : SwipeBackFragment(),
                     vh.videodirNameText.text = item.name
                     vh.videodirSizeText.text = FileUtils2.formatFileSize(item.size.toDouble())
                     vh.videoCountText.text = getString(R.string.aTotalOfSeveralVideos, videos.size)
+                }
+            }
+        }
+
+        override fun loadItemImages(holder: VideoListViewHolder) {
+            val item = mVideoListItems[holder.adapterPosition]
+            when (holder.itemViewType) {
+                VIEW_TYPE_VIDEO -> {
+                    val vh = holder as VideoViewHolder
+                    val video = item as Video
+                    VideoUtils2.loadVideoThumbIntoFragmentImageView(
+                            this@LocalVideoListFragment, vh.videoImage, video)
+                }
+                VIEW_TYPE_VIDEODIR -> {
+                    val vh = holder as VideoDirViewHolder
+                    val videos = (item as VideoDirectory).videos
+                    VideoUtils2.loadVideoThumbIntoFragmentImageView(
+                            this@LocalVideoListFragment, vh.videodirImage, videos[0])
+                }
+            }
+        }
+
+        override fun cancelLoadingItemImages(holder: VideoListViewHolder) {
+            val requestManager = Glide.with(this@LocalVideoListFragment)
+            when (holder.itemViewType) {
+                VIEW_TYPE_VIDEO -> {
+                    val vh = holder as VideoViewHolder
+                    requestManager.clear(vh.videoImage)
+                }
+                VIEW_TYPE_VIDEODIR -> {
+                    val vh = holder as VideoDirViewHolder
+                    requestManager.clear(vh.videodirImage)
                 }
             }
         }

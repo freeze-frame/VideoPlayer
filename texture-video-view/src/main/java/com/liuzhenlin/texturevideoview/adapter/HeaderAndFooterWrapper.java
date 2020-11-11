@@ -2,7 +2,7 @@
  * Created on 2019/3/23 3:12 PM.
  */
 
-package com.liuzhenlin.videos.view.adapter;
+package com.liuzhenlin.texturevideoview.adapter;
 
 import android.util.SparseArray;
 import android.view.View;
@@ -17,7 +17,8 @@ import com.bumptech.glide.util.Synthetic;
 
 import java.util.List;
 
-public class HeaderAndFooterWrapper<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class HeaderAndFooterWrapper<VH extends RecyclerView.ViewHolder>
+        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int BASE_ITEM_TYPE_HEADER = 100000;
     private static final int BASE_ITEM_TYPE_FOOTER = 200000;
 
@@ -49,14 +50,10 @@ public class HeaderAndFooterWrapper<VH extends RecyclerView.ViewHolder> extends 
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position, @NonNull List<Object> payloads) {
-        if (isHeaderViewPos(position)) {
-            return;
+        if (!isHeaderOrFooterPos(position)) {
+            //noinspection unchecked
+            mInnerAdapter.onBindViewHolder((VH) holder, position - getHeadersCount(), payloads);
         }
-        if (isFooterViewPos(position)) {
-            return;
-        }
-        //noinspection unchecked
-        mInnerAdapter.onBindViewHolder((VH) holder, position - getHeadersCount(), payloads);
     }
 
     @Override
@@ -71,6 +68,14 @@ public class HeaderAndFooterWrapper<VH extends RecyclerView.ViewHolder> extends 
             return mFootViews.keyAt(position - getHeadersCount() - getRealItemCount());
         }
         return mInnerAdapter.getItemViewType(position - getHeadersCount());
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (!isHeaderOrFooterPos(position)) {
+            return mInnerAdapter.getItemId(position - getHeadersCount());
+        }
+        return RecyclerView.NO_ID;
     }
 
     @Override
@@ -112,24 +117,62 @@ public class HeaderAndFooterWrapper<VH extends RecyclerView.ViewHolder> extends 
     }
 
     @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        mInnerAdapter.onDetachedFromRecyclerView(recyclerView);
+    }
+
+    @Override
     public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
-        //noinspection unchecked
-        mInnerAdapter.onViewAttachedToWindow((VH) holder);
-        final int position = holder.getLayoutPosition();
-        if (isHeaderViewPos(position) || isFooterViewPos(position)) {
+        final int position = holder.getAdapterPosition();
+        if (isHeaderOrFooterPos(position)) {
             ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
             if (lp instanceof StaggeredGridLayoutManager.LayoutParams) {
                 ((StaggeredGridLayoutManager.LayoutParams) lp).setFullSpan(true);
             }
+        } else {
+            //noinspection unchecked
+            mInnerAdapter.onViewAttachedToWindow((VH) holder);
         }
     }
 
-    private boolean isHeaderViewPos(int position) {
+    @Override
+    public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
+        final int position = holder.getAdapterPosition();
+        if (!isHeaderOrFooterPos(position)) {
+            //noinspection unchecked
+            mInnerAdapter.onViewDetachedFromWindow((VH) holder);
+        }
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+        final int position = holder.getAdapterPosition();
+        if (!isHeaderOrFooterPos(position)) {
+            //noinspection unchecked
+            mInnerAdapter.onViewRecycled((VH) holder);
+        }
+    }
+
+    @Override
+    public boolean onFailedToRecycleView(@NonNull RecyclerView.ViewHolder holder) {
+        final int position = holder.getAdapterPosition();
+        if (!isHeaderOrFooterPos(position)) {
+            //noinspection unchecked
+            return mInnerAdapter.onFailedToRecycleView((VH) holder);
+        }
+        return false;
+    }
+
+    /*package*/ boolean isHeaderViewPos(int position) {
         return position < getHeadersCount();
     }
 
-    private boolean isFooterViewPos(int position) {
+    /*package*/ boolean isFooterViewPos(int position) {
         return position >= getHeadersCount() + getRealItemCount();
+    }
+
+    /*package*/ boolean isHeaderOrFooterPos(int position) {
+        return isHeaderViewPos(position) || isFooterViewPos(position);
     }
 
     public void addHeaderView(@NonNull View view) {

@@ -45,6 +45,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.util.Synthetic;
 import com.google.android.material.snackbar.Snackbar;
 import com.liuzhenlin.swipeback.SwipeBackActivity;
@@ -1440,10 +1441,10 @@ public class VideoActivity extends SwipeBackActivity {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            super.onBindViewHolder(holder, position);
             highlightSelectedItemIfExists(holder, position);
 
             Video video = mVideos[position];
-            VideoUtils2.loadVideoThumbIntoImageView(holder.videoImage, video);
             holder.videoNameText.setText(video.getName());
             if (position == mVideoIndex) {
                 holder.videoProgressDurationText.setText(mWatching);
@@ -1456,6 +1457,17 @@ public class VideoActivity extends SwipeBackActivity {
                     holder.videoProgressDurationText.setText(null);
                 }
             }
+        }
+
+        @Override
+        public void loadItemImages(@NonNull ViewHolder holder) {
+            Video video = mVideos[holder.getAdapterPosition()];
+            VideoUtils2.loadVideoThumbIntoImageView(holder.videoImage, video);
+        }
+
+        @Override
+        public void cancelLoadingItemImages(@NonNull ViewHolder holder) {
+            Glide.with(holder.videoImage.getContext()).clear(holder.videoImage);
         }
 
         @Override

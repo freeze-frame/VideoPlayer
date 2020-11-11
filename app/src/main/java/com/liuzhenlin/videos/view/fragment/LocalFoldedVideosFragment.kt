@@ -20,12 +20,14 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.liuzhenlin.circularcheckbox.CircularCheckBox
 import com.liuzhenlin.floatingmenu.DensityUtils
 import com.liuzhenlin.simrv.SlidingItemMenuRecyclerView
 import com.liuzhenlin.simrv.Utils
 import com.liuzhenlin.swipeback.SwipeBackFragment
 import com.liuzhenlin.swipeback.SwipeBackLayout
+import com.liuzhenlin.texturevideoview.adapter.ImageLoadingListAdapter
 import com.liuzhenlin.videos.*
 import com.liuzhenlin.videos.bean.Video
 import com.liuzhenlin.videos.bean.VideoDirectory
@@ -550,7 +552,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
         mModel?.startLoader()
     }
 
-    private inner class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.ViewHolder>() {
+    private inner class VideoListAdapter : ImageLoadingListAdapter<VideoListAdapter.ViewHolder>() {
 
         override fun getItemCount() = mVideos.size
 
@@ -589,6 +591,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            super.onBindViewHolder(holder, position)
             holder.itemVisibleFrame.tag = position
             holder.checkBox.tag = position
             holder.topButton.tag = position
@@ -601,12 +604,20 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
                 visibility = mVideoOptionsFrame.visibility
                 isChecked = video.isChecked
             }
-            VideoUtils2.loadVideoThumbIntoFragmentImageView(
-                    this@LocalFoldedVideosFragment, holder.videoImage, video)
             holder.videoNameText.text = video.name
             holder.videoSizeText.text = FileUtils2.formatFileSize(video.size.toDouble())
             holder.videoProgressAndDurationText.text =
                     VideoUtils2.concatVideoProgressAndDuration(video.progress, video.duration)
+        }
+
+        override fun loadItemImages(holder: ViewHolder) {
+            val video = mVideos[holder.adapterPosition]
+            VideoUtils2.loadVideoThumbIntoFragmentImageView(
+                    this@LocalFoldedVideosFragment, holder.videoImage, video)
+        }
+
+        override fun cancelLoadingItemImages(holder: ViewHolder) {
+            Glide.with(this@LocalFoldedVideosFragment).clear(holder.videoImage)
         }
 
         fun separateToppedItemsFromUntoppedOnes(holder: ViewHolder, position: Int) {

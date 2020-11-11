@@ -30,7 +30,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.NO_POSITION
+import com.bumptech.glide.Glide
 import com.liuzhenlin.floatingmenu.FloatingMenu
+import com.liuzhenlin.texturevideoview.adapter.HeaderAndFooterWrapper
+import com.liuzhenlin.texturevideoview.adapter.ImageLoadingListAdapter
 import com.liuzhenlin.videos.*
 import com.liuzhenlin.videos.bean.Video
 import com.liuzhenlin.videos.model.LocalSearchedVideoListModel
@@ -39,7 +42,6 @@ import com.liuzhenlin.videos.model.OnReloadVideosListener
 import com.liuzhenlin.videos.utils.AlgorithmUtil
 import com.liuzhenlin.videos.utils.UiUtils
 import com.liuzhenlin.videos.utils.VideoUtils2
-import com.liuzhenlin.videos.view.adapter.HeaderAndFooterWrapper
 import com.liuzhenlin.videos.view.fragment.PackageConsts.PAYLOAD_REFRESH_ITEM_NAME
 import com.liuzhenlin.videos.view.fragment.PackageConsts.PAYLOAD_REFRESH_VIDEO_PROGRESS_DURATION
 import com.liuzhenlin.videos.view.swiperefresh.SwipeRefreshLayout
@@ -393,7 +395,7 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
         mModel.startLoader()
     }
 
-    private inner class SearchedVideoListAdapter : RecyclerView.Adapter<SearchedVideoListAdapter.ViewHolder>() {
+    private inner class SearchedVideoListAdapter : ImageLoadingListAdapter<SearchedVideoListAdapter.ViewHolder>() {
         override fun getItemCount() = mSearchedVideos.size
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -421,16 +423,25 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            super.onBindViewHolder(holder, position)
             holder.itemView.tag = position
 
             highlightSelectedItemIfExists(holder, position)
 
             val video = mSearchedVideos[position]
-            VideoUtils2.loadVideoThumbIntoFragmentImageView(
-                    this@LocalSearchedVideosFragment, holder.videoImage, video)
             updateItemName(holder, video.name)
             holder.videoProgressAndDurationText.text =
                     VideoUtils2.concatVideoProgressAndDuration(video.progress, video.duration)
+        }
+
+        override fun loadItemImages(holder: ViewHolder) {
+            val video = mSearchedVideos[holder.adapterPosition - mAdapterWrapper.headersCount]
+            VideoUtils2.loadVideoThumbIntoFragmentImageView(
+                    this@LocalSearchedVideosFragment, holder.videoImage, video)
+        }
+
+        override fun cancelLoadingItemImages(holder: ViewHolder) {
+            Glide.with(this@LocalSearchedVideosFragment).clear(holder.videoImage)
         }
 
         // 高亮搜索关键字
