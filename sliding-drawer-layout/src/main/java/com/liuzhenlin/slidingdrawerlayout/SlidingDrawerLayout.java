@@ -1617,10 +1617,8 @@ public class SlidingDrawerLayout extends ViewGroup {
         }
 
         final boolean issued;
-
+        final int save = canvas.save();
         if (child == mShownDrawer) {
-            final int save = canvas.save();
-
             if (child == mLeftDrawer) {
                 canvas.clipRect(child.getLeft(), child.getTop(),
                         mContentView.getLeft(), child.getBottom());
@@ -1628,20 +1626,14 @@ public class SlidingDrawerLayout extends ViewGroup {
                 canvas.clipRect(mContentView.getRight(), child.getTop(),
                         child.getRight(), child.getBottom());
             }
-
             issued = super.drawChild(canvas, child, drawingTime);
-
-            canvas.restoreToCount(save);
-
         } else {
             issued = super.drawChild(canvas, child, drawingTime);
-
             // Draw the content view's fading
             if (mScrollPercent > 0) {
                 final int baseAlpha = (mContentFadeColor & 0xFF000000) >>> 24;
                 final int alpha = (int) (baseAlpha * mScrollPercent + 0.5f);
                 final int color = alpha << 24 | (mContentFadeColor & 0x00FFFFFF);
-
                 if (mShownDrawer == mLeftDrawer) {
                     canvas.clipRect(mContentView.getLeft(), child.getTop(),
                             getRight() - getPaddingRight(), child.getBottom());
@@ -1653,7 +1645,7 @@ public class SlidingDrawerLayout extends ViewGroup {
                 canvas.drawColor(color);
             }
         }
-
+        canvas.restoreToCount(save);
         return issued;
     }
 

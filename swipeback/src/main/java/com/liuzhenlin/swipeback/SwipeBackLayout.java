@@ -448,6 +448,7 @@ public class SwipeBackLayout extends FrameLayout {
         final int alpha = (int) ((float) baseAlpha * mScrimOpacity + 0.5f);
         final int color = alpha << 24 | (mScrimColor & 0x00FFFFFF);
 
+        canvas.save();
         switch (mTrackingEdge) {
             case EDGE_LEFT:
                 canvas.clipRect(0, 0, child.getLeft(), getHeight());
@@ -457,6 +458,7 @@ public class SwipeBackLayout extends FrameLayout {
                 break;
         }
         canvas.drawColor(color);
+        canvas.restore();
     }
 
     @Override
