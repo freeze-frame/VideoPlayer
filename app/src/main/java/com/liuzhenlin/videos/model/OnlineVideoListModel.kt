@@ -12,8 +12,8 @@ import androidx.core.util.AtomicFile
 import com.google.gson.Gson
 import com.liuzhenlin.texturevideoview.InternalConsts
 import com.liuzhenlin.texturevideoview.utils.FileUtils
-import com.liuzhenlin.texturevideoview.utils.ParallelThreadExecutor
 import com.liuzhenlin.videos.bean.TVGroup
+import com.liuzhenlin.videos.utils.Executors
 import com.liuzhenlin.videos.utils.IOUtils
 import com.liuzhenlin.videos.utils.Utils
 import java.io.*
@@ -27,7 +27,7 @@ class OnlineVideoListModel(context: Context) : BaseModel<Nothing, Array<TVGroup>
 
     override fun createAndStartLoader(): AsyncTask<*, *, *> {
         val loader = LoadTVsAsyncTask()
-        loader.executeOnExecutor(ParallelThreadExecutor.getSingleton(), mContext)
+        loader.executeOnExecutor(Executors.THREAD_POOL_EXECUTOR, mContext)
         return loader
     }
 

@@ -9,14 +9,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.AsyncTask
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.util.Preconditions
 import com.google.android.material.snackbar.Snackbar
 import com.liuzhenlin.texturevideoview.utils.FileUtils
-import com.liuzhenlin.texturevideoview.utils.ParallelThreadExecutor
 import com.liuzhenlin.texturevideoview.utils.ShareUtils
 import com.liuzhenlin.texturevideoview.utils.URLUtils
 import com.liuzhenlin.videos.*
@@ -24,24 +22,23 @@ import com.liuzhenlin.videos.bean.Video
 import com.liuzhenlin.videos.bean.VideoDirectory
 import com.liuzhenlin.videos.bean.VideoListItem
 import com.liuzhenlin.videos.dao.VideoListItemDao
+import com.liuzhenlin.videos.utils.SerialExecutor
 import com.liuzhenlin.videos.utils.UiUtils
 import com.liuzhenlin.videos.view.activity.VideoActivity
 import java.io.File
-import java.util.*
 
 /**
  * @author 刘振林
  */
 
-private val sDeleteItemTasks = LinkedList<AsyncTask<Unit, Unit, Unit>>()
+private val sDeleteItemExecutor = SerialExecutor()
 
 private fun deleteItemsInternal(items: Array<out VideoListItem>) {
     if (items.isEmpty()) return
 
     val dao = VideoListItemDao.getSingleton(App.getInstanceUnsafe()!!)
-    val executor = ParallelThreadExecutor.getSingleton()
-    sDeleteItemTasks.offer(object : AsyncTask<Unit, Unit, Unit>() {
-        override fun doInBackground(vararg units: Unit) {
+    sDeleteItemExecutor.execute(object : Runnable {
+        override fun run() {
             for (item in items)
                 when (item) {
                     is Video -> deleteVideo(item)
@@ -63,19 +60,11 @@ private fun deleteItemsInternal(items: Array<out VideoListItem>) {
 
             dao.deleteVideo(video.id)
         }
-
-        override fun onPostExecute(unit: Unit) {
-            sDeleteItemTasks.poll()
-            sDeleteItemTasks.peek()?.executeOnExecutor(executor)
-        }
     })
-    if (sDeleteItemTasks.size == 1) {
-        sDeleteItemTasks.peek()!!.executeOnExecutor(executor)
-    }
 }
 
 interface VideoListItemOpCallback<in T : VideoListItem> {
-    public val isAsyncDeletingItems get() = sDeleteItemTasks.size > 0
+    public val isAsyncDeletingItems get() = !sDeleteItemExecutor.isIdle
 
     fun showDeleteItemDialog(item: T, onDeleteAction: (() -> Unit)? = null)
     fun showDeleteItemsPopupWindow(vararg items: T, onDeleteAction: (() -> Unit)? = null)

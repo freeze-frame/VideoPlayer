@@ -8,13 +8,13 @@ package com.liuzhenlin.videos.model
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.AsyncTask
-import com.liuzhenlin.texturevideoview.utils.ParallelThreadExecutor
 import com.liuzhenlin.videos.bean.Video
 import com.liuzhenlin.videos.bean.VideoListItem
 import com.liuzhenlin.videos.dao.VideoListItemDao
 import com.liuzhenlin.videos.deepCopy
 import com.liuzhenlin.videos.sortByElementName
 import com.liuzhenlin.videos.toVideoListItems
+import com.liuzhenlin.videos.utils.Executors
 import java.util.*
 
 /**
@@ -48,7 +48,7 @@ class LocalVideoListModel(context: Context) : BaseModel<Nothing, MutableList<Vid
 
     override fun createAndStartLoader(): AsyncTask<*, *, *> {
         val loader = LoadVideosTask()
-        loader.executeOnExecutor(ParallelThreadExecutor.getSingleton())
+        loader.executeOnExecutor(Executors.THREAD_POOL_EXECUTOR)
         return loader
     }
 

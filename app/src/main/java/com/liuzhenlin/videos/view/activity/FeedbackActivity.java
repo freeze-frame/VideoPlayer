@@ -59,6 +59,7 @@ import com.liuzhenlin.videos.observer.RotationObserver;
 import com.liuzhenlin.videos.observer.ScreenNotchSwitchObserver;
 import com.liuzhenlin.videos.utils.BitmapUtils2;
 import com.liuzhenlin.videos.utils.DisplayCutoutUtils;
+import com.liuzhenlin.videos.utils.Executors;
 import com.liuzhenlin.videos.utils.MailUtil;
 import com.liuzhenlin.videos.utils.NetworkUtil;
 import com.liuzhenlin.videos.utils.OSHelper;
@@ -66,6 +67,7 @@ import com.liuzhenlin.videos.utils.UiUtils;
 import com.liuzhenlin.videos.view.adapter.GalleryPagerAdapter;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -88,7 +90,7 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
     private EditText mEnterContactWayEditor;
     @Synthetic Button mCommitButton;
 
-    private PictureGridAdapter mGridAdapter;
+    @Synthetic PictureGridAdapter mGridAdapter;
 
     private Dialog mConfirmSaveDataDialog;
     @Synthetic Dialog mPicturePreviewDialog;
@@ -302,7 +304,7 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
                 mEnterProblemsOrAdviceEditor.getText().toString());
         outState.putString(KEY_FILLED_CONTACT_WAY,
                 mEnterContactWayEditor.getText().toString().trim());
-        if (mGridAdapter.mPicturePaths != null) {
+        if (!mGridAdapter.mPicturePaths.isEmpty()) {
             outState.putSerializable(KEY_FILLED_PICTURE_PATHS,
                     mGridAdapter.mPicturePaths.toArray(Consts.EMPTY_STRING_ARRAY));
         }
@@ -397,7 +399,7 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
         final String contactWay = mEnterContactWayEditor.getText().toString().trim();
         if (hasDataChanged(text, contactWay)) {
             cacheCurrData(text, contactWay,
-                    mGridAdapter.mPicturePaths == null ?
+                    mGridAdapter.mPicturePaths.isEmpty() ?
                             null : new ArrayList<>(mGridAdapter.mPicturePaths));
 
             mFeedbackSPs.saveText(mSavedFeedbackText);
@@ -445,7 +447,7 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
                     PREFIX_MAIL_SUBJECT + mEnterContactWayEditor.getText().toString().trim(),
                     mEnterProblemsOrAdviceEditor.getText().toString(),
                     null,
-                    mGridAdapter.mPicturePaths == null ?
+                    mGridAdapter.mPicturePaths.isEmpty() ?
                             null : mGridAdapter.mPicturePaths.toArray(Consts.EMPTY_STRING_ARRAY));
 
             // 提交反馈后，清除sp文件保存的数据
@@ -458,7 +460,7 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
             refreshCurrTexts(mSavedFeedbackText, mSavedContactWay);
 
             // 清空PictureGridAdapter的数据
-            if (mGridAdapter.mPicturePaths != null) {
+            if (!mGridAdapter.mPicturePaths.isEmpty()) {
                 if (mSavedPicturePaths != null) {
                     mSavedPicturePaths.clear();
                 }
@@ -472,6 +474,7 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
                     it.remove();
                 }
                 mGridAdapter.mPicturePaths.clear();
+                mGridAdapter.mLoadedPicturePaths.clear();
                 // 刷新GridView
                 mGridAdapter.notifyDataSetChanged();
             }
@@ -482,15 +485,45 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
     }
 
     private void addPicture(String path) {
-        if (path != null &&
-                (mGridAdapter.mPicturePaths == null || !mGridAdapter.mPicturePaths.contains(path))) {
-            Bitmap bitmap = BitmapUtils2.decodeRotatedBitmapFormFile(path);
+        List<String> picturePaths = mGridAdapter.mPicturePaths;
+        if (path != null && !picturePaths.contains(path)) {
+            picturePaths.add(path);
+            Executors.SERIAL_EXECUTOR.execute(new LoadPictureTask(this, path));
+        }
+    }
+
+    private static final class LoadPictureTask implements Runnable {
+        final WeakReference<FeedbackActivity> mActivityRef;
+        final String mPicturePath;
+
+        LoadPictureTask(FeedbackActivity activity, String picturePath) {
+            mActivityRef = new WeakReference<>(activity);
+            mPicturePath = picturePath;
+        }
+
+        @Override
+        public void run() {
+            final FeedbackActivity activity = mActivityRef.get();
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+
+            final Bitmap bitmap = BitmapUtils2.decodeRotatedBitmapFormFile(mPicturePath);
             if (bitmap != null) {
-                if (mGridAdapter.mPicturePaths == null)
-                    mGridAdapter.mPicturePaths = new LinkedList<>();
-                mGridAdapter.mPicturePaths.add(mGridAdapter.mPicturePaths.size(), path);
-                mGridAdapter.mPictures.add(mGridAdapter.mPictures.size() - 1, bitmap);
-                mGridAdapter.notifyDataSetChanged();
+                Executors.MAIN_EXECUTOR.post(() -> {
+                    PictureGridAdapter gridAdapter = activity.mGridAdapter;
+                    if (!activity.isFinishing() && gridAdapter.mPicturePaths.contains(mPicturePath)) {
+                        List<String> loadedPicturePaths = gridAdapter.mLoadedPicturePaths;
+                        List<Bitmap> pictures = gridAdapter.mPictures;
+                        loadedPicturePaths.add(loadedPicturePaths.size(), mPicturePath);
+                        pictures.add(pictures.size() - 1, bitmap);
+                        gridAdapter.notifyDataSetChanged();
+                    } else {
+                        if (!gridAdapter.mPictures.contains(bitmap)) {
+                            bitmap.recycle();
+                        }
+                    }
+                });
             }
         }
     }
@@ -499,7 +532,8 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
         final Context mContext;
 
         final List<Bitmap> mPictures = new ArrayList<>(MAX_COUNT_UPLOAD_PICTURES + 1);
-        List<String> mPicturePaths;
+        final List<String> mPicturePaths = new LinkedList<>();
+        final List<String> mLoadedPicturePaths = new LinkedList<>();
 
         static final int MAX_COUNT_UPLOAD_PICTURES = 3;
 
@@ -571,9 +605,11 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final int pictureCount = mPictures.size();
             if (position == pictureCount - 1) {
-                startActivityForResult(
-                        new Intent(Intent.ACTION_GET_CONTENT)
-                                .setType("image/*"), Consts.REQUEST_CODE_ADD_PICTURE);
+                if (mPicturePaths.size() < MAX_COUNT_UPLOAD_PICTURES) {
+                    startActivityForResult(
+                            new Intent(Intent.ACTION_GET_CONTENT)
+                                    .setType("image/*"), Consts.REQUEST_CODE_ADD_PICTURE);
+                }
             } else {
                 mPicturePreviewDialog = new PicturePreviewDialog(position);
                 mPicturePreviewDialog.show();
@@ -735,7 +771,7 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
                         }
                         mPictures.get(currentItem).recycle();
                         mPictures.remove(currentItem);
-                        mPicturePaths.remove(currentItem);
+                        mPicturePaths.remove(mLoadedPicturePaths.remove(currentItem));
                         notifyDataSetChanged();
                         break;
                 }

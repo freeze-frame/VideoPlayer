@@ -61,6 +61,7 @@ import com.liuzhenlin.videos.R;
 import com.liuzhenlin.videos.dao.AppPrefs;
 import com.liuzhenlin.videos.utils.BitmapUtils2;
 import com.liuzhenlin.videos.utils.ColorUtils;
+import com.liuzhenlin.videos.utils.Executors;
 import com.liuzhenlin.videos.utils.IOUtils;
 import com.liuzhenlin.videos.utils.MergeAppUpdateChecker;
 import com.liuzhenlin.videos.utils.OSHelper;
@@ -75,6 +76,7 @@ import com.liuzhenlin.videos.view.swiperefresh.SwipeRefreshLayout;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 /**
  * @author 刘振林
@@ -298,34 +300,70 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Synthetic void setDrawerBackground(String path) {
-        if (path == null || path.equals(mDrawerImage.getTag())) {
-            return;
-        }
-        Bitmap bitmap = BitmapUtils2.decodeRotatedBitmapFormFile(path);
-        if (bitmap != null) {
-            recycleDrawerImage();
-            mDrawerImage.setImageBitmap(bitmap);
-            mDrawerImage.setTag(path);
-
-            AppPrefs asp = AppPrefs.getSingleton(this);
-            final String savedPath = asp.getDrawerBackgroundPath();
-            if (path.equals(savedPath)) {
-                setLightDrawerStatus(asp.isLightDrawerStatus());
-                mDrawerListAdapter.setLightDrawerListForeground(asp.isLightDrawerListForeground());
-            } else {
-                asp.setDrawerBackgroundPath(path);
-
-                final boolean lightBackground = ColorUtils.isLightColor(
-                        BitmapUtils.getDominantColor(bitmap, Color.WHITE));
-                setLightDrawerStatus(lightBackground);
-                mDrawerListAdapter.setLightDrawerListForeground(!lightBackground);
-            }
+        if (path != null) {
+            Executors.SERIAL_EXECUTOR.execute(new LoadDrawerImageTask(this, path));
         }
     }
 
-    private void recycleDrawerImage() {
-        if (mDrawerImage.getBackground() instanceof BitmapDrawable) {
-            ((BitmapDrawable) mDrawerImage.getBackground()).getBitmap().recycle();
+    private static final class LoadDrawerImageTask implements Runnable {
+        final WeakReference<MainActivity> mActivityRef;
+        final String mImagePath;
+
+        LoadDrawerImageTask(MainActivity activity, String imagePath) {
+            mActivityRef = new WeakReference<>(activity);
+            mImagePath = imagePath;
+        }
+
+        @Override
+        public void run() {
+            final MainActivity activity = mActivityRef.get();
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+
+            final Bitmap bitmap = BitmapUtils2.decodeRotatedBitmapFormFile(mImagePath);
+            if (bitmap == null) {
+                return;
+            }
+            Executors.MAIN_EXECUTOR.post(() -> {
+                if (activity.isFinishing() || mImagePath.equals(activity.mDrawerImage.getTag())) {
+                    activity.recycleBmpIfNotDrawerImage(bitmap);
+                    return;
+                }
+
+                activity.recycleDrawerImage();
+                activity.mDrawerImage.setImageBitmap(bitmap);
+                activity.mDrawerImage.setTag(mImagePath);
+
+                AppPrefs asp = AppPrefs.getSingleton(activity);
+                String savedPath = asp.getDrawerBackgroundPath();
+                if (mImagePath.equals(savedPath)) {
+                    activity.setLightDrawerStatus(asp.isLightDrawerStatus());
+                    activity.mDrawerListAdapter.setLightDrawerListForeground(
+                            asp.isLightDrawerListForeground());
+                } else {
+                    asp.setDrawerBackgroundPath(mImagePath);
+
+                    final boolean lightBackground = ColorUtils.isLightColor(
+                            BitmapUtils.getDominantColor(bitmap, Color.WHITE));
+                    activity.setLightDrawerStatus(lightBackground);
+                    activity.mDrawerListAdapter.setLightDrawerListForeground(!lightBackground);
+                }
+            });
+        }
+    }
+
+    @Synthetic void recycleBmpIfNotDrawerImage(Bitmap bitmap) {
+        Drawable d = mDrawerImage.getDrawable();
+        if (d instanceof BitmapDrawable && ((BitmapDrawable) d).getBitmap() != bitmap) {
+            bitmap.recycle();
+        }
+    }
+
+    @Synthetic void recycleDrawerImage() {
+        Drawable d = mDrawerImage.getDrawable();
+        if (d instanceof BitmapDrawable) {
+            ((BitmapDrawable) d).getBitmap().recycle();
         }
     }
 
@@ -539,7 +577,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
-        switch ((int) id) {
+        switch (sDrawerListItemIDs[position]) {
             case R.string.checkForUpdates:
                 checkUpdate(true);
                 break;

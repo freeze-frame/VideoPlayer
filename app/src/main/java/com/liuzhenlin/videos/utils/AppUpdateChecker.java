@@ -38,7 +38,6 @@ import com.bumptech.glide.util.Synthetic;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.liuzhenlin.texturevideoview.utils.ParallelThreadExecutor;
 import com.liuzhenlin.texturevideoview.utils.Singleton;
 import com.liuzhenlin.videos.App;
 import com.liuzhenlin.videos.BuildConfig;
@@ -243,7 +242,7 @@ public final class AppUpdateChecker {
                         break;
                 }
             }
-        }.executeOnExecutor(ParallelThreadExecutor.getSingleton());
+        }.executeOnExecutor(Executors.THREAD_POOL_EXECUTOR);
     }
 
     /**
@@ -369,7 +368,7 @@ public final class AppUpdateChecker {
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
             mTask = new UpdateAppTask(this);
-            mTask.executeOnExecutor(ParallelThreadExecutor.getSingleton(),
+            mTask.executeOnExecutor(Executors.THREAD_POOL_EXECUTOR,
                     intent.getStringExtra(AppUpdateChecker.EXTRA_APP_NAME),
                     intent.getStringExtra(AppUpdateChecker.EXTRA_VERSION_NAME),
                     intent.getStringExtra(AppUpdateChecker.EXTRA_APP_LINK),
@@ -486,7 +485,6 @@ public final class AppUpdateChecker {
 
                     } else if (mApkLength <= 0) {
                         onDownloadError();
-
                     } else {
                         mApk = new File(App.getAppExternalFilesDir(),
                                 strings[INDEX_APP_NAME] + " "
@@ -510,7 +508,6 @@ public final class AppUpdateChecker {
                                 mApk.delete();
                             }
                         }
-
                         if (FileUtils2.hasEnoughStorageOnDisk(mApkLength)) {
                             getHandler().post(() -> {
                                 if (!isCancelled()) {
@@ -522,7 +519,7 @@ public final class AppUpdateChecker {
                                                 mApkLength : (i + 1) * blockSize - 1;
                                         mDownloadAppTasks.add(new DownloadAppTask());
                                         mDownloadAppTasks.get(i).executeOnExecutor(
-                                                ParallelThreadExecutor.getSingleton(), start, end);
+                                                Executors.THREAD_POOL_EXECUTOR, start, end);
                                     }
                                 }
                             });
@@ -567,7 +564,7 @@ public final class AppUpdateChecker {
             private void deleteApk() {
                 if (mApk != null) {
                     //noinspection ResultOfMethodCallIgnored
-                    mApk.delete();
+                    Executors.THREAD_POOL_EXECUTOR.execute(mApk::delete);
                 }
             }
 

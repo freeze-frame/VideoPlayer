@@ -17,7 +17,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -40,7 +39,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.liuzhenlin.texturevideoview.utils.ParallelThreadExecutor;
 import com.liuzhenlin.texturevideoview.utils.Singleton;
 import com.liuzhenlin.videos.App;
 import com.liuzhenlin.videos.BuildConfig;
@@ -58,11 +56,12 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import kotlin.collections.ArraysKt;
 
 /**
  * @author 刘振林
@@ -257,7 +256,7 @@ public final class MergeAppUpdateChecker {
                         break;
                 }
             }
-        }.executeOnExecutor(ParallelThreadExecutor.getSingleton());
+        }.executeOnExecutor(Executors.THREAD_POOL_EXECUTOR);
     }
 
     /**
@@ -389,8 +388,8 @@ public final class MergeAppUpdateChecker {
         // with background work
         private static final int COUNT_DOWNLOAD_APP_TASK = Math.max(2, Math.min(CPU_COUNT - 1, 4));
 
-        private ExecutorService mDownloadAppExecutor;
-        @Synthetic List<DownloadAppPartTask> mDownloadAppPartTasks;
+        @Synthetic final List<DownloadAppPartTask> mDownloadAppPartTasks = new LinkedList<>();
+        private List<String> mPendingAppPartLinks;
         @Synthetic String[] mAppPartLinks;
         @Synthetic File[] mApkParts;
         @Synthetic File mApk;
@@ -400,7 +399,7 @@ public final class MergeAppUpdateChecker {
         private CancelAppUpdateReceiver mReceiver;
 
         @Synthetic final AtomicBoolean mCanceled = new AtomicBoolean();
-        private boolean mRunning;
+        private volatile boolean mRunning;
 
         @Nullable
         @Override
@@ -439,41 +438,56 @@ public final class MergeAppUpdateChecker {
             mReceiver = new CancelAppUpdateReceiver();
             registerReceiver(mReceiver, new IntentFilter(CancelAppUpdateReceiver.ACTION));
 
-            //noinspection ConstantConditions
-            mApk = new File(App.getAppExternalFilesDir(),
-                    intent.getStringExtra(EXTRA_APP_NAME) + " "
-                            + intent.getStringExtra(EXTRA_VERSION_NAME).replace(".", "_")
-                            + ".apk");
-            mApkLength = intent.getIntExtra(EXTRA_APP_LENGTH, 0);
-            if (mApk.exists()) {
-                final String sha1 = intent.getStringExtra(EXTRA_APP_SHA1);
-                // 如果应用已经下载过了，则直接弹出安装提示通知
-                if (mApk.length() == mApkLength
-                        && ObjectsCompat.equals(FileUtils2.getFileSha1(mApk), sha1)) {
-                    stopService();
-                    onAppDownloaded(mApk);
-                    return START_REDELIVER_INTENT;
-                    // 否则先删除旧的apk
-                } else {
-                    //noinspection ResultOfMethodCallIgnored
-                    mApk.delete();
+            Executors.THREAD_POOL_EXECUTOR.execute(() -> {
+                //noinspection ConstantConditions
+                mApk = new File(App.getAppExternalFilesDir(),
+                        intent.getStringExtra(EXTRA_APP_NAME) + " "
+                                + intent.getStringExtra(EXTRA_VERSION_NAME).replace(".", "_")
+                                + ".apk");
+                mApkLength = intent.getIntExtra(EXTRA_APP_LENGTH, 0);
+                if (mApk.exists()) {
+                    final String sha1 = intent.getStringExtra(EXTRA_APP_SHA1);
+                    // 如果应用已经下载过了，则直接弹出安装提示通知
+                    if (mApk.length() == mApkLength
+                            && ObjectsCompat.equals(FileUtils2.getFileSha1(mApk), sha1)) {
+                        if (!mCanceled.get()) {
+                            stopService();
+                            getHandler().post(() -> onAppDownloaded(mApk));
+                        }
+                        return;
+                        // 否则先删除旧的apk
+                    } else {
+                        //noinspection ResultOfMethodCallIgnored
+                        mApk.delete();
+                    }
                 }
-            }
-
-            mAppPartLinks = intent.getStringArrayExtra(EXTRA_APP_PART_LINKS);
-            //noinspection ConstantConditions
-            mApkParts = new File[mAppPartLinks.length];
-            mDownloadAppPartTasks = new ArrayList<>(mApkParts.length);
-            mDownloadAppExecutor = Build.VERSION.SDK_INT > Build.VERSION_CODES.N
-                    ? Executors.newWorkStealingPool(COUNT_DOWNLOAD_APP_TASK)
-                    : Executors.newFixedThreadPool(COUNT_DOWNLOAD_APP_TASK);
-            for (int i = 0; i < mApkParts.length; i++) {
-                mApkParts[i] = new File(mApk.getPath().replace(".apk", i + ".apk"));
-                mDownloadAppPartTasks.add(new DownloadAppPartTask());
-                mDownloadAppPartTasks.get(i).executeOnExecutor(mDownloadAppExecutor, i);
-            }
-
+                mAppPartLinks = intent.getStringArrayExtra(EXTRA_APP_PART_LINKS);
+                //noinspection ConstantConditions
+                final int length = mAppPartLinks.length;
+                mApkParts = new File[length];
+                mPendingAppPartLinks = new LinkedList<>();
+                for (int i = 0; i < length; i++) {
+                    mPendingAppPartLinks.add(mAppPartLinks[i]);
+                    mApkParts[i] = new File(mApk.getPath().replace(".apk", i + ".apk"));
+                }
+                getHandler().post(() -> {
+                    for (int i = 0; i < COUNT_DOWNLOAD_APP_TASK; i++) {
+                        enqueueNextTask();
+                    }
+                });
+            });
             return START_REDELIVER_INTENT;
+        }
+
+        @Synthetic void enqueueNextTask() {
+            if (mDownloadAppPartTasks.size() < COUNT_DOWNLOAD_APP_TASK
+                    && mPendingAppPartLinks.size() > 0
+                    && !mCanceled.get()) {
+                int index = ArraysKt.indexOf(mAppPartLinks, mPendingAppPartLinks.remove(0));
+                DownloadAppPartTask task = new DownloadAppPartTask();
+                mDownloadAppPartTasks.add((DownloadAppPartTask)
+                        task.executeOnExecutor(Executors.THREAD_POOL_EXECUTOR, index));
+            }
         }
 
         @Synthetic RemoteViews createNotificationView() {
@@ -494,8 +508,6 @@ public final class MergeAppUpdateChecker {
             if (!mCanceled.getAndSet(true)) {
                 if (mRunning) {
                     cancel();
-                } else if (mDownloadAppExecutor != null) {
-                    mDownloadAppExecutor.shutdown();
                 }
             }
 
@@ -504,13 +516,8 @@ public final class MergeAppUpdateChecker {
         }
 
         void cancel() {
-            if (mDownloadAppExecutor != null) {
-                if (mDownloadAppPartTasks != null) {
-                    for (DownloadAppPartTask task : mDownloadAppPartTasks) {
-                        task.cancel(false);
-                    }
-                }
-                mDownloadAppExecutor.shutdown();
+            for (DownloadAppPartTask task : mDownloadAppPartTasks) {
+                task.cancel(false);
             }
 
             deleteApkParts();
@@ -520,10 +527,12 @@ public final class MergeAppUpdateChecker {
 
         private void deleteApkParts() {
             if (mApkParts != null) {
-                for (File apkPart : mApkParts) {
-                    //noinspection ResultOfMethodCallIgnored
-                    apkPart.delete();
-                }
+                Executors.THREAD_POOL_EXECUTOR.execute(() -> {
+                    for (File apkPart : mApkParts) {
+                        //noinspection ResultOfMethodCallIgnored
+                        apkPart.delete();
+                    }
+                });
             }
         }
 
@@ -534,7 +543,7 @@ public final class MergeAppUpdateChecker {
             getHandler().sendEmptyMessage(H.MSG_STOP_UPDATE_APP_SERVICE);
         }
 
-        private Handler getHandler() {
+        @Synthetic Handler getHandler() {
             return MergeAppUpdateChecker.getSingleton(mContext).mH;
         }
 
@@ -660,10 +669,15 @@ public final class MergeAppUpdateChecker {
             @Override
             protected void onPostExecute(Void aVoid) {
                 mDownloadAppPartTasks.remove(this);
-                if (mDownloadAppPartTasks.isEmpty()) {
-                    stopService();
-                    FileUtils2.mergeFiles(mApkParts, mApk, true);
-                    onAppDownloaded(mApk);
+                enqueueNextTask();
+                if (mDownloadAppPartTasks.isEmpty() && !mCanceled.get()) {
+                    Executors.THREAD_POOL_EXECUTOR.execute(() -> {
+                        FileUtils2.mergeFiles(mApkParts, mApk, true);
+                        if (!mCanceled.get()) {
+                            stopService();
+                            getHandler().post(() -> onAppDownloaded(mApk));
+                        }
+                    });
                 }
             }
         }
