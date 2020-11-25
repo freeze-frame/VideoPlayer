@@ -279,7 +279,7 @@ public class SwipeBackLayout extends FrameLayout {
             sensitivity = Math.max(0f, Math.min(1.0f, sensitivity));
             try {
                 sDraggerTouchSlopField.setInt(mDragHelper,
-                        (int) (mTouchSlop * (1.0f / sensitivity) + 0.5f));
+                        Utils.roundFloat(mTouchSlop * (1.0f / sensitivity)));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -428,7 +428,7 @@ public class SwipeBackLayout extends FrameLayout {
                     mShadowLeft.setBounds(
                             mTempRect.left - mShadowLeft.getIntrinsicWidth(), mTempRect.top,
                             mTempRect.left, mTempRect.bottom);
-                    mShadowLeft.setAlpha((int) (mScrimOpacity * (float) FULL_ALPHA + 0.5f));
+                    mShadowLeft.setAlpha(Utils.roundFloat(mScrimOpacity * (float) FULL_ALPHA));
                     mShadowLeft.draw(canvas);
                 }
                 break;
@@ -436,7 +436,7 @@ public class SwipeBackLayout extends FrameLayout {
                 if (mShadowRight != null) {
                     mShadowRight.setBounds(mTempRect.right, mTempRect.top,
                             mTempRect.right + mShadowRight.getIntrinsicWidth(), mTempRect.bottom);
-                    mShadowRight.setAlpha((int) (mScrimOpacity * (float) FULL_ALPHA + 0.5f));
+                    mShadowRight.setAlpha(Utils.roundFloat(mScrimOpacity * (float) FULL_ALPHA));
                     mShadowRight.draw(canvas);
                 }
                 break;
@@ -444,10 +444,6 @@ public class SwipeBackLayout extends FrameLayout {
     }
 
     private void drawScrim(Canvas canvas, View child) {
-        final int baseAlpha = (mScrimColor & 0xFF000000) >>> 24;
-        final int alpha = (int) ((float) baseAlpha * mScrimOpacity + 0.5f);
-        final int color = alpha << 24 | (mScrimColor & 0x00FFFFFF);
-
         canvas.save();
         switch (mTrackingEdge) {
             case EDGE_LEFT:
@@ -457,7 +453,7 @@ public class SwipeBackLayout extends FrameLayout {
                 canvas.clipRect(child.getRight(), 0, getRight(), getHeight());
                 break;
         }
-        canvas.drawColor(color);
+        canvas.drawColor(Utils.dimColor(mScrimColor, 1 - mScrimOpacity));
         canvas.restore();
     }
 

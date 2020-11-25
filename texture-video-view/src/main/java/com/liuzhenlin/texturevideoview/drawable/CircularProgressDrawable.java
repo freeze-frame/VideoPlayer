@@ -42,6 +42,7 @@ import androidx.core.util.Preconditions;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import com.bumptech.glide.util.Synthetic;
+import com.liuzhenlin.texturevideoview.utils.Utils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -479,10 +480,10 @@ public class CircularProgressDrawable extends Drawable implements Animatable {
         int endG = (endValue >> 8) & 0xff;
         int endB = endValue & 0xff;
 
-        return (startA + (int) (fraction * (endA - startA))) << 24
-                | (startR + (int) (fraction * (endR - startR))) << 16
-                | (startG + (int) (fraction * (endG - startG))) << 8
-                | (startB + (int) (fraction * (endB - startB)));
+        return (startA + Utils.roundFloat(fraction * (endA - startA))) << 24
+                | (startR + Utils.roundFloat(fraction * (endR - startR))) << 16
+                | (startG + Utils.roundFloat(fraction * (endG - startG))) << 8
+                | (startB + Utils.roundFloat(fraction * (endB - startB)));
     }
 
     /**
@@ -656,8 +657,8 @@ public class CircularProgressDrawable extends Drawable implements Animatable {
          * @param height height of the arrow point
          */
         void setArrowDimensions(float width, float height) {
-            mArrowWidth = (int) width;
-            mArrowHeight = (int) height;
+            mArrowWidth = Utils.roundFloat(width);
+            mArrowHeight = Utils.roundFloat(height);
         }
 
         void setStrokeCap(Paint.Cap strokeCap) {

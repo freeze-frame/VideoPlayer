@@ -9,6 +9,7 @@ import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 
+import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
@@ -18,6 +19,21 @@ import androidx.core.view.ViewCompat;
  */
 public class Utils {
     private Utils() {
+    }
+
+    public static int dimColor(int color, @FloatRange(from = 0.0f, to = 1.0f) float amount) {
+        return roundFloat(((color & 0xff000000) >>> 24) * (1 - amount)) << 24
+                | color & 0x00ffffff;
+    }
+
+    /** Lightweight choice to {@link Math#round(float)} */
+    public static int roundFloat(float value) {
+        return (int) (value > 0 ? value + 0.5f : value - 0.5f);
+    }
+
+    /** Lightweight choice to {@link Math#round(double)} */
+    public static long roundDouble(double value) {
+        return (long) (value > 0 ? value + 0.5 : value - 0.5);
     }
 
     public static int getAbsoluteHorizontalGravity(@NonNull View parent, int gravity) {

@@ -209,7 +209,7 @@ public class SystemVideoPlayer extends VideoPlayer {
                 return false;
             });
             mMediaPlayer.setOnBufferingUpdateListener(
-                    (mp, percent) -> mBuffering = (int) (mVideoDuration * percent / 100f + 0.5f));
+                    (mp, percent) -> mBuffering = Utils.roundFloat(mVideoDuration * percent / 100f));
             mMediaPlayer.setOnErrorListener((mp, what, extra) -> {
                 Log.e(TAG, "Error occurred while playing video: what= " + what + "; extra= " + extra);
                 showVideoErrorToast(extra);

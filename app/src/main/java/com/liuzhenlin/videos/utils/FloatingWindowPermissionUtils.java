@@ -20,7 +20,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.util.Synthetic;
 import com.liuzhenlin.videos.R;
 
 import java.lang.reflect.InvocationTargetException;
@@ -59,17 +58,14 @@ public class FloatingWindowPermissionUtils {
     }
 
     public static void applyForPermission(@NonNull final Activity activity, final int requestCode) {
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        applyForPermission$(activity, requestCode);
+        DialogInterface.OnClickListener listener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    applyForPermission$(activity, requestCode);
 
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        dialog.cancel();
-                        break;
-                }
+                case DialogInterface.BUTTON_NEGATIVE:
+                    dialog.cancel();
+                    break;
             }
         };
         new AlertDialog.Builder(activity, R.style.DialogStyle_MinWidth_NoTitle)
@@ -79,7 +75,7 @@ public class FloatingWindowPermissionUtils {
                 .show();
     }
 
-    @Synthetic static void applyForPermission$(Activity activity, int requestCode) {
+    private static void applyForPermission$(Activity activity, int requestCode) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity.startActivityForResult(
                     createManageOverlayPermissionActionIntent(activity), requestCode);
@@ -90,17 +86,14 @@ public class FloatingWindowPermissionUtils {
     }
 
     public static void applyForPermission(@NonNull final Fragment fragment, final int requestCode) {
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        applyForPermission$(fragment, requestCode);
+        DialogInterface.OnClickListener listener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    applyForPermission$(fragment, requestCode);
 
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        dialog.cancel();
-                        break;
-                }
+                case DialogInterface.BUTTON_NEGATIVE:
+                    dialog.cancel();
+                    break;
             }
         };
         new AlertDialog.Builder(obtainFragmentContext(fragment), R.style.DialogStyle_MinWidth_NoTitle)
@@ -110,7 +103,7 @@ public class FloatingWindowPermissionUtils {
                 .show();
     }
 
-    @Synthetic static void applyForPermission$(Fragment fragment, int requestCode) {
+    private static void applyForPermission$(Fragment fragment, int requestCode) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             fragment.startActivityForResult(
                     createManageOverlayPermissionActionIntent(obtainFragmentContext(fragment)),

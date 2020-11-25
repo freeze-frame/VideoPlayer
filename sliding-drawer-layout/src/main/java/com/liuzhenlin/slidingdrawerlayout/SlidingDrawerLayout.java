@@ -520,7 +520,7 @@ public class SlidingDrawerLayout extends ViewGroup {
             }
         }
         setContentSensitiveEdgeSize(ta.getDimensionPixelSize(R.styleable
-                .SlidingDrawerLayout_contentSensitiveEdgeSize, (int) (DEFAULT_EDGE_SIZE * mDp + 0.5f)));
+                .SlidingDrawerLayout_contentSensitiveEdgeSize, Utils.roundFloat(DEFAULT_EDGE_SIZE * mDp)));
         setContentFadeColor(ta.getColor(R.styleable
                 .SlidingDrawerLayout_contentFadeColor, DEFAULT_FADE_COLOR));
         setDuration(ta.getInteger(R.styleable.SlidingDrawerLayout_duration, DEFAULT_DURATION));
@@ -1469,8 +1469,8 @@ public class SlidingDrawerLayout extends ViewGroup {
             float drawerWidthPercent = child == mLeftDrawer ?
                     mLeftDrawerWidthPercent : mRightDrawerWidthPercent;
             if (drawerWidthPercent == UNSPECIFIED_DRAWER_WIDTH_PERCENT) {
-                final int minChildWidth = (int) (availableWidth * MINIMUM_DRAWER_WIDTH_PERCENT + 0.5f);
-                final int maxChildWidth = (int) (availableWidth * MAXIMUM_DRAWER_WIDTH_PERCENT + 0.5f);
+                final int minChildWidth = Utils.roundFloat(availableWidth * MINIMUM_DRAWER_WIDTH_PERCENT);
+                final int maxChildWidth = Utils.roundFloat(availableWidth * MAXIMUM_DRAWER_WIDTH_PERCENT);
 
                 childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,
                         horizontalPaddings, child.getLayoutParams().width);
@@ -1485,7 +1485,7 @@ public class SlidingDrawerLayout extends ViewGroup {
                 }
             } else {
                 childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(
-                        (int) (availableWidth * drawerWidthPercent + 0.5f), MeasureSpec.EXACTLY);
+                        Utils.roundFloat(availableWidth * drawerWidthPercent), MeasureSpec.EXACTLY);
             }
         }
 
@@ -1546,7 +1546,7 @@ public class SlidingDrawerLayout extends ViewGroup {
                         break;
                     case Gravity.CENTER_HORIZONTAL:
                     default:
-                        lp.startLeft = Math.round(parentLeft + (parentWidth - childWidth) / 2f);
+                        lp.startLeft = Utils.roundFloat(parentLeft + (parentWidth - childWidth) / 2f);
                         break;
                 }
                 if (mShownDrawer == null) {
@@ -1559,7 +1559,8 @@ public class SlidingDrawerLayout extends ViewGroup {
                             (mShownDrawer == mLeftDrawer ?
                                     mShownDrawer.getMeasuredWidth() : -mShownDrawer.getMeasuredWidth());
 
-                    childLeft = Math.round(lp.startLeft + (lp.finalLeft - lp.startLeft) * mScrollPercent);
+                    childLeft = Utils.roundFloat(
+                            lp.startLeft + (lp.finalLeft - lp.startLeft) * mScrollPercent);
                 }
             } else {
                 // We need to make sure of the opened drawer to be correctly displayed by this view,
@@ -1580,7 +1581,8 @@ public class SlidingDrawerLayout extends ViewGroup {
                         break;
                 }
                 if (child == mShownDrawer) {
-                    childLeft = Math.round(lp.startLeft + (lp.finalLeft - lp.startLeft) * mScrollPercent);
+                    childLeft = Utils.roundFloat(
+                            lp.startLeft + (lp.finalLeft - lp.startLeft) * mScrollPercent);
                 } else {
                     childLeft = lp.startLeft;
 
@@ -1601,7 +1603,7 @@ public class SlidingDrawerLayout extends ViewGroup {
                     break;
                 case Gravity.CENTER_VERTICAL:
                 default:
-                    childTop = Math.round(parentTop + (parentHeight - childHeight) / 2f);
+                    childTop = Utils.roundFloat(parentTop + (parentHeight - childHeight) / 2f);
                     break;
             }
 
@@ -1631,9 +1633,7 @@ public class SlidingDrawerLayout extends ViewGroup {
             issued = super.drawChild(canvas, child, drawingTime);
             // Draw the content view's fading
             if (mScrollPercent > 0) {
-                final int baseAlpha = (mContentFadeColor & 0xFF000000) >>> 24;
-                final int alpha = (int) (baseAlpha * mScrollPercent + 0.5f);
-                final int color = alpha << 24 | (mContentFadeColor & 0x00FFFFFF);
+                final int color = Utils.dimColor(mContentFadeColor, 1 - mScrollPercent);
                 if (mShownDrawer == mLeftDrawer) {
                     canvas.clipRect(mContentView.getLeft(), child.getTop(),
                             getRight() - getPaddingRight(), child.getBottom());
@@ -1865,7 +1865,7 @@ public class SlidingDrawerLayout extends ViewGroup {
                 }
                 if ((mFlags & SCROLL_STATE_MASK) == SCROLL_STATE_TOUCH_SCROLL) {
                     scrollDrawerBy(mShownDrawer,
-                            Math.round((mTouchX[mTouchX.length - 1] - mTouchX[mTouchX.length - 2])
+                            Utils.roundFloat((mTouchX[mTouchX.length - 1] - mTouchX[mTouchX.length - 2])
                                     / (float) SCROLL_RATIO_CONTENT_TO_DRAWER));
                     break;
                 }

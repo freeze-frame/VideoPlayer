@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.liuzhenlin.texturevideoview.utils.Utils;
 import com.liuzhenlin.videos.App;
 import com.liuzhenlin.videos.Consts;
 import com.liuzhenlin.videos.R;
@@ -53,8 +54,8 @@ public class VideoUtils2 {
         Context context = view.getContext();
 //        final float aspectRatio = (float) video.getWidth() / (float) video.getHeight();
         final int thumbWidth = App.getInstance(context).getVideoThumbWidth();
-//        final int height = (int) ((float) thumbWidth / aspectRatio + 0.5f);
-        final int thumbHeight /* maxHeight */ = (int) (thumbWidth * 9f / 16f + 0.5f);
+//        final int height = Utils.roundFloat((float) thumbWidth / aspectRatio);
+        final int thumbHeight /* maxHeight */ = Utils.roundFloat(thumbWidth * 9f / 16f);
 //        final int thumbHeight = height > maxHeight ? maxHeight : height;
 
         RequestManager requestManager;
@@ -73,7 +74,7 @@ public class VideoUtils2 {
 
     public static void adjustVideoThumbView(@NonNull ImageView view) {
         final int thumbWidth = App.getInstance(view.getContext()).getVideoThumbWidth();
-        final int thumbHeight = (int) (thumbWidth * 9f / 16f + 0.5f);
+        final int thumbHeight = Utils.roundFloat(thumbWidth * 9f / 16f);
 
         ViewGroup.LayoutParams lp = view.getLayoutParams();
         if (lp.width != thumbWidth || lp.height != thumbHeight) {
@@ -93,8 +94,8 @@ public class VideoUtils2 {
             if (ratio != 1) {
                 thumb = ThumbnailUtils.extractThumbnail(
                         thumb,
-                        (int) (thumb.getWidth() * ratio + 0.5f),
-                        (int) (thumb.getHeight() * ratio + 0.5f),
+                        Utils.roundFloat(thumb.getWidth() * ratio),
+                        Utils.roundFloat(thumb.getHeight() * ratio),
                         ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
             }
         }

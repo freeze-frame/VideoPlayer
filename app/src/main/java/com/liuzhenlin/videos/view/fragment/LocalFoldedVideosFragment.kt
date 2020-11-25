@@ -58,10 +58,10 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
 
     private lateinit var mRecyclerView: SlidingItemMenuRecyclerView
     private val mAdapter = VideoListAdapter()
-    private inline val mVideoDir
+    private val mVideoDir
         get() = arguments?.get(KEY_VIDEODIR) as? VideoDirectory
     private var _mVideos: MutableList<Video>? = null
-    private inline val mVideos: MutableList<Video>
+    private val mVideos: MutableList<Video>
         get() {
             if (_mVideos == null) {
                 _mVideos = mVideoDir?.videos ?: mutableListOf()
@@ -80,7 +80,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
     private lateinit var mDetailsButton: TextView
 
     private var _TOP: String? = null
-    private inline val TOP: String
+    private val TOP: String
         get() {
             if (_TOP == null) {
                 _TOP = getString(R.string.top)
@@ -88,7 +88,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
             return _TOP!!
         }
     private var _CANCEL_TOP: String? = null
-    private inline val CANCEL_TOP: String
+    private val CANCEL_TOP: String
         get() {
             if (_CANCEL_TOP == null) {
                 _CANCEL_TOP = getString(R.string.cancelTop)
@@ -96,7 +96,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
             return _CANCEL_TOP!!
         }
     private var _SELECT_ALL: String? = null
-    private inline val SELECT_ALL: String
+    private val SELECT_ALL: String
         get() {
             if (_SELECT_ALL == null) {
                 _SELECT_ALL = getString(R.string.selectAll)
@@ -104,7 +104,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
             return _SELECT_ALL!!
         }
     private var _SELECT_NONE: String? = null
-    private inline val SELECT_NONE: String
+    private val SELECT_NONE: String
         get() {
             if (_SELECT_NONE == null) {
                 _SELECT_NONE = getString(R.string.selectNone)
@@ -455,7 +455,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
         mDetailsButton.isEnabled = enabled
     }
 
-    private inline val checkedVideos: List<Video>?
+    private val checkedVideos: List<Video>?
         get() {
             var videos: MutableList<Video>? = null
             for (video in mVideos) {

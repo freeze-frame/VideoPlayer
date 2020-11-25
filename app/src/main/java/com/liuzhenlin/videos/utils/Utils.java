@@ -72,14 +72,11 @@ public class Utils {
             final Object lock = new Object();
             final boolean[] runOver = {false};
 
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    action.run();
-                    synchronized (lock) {
-                        runOver[0] = true;
-                        lock.notify();
-                    }
+            handler.post(() -> {
+                action.run();
+                synchronized (lock) {
+                    runOver[0] = true;
+                    lock.notify();
                 }
             });
 

@@ -22,7 +22,6 @@ import android.text.style.TextAppearanceSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +61,7 @@ import com.liuzhenlin.videos.R;
 import com.liuzhenlin.videos.dao.AppPrefs;
 import com.liuzhenlin.videos.utils.BitmapUtils2;
 import com.liuzhenlin.videos.utils.ColorUtils;
+import com.liuzhenlin.videos.utils.IOUtils;
 import com.liuzhenlin.videos.utils.MergeAppUpdateChecker;
 import com.liuzhenlin.videos.utils.OSHelper;
 import com.liuzhenlin.videos.utils.TextViewUtils;
@@ -73,10 +73,8 @@ import com.liuzhenlin.videos.view.fragment.LocalVideosFragment;
 import com.liuzhenlin.videos.view.fragment.OnlineVideosFragment;
 import com.liuzhenlin.videos.view.swiperefresh.SwipeRefreshLayout;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 /**
  * @author 刘振林
@@ -100,8 +98,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // LocalVideosFragment和OnlineVideosFragment的ActionBar
     private ViewGroup mActionBar;
-    @Synthetic ImageButton mHomeAsUpIndicator;
-    @Synthetic TextView mTitleText;
+    private ImageButton mHomeAsUpIndicator;
+    private TextView mTitleText;
     @Synthetic ImageButton mActionButton;
     private DrawerArrowDrawable mDrawerArrowDrawable;
 
@@ -111,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Synthetic ScrollDisableListView mDrawerList;
     @Synthetic DrawerListAdapter mDrawerListAdapter;
     @Synthetic ImageView mDrawerImage;
-    @Synthetic boolean mIsDrawerStatusLight = true;
+    private boolean mIsDrawerStatusLight = true;
     @Synthetic boolean mIsDrawerListForegroundLight = false;
     private float mOldDrawerScrollPercent;
 
@@ -119,11 +117,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int REQUEST_CODE_APPLY_FOR_FLOATING_WINDOW_PERMISSION = 8;
 
     @Synthetic String mCheckUpdateResultText;
-    @Synthetic String mIsTheLatestVersion;
+    private String mIsTheLatestVersion;
     @Synthetic String mFindNewVersion;
     private MergeAppUpdateChecker.OnResultListener mOnCheckUpdateResultListener;
 
-    @Synthetic boolean mIsBackPressed;
+    private boolean mIsBackPressed;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -221,21 +219,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mHomeAsUpIndicator.setOnClickListener(this);
 
         mTitleText = mActionBar.findViewById(R.id.text_title);
-        mTitleText.post(new Runnable() {
-            @Override
-            public void run() {
-                App app = App.getInstance(MainActivity.this);
-                ViewGroup.MarginLayoutParams hauilp = (ViewGroup.MarginLayoutParams)
-                        mHomeAsUpIndicator.getLayoutParams();
-                ViewGroup.MarginLayoutParams ttlp = (ViewGroup.MarginLayoutParams)
-                        mTitleText.getLayoutParams();
-                MarginLayoutParamsCompat.setMarginStart(ttlp,
-                        DensityUtils.dp2px(app, 10f) /* margin */
-                                + app.getVideoThumbWidth()
-                                - hauilp.leftMargin - hauilp.rightMargin
-                                - mHomeAsUpIndicator.getWidth() - mTitleText.getWidth());
-                mTitleText.setLayoutParams(ttlp);
-            }
+        mTitleText.post(() -> {
+            ViewGroup.MarginLayoutParams hauilp = (ViewGroup.MarginLayoutParams)
+                    mHomeAsUpIndicator.getLayoutParams();
+            ViewGroup.MarginLayoutParams ttlp = (ViewGroup.MarginLayoutParams)
+                    mTitleText.getLayoutParams();
+            MarginLayoutParamsCompat.setMarginStart(ttlp,
+                    DensityUtils.dp2px(app, 10f) /* margin */
+                            + app.getVideoThumbWidth()
+                            - hauilp.leftMargin - hauilp.rightMargin
+                            - mHomeAsUpIndicator.getWidth() - mTitleText.getWidth());
+            mTitleText.setLayoutParams(ttlp);
         });
 
         mFragmentViewPager = findViewById(R.id.viewpager_fragments);
@@ -353,12 +347,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         } else if (!mIsBackPressed) {
             mIsBackPressed = true;
-            mSlidingDrawerLayout.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mIsBackPressed = false;
-                }
-            }, 1500);
+            mSlidingDrawerLayout.postDelayed(() -> mIsBackPressed = false, 1500);
             UiUtils.showUserCancelableSnackbar(mSlidingDrawerLayout,
                     R.string.pressAgainToExitApp, Snackbar.LENGTH_SHORT);
 
@@ -588,13 +577,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void baseCheckUpdate(boolean toastResult) {
         MergeAppUpdateChecker auc = MergeAppUpdateChecker.getSingleton(this);
         if (mOnCheckUpdateResultListener == null) {
-            mOnCheckUpdateResultListener = new MergeAppUpdateChecker.OnResultListener() {
-                @Override
-                public void onResult(boolean findNewVersion) {
-                    mCheckUpdateResultText = findNewVersion ? mFindNewVersion : mIsTheLatestVersion;
-                    if (mDrawerListAdapter != null) {
-                        mDrawerListAdapter.notifyItemChanged(0);
-                    }
+            mOnCheckUpdateResultListener = findNewVersion -> {
+                mCheckUpdateResultText = findNewVersion ? mFindNewVersion : mIsTheLatestVersion;
+                if (mDrawerListAdapter != null) {
+                    mDrawerListAdapter.notifyItemChanged(0);
                 }
             };
             auc.addOnResultListener(mOnCheckUpdateResultListener);
@@ -615,67 +601,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showUpdateLogsDialog() {
-        View view = View.inflate(this, R.layout.dialog_update_logs, null);
+        final MainActivity _this = this;
+        final View view = View.inflate(_this, R.layout.dialog_update_logs, null);
         final ScrollView scrollView = view.findViewById(R.id.scrollview);
         final TextView tv = view.findViewById(R.id.text_updateLogs);
 
-        StringBuilder text = null;
-
-        //noinspection CharsetObjectCanBeUsed
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(getAssets().open("updateLogs.txt"), "utf-8"))) {
-            final char[] buffer = new char[1024];
-            int len;
-            while ((len = reader.read(buffer)) != -1) {
-                if (text == null) {
-                    text = new StringBuilder(len);
-                }
-                text.append(buffer, 0, len);
-            }
+        String text = null;
+        try {
+            text = IOUtils.decodeStringFromStream(getAssets().open("updateLogs.txt"));
         } catch (IOException e) {
             e.printStackTrace();
-            return;
         }
 
         if (text == null) return;
         tv.setText(text);
 
-        tv.post(new Runnable() {
-            @Override
-            public void run() {
-                TextViewUtils.setHangingIndents(tv, 4);
+        tv.post(() -> {
+            TextViewUtils.setHangingIndents(tv, 4);
 
-                final String newText = tv.getText().toString();
-                final SpannableString ss = new SpannableString(newText);
+            final String newText = tv.getText().toString();
+            final SpannableString ss = new SpannableString(newText);
 
-                final String start = getString(R.string.appName_chinese) + "v";
-                final String end = getString(R.string.updateAppendedColon);
-                for (int i = 0, count = BuildConfig.VERSION_CODE - 1, fromIndex = 0; i < count; i++) {
-                    final int startIndex = newText.indexOf(start, fromIndex);
-                    final int endIndex = newText.indexOf(end, startIndex) + end.length();
-                    ss.setSpan(new TextAppearanceSpan(MainActivity.this,
-                                    R.style.TextAppearance_UpdateLogTitle),
-                            startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    fromIndex = endIndex;
-                }
-
-                tv.setText(ss);
-
-                tv.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollView.smoothScrollTo(0, tv.getHeight() - scrollView.getHeight());
-                    }
-                });
+            final String start = getString(R.string.appName_chinese) + "v";
+            final String end = getString(R.string.updateAppendedColon);
+            for (int i = 0, count = BuildConfig.VERSION_CODE - 1, fromIndex = 0; i < count; i++) {
+                final int startIndex = newText.indexOf(start, fromIndex);
+                final int endIndex = newText.indexOf(end, startIndex) + end.length();
+                ss.setSpan(new TextAppearanceSpan(_this, R.style.TextAppearance_UpdateLogTitle),
+                        startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                fromIndex = endIndex;
             }
+
+            tv.setText(ss);
+
+            tv.post(() -> scrollView.smoothScrollTo(0, tv.getHeight() - scrollView.getHeight()));
         });
 
-        Dialog dialog = new AppCompatDialog(this, R.style.DialogStyle_MinWidth_NoTitle);
+        Dialog dialog = new AppCompatDialog(_this, R.style.DialogStyle_MinWidth_NoTitle);
         dialog.setContentView(view);
         dialog.show();
 
         View button = view.findViewById(R.id.btn_ok_updateLogsDialog);
-        button.setOnClickListener(this);
+        button.setOnClickListener(_this);
         button.setTag(dialog);
     }
 
@@ -695,23 +662,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ppm.setGravity(Gravity.END);
         ppm.show();
-        ppm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.setBackground:
-                        Intent it = new Intent(Intent.ACTION_GET_CONTENT).setType("image/*");
-                        startActivityForResult(it, REQUEST_CODE_CHOSE_DRAWER_BACKGROUND_PICTURE);
-                        return true;
-                    case R.id.changeTextColor:
-                        mDrawerListAdapter.setLightDrawerListForeground(!mIsDrawerListForegroundLight);
-                        return true;
-                    case R.id.changeStatusTextColor:
-                        setLightDrawerStatus(!mIsDrawerStatusLight);
-                        return true;
-                    default:
-                        return false;
-                }
+        ppm.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.setBackground:
+                    Intent it = new Intent(Intent.ACTION_GET_CONTENT).setType("image/*");
+                    startActivityForResult(it, REQUEST_CODE_CHOSE_DRAWER_BACKGROUND_PICTURE);
+                    return true;
+                case R.id.changeTextColor:
+                    mDrawerListAdapter.setLightDrawerListForeground(!mIsDrawerListForegroundLight);
+                    return true;
+                case R.id.changeStatusTextColor:
+                    setLightDrawerStatus(!mIsDrawerStatusLight);
+                    return true;
+                default:
+                    return false;
             }
         });
     }

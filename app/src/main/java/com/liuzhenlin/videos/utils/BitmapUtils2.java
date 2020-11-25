@@ -18,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
+import com.liuzhenlin.texturevideoview.utils.Utils;
+
 import java.io.IOException;
 
 /**
@@ -82,8 +84,8 @@ public class BitmapUtils2 {
         final int height = options.outHeight;
         int inSampleSize = 1;
         if (width > reqWidth || height > reqHeight) {
-            final int widthRatio = (int) ((float) width / reqWidth + 0.5f);
-            final int heightRatio = (int) ((float) height / reqHeight + 0.5f);
+            final int widthRatio = Utils.roundFloat((float) width / reqWidth);
+            final int heightRatio = Utils.roundFloat((float) height / reqHeight);
             inSampleSize = Math.min(widthRatio, heightRatio);
         }
         return inSampleSize;

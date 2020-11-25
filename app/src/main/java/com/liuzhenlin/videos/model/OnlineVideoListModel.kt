@@ -14,6 +14,7 @@ import com.liuzhenlin.texturevideoview.InternalConsts
 import com.liuzhenlin.texturevideoview.utils.FileUtils
 import com.liuzhenlin.texturevideoview.utils.ParallelThreadExecutor
 import com.liuzhenlin.videos.bean.TVGroup
+import com.liuzhenlin.videos.utils.IOUtils
 import com.liuzhenlin.videos.utils.Utils
 import java.io.*
 import java.net.HttpURLConnection
@@ -78,20 +79,8 @@ class OnlineVideoListModel(context: Context) : BaseModel<Nothing, Array<TVGroup>
                 json = null
                 ioException = e
             } finally {
-                if (writer != null) {
-                    try {
-                        writer.close()
-                    } catch (e: IOException) {
-                        //
-                    }
-                }
-                if (reader != null) {
-                    try {
-                        reader.close()
-                    } catch (e: IOException) {
-                        //
-                    }
-                }
+                IOUtils.closeSilently(writer)
+                IOUtils.closeSilently(reader)
                 conn?.disconnect()
             }
 

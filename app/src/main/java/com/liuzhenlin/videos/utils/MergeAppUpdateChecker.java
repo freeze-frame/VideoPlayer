@@ -49,12 +49,10 @@ import com.liuzhenlin.videos.R;
 
 import org.apache.http.conn.ConnectTimeoutException;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -166,27 +164,16 @@ public final class MergeAppUpdateChecker {
 
             @Override
             protected Integer doInBackground(Void... voids) {
-                StringBuilder json = null;
+                String json;
 
                 HttpURLConnection conn = null;
-                BufferedReader reader = null;
                 try {
                     URL url = new URL(LINK_APP_INFOS);
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setConnectTimeout(TIMEOUT_CONNECTION);
                     conn.setReadTimeout(TIMEOUT_READ);
 
-                    //noinspection CharsetObjectCanBeUsed
-                    reader = new BufferedReader(
-                            new InputStreamReader(conn.getInputStream(), "utf-8"));
-                    final char[] buffer = new char[1024];
-                    int len;
-                    while ((len = reader.read(buffer)) != -1) {
-                        if (json == null) {
-                            json = new StringBuilder(len);
-                        }
-                        json.append(buffer, 0, len);
-                    }
+                    json = IOUtils.decodeStringFromStream(conn.getInputStream());
 
                     // 连接服务器超时
                 } catch (ConnectTimeoutException e) {
@@ -201,20 +188,13 @@ public final class MergeAppUpdateChecker {
                     return 0;
 
                 } finally {
-                    if (reader != null) {
-                        try {
-                            reader.close();
-                        } catch (IOException e) {
-                            //
-                        }
-                    }
                     if (conn != null) {
                         conn.disconnect();
                     }
                 }
 
                 //noinspection ConstantConditions
-                JsonObject appInfos = JsonParser.parseString(json.toString()).getAsJsonObject()
+                JsonObject appInfos = JsonParser.parseString(json).getAsJsonObject()
                         .get("appInfos").getAsJsonObject();
 
                 final boolean findNewVersion = Consts.DEBUG_APP_UPDATE
@@ -301,46 +281,38 @@ public final class MergeAppUpdateChecker {
 
         final TextView tv = view.findViewById(R.id.text_updateLog);
         tv.setText(mUpdateLog);
-        tv.post(new Runnable() {
-            @Override
-            public void run() {
-                TextViewUtils.setHangingIndents(tv, 4);
-            }
-        });
+        tv.post(() -> TextViewUtils.setHangingIndents(tv, 4));
 
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    // 当点确定按钮时从服务器上下载新的apk，然后安装
-                    case R.id.btn_confirm:
-                        dialog.cancel();
-                        if (FileUtils2.isExternalStorageMounted()) {
-                            if (FileUtils2.hasEnoughStorageOnDisk(mAppLength)) {
-                                mServiceIntent = new Intent(mContext, UpdateAppService.class)
-                                        .putExtra(EXTRA_APP_NAME, mAppName)
-                                        .putExtra(EXTRA_VERSION_NAME, mVersionName)
-                                        .putExtra(EXTRA_APP_PART_LINKS, mAppPartLinks)
-                                        .putExtra(EXTRA_APP_LENGTH, mAppLength)
-                                        .putExtra(EXTRA_APP_SHA1, mAppSha1);
-                                mContext.startService(mServiceIntent);
-                            } else {
-                                reset();
-                                Toast.makeText(mContext, R.string.notHaveEnoughStorage,
-                                        Toast.LENGTH_SHORT).show();
-                            }
+        View.OnClickListener listener = v -> {
+            switch (v.getId()) {
+                // 当点确定按钮时从服务器上下载新的apk，然后安装
+                case R.id.btn_confirm:
+                    dialog.cancel();
+                    if (FileUtils2.isExternalStorageMounted()) {
+                        if (FileUtils2.hasEnoughStorageOnDisk(mAppLength)) {
+                            mServiceIntent = new Intent(mContext, UpdateAppService.class)
+                                    .putExtra(EXTRA_APP_NAME, mAppName)
+                                    .putExtra(EXTRA_VERSION_NAME, mVersionName)
+                                    .putExtra(EXTRA_APP_PART_LINKS, mAppPartLinks)
+                                    .putExtra(EXTRA_APP_LENGTH, mAppLength)
+                                    .putExtra(EXTRA_APP_SHA1, mAppSha1);
+                            mContext.startService(mServiceIntent);
                         } else {
                             reset();
-                            Toast.makeText(mContext, R.string.pleaseInsertSdCardOnYourDeviceFirst,
+                            Toast.makeText(mContext, R.string.notHaveEnoughStorage,
                                     Toast.LENGTH_SHORT).show();
                         }
-                        break;
-                    // 当点取消按钮时不做任何举动
-                    case R.id.btn_cancel:
-                        dialog.cancel();
+                    } else {
                         reset();
-                        break;
-                }
+                        Toast.makeText(mContext, R.string.pleaseInsertSdCardOnYourDeviceFirst,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                // 当点取消按钮时不做任何举动
+                case R.id.btn_cancel:
+                    dialog.cancel();
+                    reset();
+                    break;
             }
         };
         view.findViewById(R.id.btn_cancel).setOnClickListener(listener);
@@ -568,39 +540,30 @@ public final class MergeAppUpdateChecker {
 
         @Synthetic void onConnectionTimeout() {
             if (!mCanceled.getAndSet(true)) {
-                getHandler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        cancel();
-                        Toast.makeText(mContext,
-                                R.string.connectionTimeout, Toast.LENGTH_SHORT).show();
-                    }
+                getHandler().post(() -> {
+                    cancel();
+                    Toast.makeText(mContext,
+                            R.string.connectionTimeout, Toast.LENGTH_SHORT).show();
                 });
             }
         }
 
         @Synthetic void onReadTimeout() {
             if (!mCanceled.getAndSet(true)) {
-                getHandler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        cancel();
-                        Toast.makeText(mContext,
-                                R.string.readTimeout, Toast.LENGTH_SHORT).show();
-                    }
+                getHandler().post(() -> {
+                    cancel();
+                    Toast.makeText(mContext,
+                            R.string.readTimeout, Toast.LENGTH_SHORT).show();
                 });
             }
         }
 
         @Synthetic void onDownloadError() {
             if (!mCanceled.getAndSet(true)) {
-                getHandler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        cancel();
-                        Toast.makeText(mContext,
-                                R.string.downloadError, Toast.LENGTH_SHORT).show();
-                    }
+                getHandler().post(() -> {
+                    cancel();
+                    Toast.makeText(mContext,
+                            R.string.downloadError, Toast.LENGTH_SHORT).show();
                 });
             }
         }
@@ -655,20 +618,8 @@ public final class MergeAppUpdateChecker {
                     e.printStackTrace();
                     onDownloadError();
                 } finally {
-                    if (out != null) {
-                        try {
-                            out.close();
-                        } catch (IOException e) {
-                            //
-                        }
-                    }
-                    if (in != null) {
-                        try {
-                            in.close();
-                        } catch (IOException e) {
-                            //
-                        }
-                    }
+                    IOUtils.closeSilently(out);
+                    IOUtils.closeSilently(in);
                     if (conn != null) {
                         conn.disconnect();
                     }

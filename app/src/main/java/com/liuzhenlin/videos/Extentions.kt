@@ -21,8 +21,8 @@ import java.util.*
  * @author 刘振林
  */
 
-public inline val Fragment.contextThemedFirst get() = activity ?: contextRequired
-public inline val Fragment.contextRequired get() = context ?: App.getInstanceUnsafe()!!
+public val Fragment.contextThemedFirst get() = activity ?: contextRequired
+public val Fragment.contextRequired get() = context ?: App.getInstanceUnsafe()!!
 
 private val sVideoListItemComparator = Comparator<VideoListItem> { item, item2 ->
     if (item is Video) {

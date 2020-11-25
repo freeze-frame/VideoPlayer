@@ -183,24 +183,21 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
             public void afterTextChanged(Editable s) {
             }
         });
-        mEnterProblemsOrAdviceEditor.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        EditText editText = (EditText) v;
-                        // 当触摸的是EditText且当前EditText可上下滚动时，不允许父布局ScrollView拦截事件
-                        if (editText.getLineCount() > TextViewCompat.getMaxLines(editText)) {
-                            v.getParent().requestDisallowInterceptTouchEvent(true);
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_CANCEL:
-                        v.getParent().requestDisallowInterceptTouchEvent(false);
-                        break;
-                }
-                return false;
+        mEnterProblemsOrAdviceEditor.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    EditText editText = (EditText) v;
+                    // 当触摸的是EditText且当前EditText可上下滚动时，不允许父布局ScrollView拦截事件
+                    if (editText.getLineCount() > TextViewCompat.getMaxLines(editText)) {
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.getParent().requestDisallowInterceptTouchEvent(false);
+                    break;
             }
+            return false;
         });
 
         GridView gridView = findViewById(R.id.grid_pictures);
@@ -541,7 +538,8 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
                 final int dp_20 = DensityUtils.dp2px(mContext, 20f);
 
                 ViewGroup.LayoutParams lp = convertView.getLayoutParams();
-                lp.height = lp.width = (int) ((screenWidth - dp_20 * 1.5f) / 3f + 0.5f);
+                lp.height = lp.width = com.liuzhenlin.texturevideoview.utils.
+                        Utils.roundFloat((screenWidth - dp_20 * 1.5f) / 3f);
 
                 ViewGroup.LayoutParams plp = parent.getLayoutParams();
                 plp.width = screenWidth - dp_20;
@@ -649,12 +647,9 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
 
                 setLayoutInDisplayCutout();
                 mWindow.getDecorView().setOnSystemUiVisibilityChangeListener(
-                        new View.OnSystemUiVisibilityChangeListener() {
-                            @Override
-                            public void onSystemUiVisibilityChange(int visibility) {
-                                // FIXME: 对于Dialog, 在API24（Android 7.0）及以下不起作用
-                                SystemBarUtils.showSystemBars(mWindow, false);
-                            }
+                        visibility -> {
+                            // FIXME: 对于Dialog, 在API24（Android 7.0）及以下不起作用
+                            SystemBarUtils.showSystemBars(mWindow, false);
                         });
                 super.show();
 

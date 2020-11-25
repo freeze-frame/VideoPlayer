@@ -120,8 +120,8 @@ class OnlineVideosFragment : Fragment(), View.OnClickListener,
         mTvList.onItemLongClickListener = mTvListAdapter
         mTvList.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                mDownX = event.rawX.toInt()
-                mDownY = event.rawY.toInt()
+                mDownX = com.liuzhenlin.texturevideoview.utils.Utils.roundFloat(event.rawX)
+                mDownY = com.liuzhenlin.texturevideoview.utils.Utils.roundFloat(event.rawY)
             }
             false
         }

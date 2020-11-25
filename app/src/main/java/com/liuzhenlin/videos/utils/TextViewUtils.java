@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.liuzhenlin.texturevideoview.utils.Utils;
+
 /**
  * @author 刘振林
  */
@@ -33,21 +35,21 @@ public class TextViewUtils {
         TextPaint paint = tv.getPaint();
         paint.setTextSize(tv.getTextSize());
         Paint.FontMetrics fm = paint.getFontMetrics();
-        return (int) (fm.descent - fm.ascent + 0.5f);
+        return Utils.roundFloat(fm.descent - fm.ascent);
     }
 
     public static int getLineHeight(@NonNull TextView tv) {
         TextPaint paint = tv.getPaint();
         paint.setTextSize(tv.getTextSize());
         Paint.FontMetrics fm = paint.getFontMetrics();
-        return (int) (fm.bottom - fm.top + 0.5f);
+        return Utils.roundFloat(fm.bottom - fm.top);
     }
 
     public static int getLineSpacingHeight(@NonNull TextView tv) {
         TextPaint paint = tv.getPaint();
         paint.setTextSize(tv.getTextSize());
         Paint.FontMetrics fm = paint.getFontMetrics();
-        return (int) (fm.leading + 0.5f);
+        return Utils.roundFloat(fm.leading);
     }
 
     public static void setHangingIndents(@NonNull TextView tv, int indentSpaceCount) {

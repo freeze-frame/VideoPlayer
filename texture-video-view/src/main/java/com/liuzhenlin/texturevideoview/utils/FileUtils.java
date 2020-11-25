@@ -103,7 +103,8 @@ public class FileUtils {
         values.put(MediaStore.MediaColumns.DATA, filePath);
         values.put(MediaStore.MediaColumns.SIZE, file.length());
         values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
-        values.put(MediaStore.MediaColumns.DATE_ADDED, (int) (System.currentTimeMillis() / 1000f + 0.5f));
+        values.put(MediaStore.MediaColumns.DATE_ADDED,
+                Utils.roundDouble(System.currentTimeMillis() / 1000.0));
         context.getContentResolver().insert(mediaUri, values);
 
         MediaScannerConnection.scanFile(context, new String[]{filePath}, new String[]{mimeType}, null);

@@ -60,7 +60,7 @@ public class ScreenUtils {
         if (brightness == WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE) {
             return (int) brightness;
         }
-        return (int) (brightness * 255f + 0.5f);
+        return Utils.roundFloat(brightness * 255f);
     }
 
     /**

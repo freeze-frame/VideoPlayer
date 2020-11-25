@@ -257,8 +257,8 @@ public class SlidingItemMenuRecyclerView extends RecyclerView {
         boolean intercept = false;
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                mDownX = (int) e.getX();
-                mDownY = (int) e.getY();
+                mDownX = Utils.roundFloat(e.getX());
+                mDownY = Utils.roundFloat(e.getY());
                 markCurrTouchPoint(mDownX, mDownY);
 
                 for (int i = getChildCount() - 1; i >= 0; i--) {

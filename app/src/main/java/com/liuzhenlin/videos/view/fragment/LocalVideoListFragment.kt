@@ -41,6 +41,7 @@ import com.liuzhenlin.simrv.SlidingItemMenuRecyclerView
 import com.liuzhenlin.swipeback.SwipeBackFragment
 import com.liuzhenlin.texturevideoview.adapter.ImageLoadingListAdapter
 import com.liuzhenlin.texturevideoview.utils.FileUtils
+import com.liuzhenlin.texturevideoview.utils.Utils
 import com.liuzhenlin.videos.*
 import com.liuzhenlin.videos.bean.Video
 import com.liuzhenlin.videos.bean.VideoDirectory
@@ -107,7 +108,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
             }
         }
 
-    private inline val checkedItems: List<VideoListItem>?
+    private val checkedItems: List<VideoListItem>?
         get() {
             var checkedItems: MutableList<VideoListItem>? = null
             for (item in mVideoListItems) {
@@ -122,7 +123,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
         }
 
     private var _TOP: String? = null
-    private inline val TOP: String
+    private val TOP: String
         get() {
             if (_TOP == null) {
                 _TOP = getString(R.string.top)
@@ -130,7 +131,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
             return _TOP!!
         }
     private var _CANCEL_TOP: String? = null
-    private inline val CANCEL_TOP: String
+    private val CANCEL_TOP: String
         get() {
             if (_CANCEL_TOP == null) {
                 _CANCEL_TOP = getString(R.string.cancelTop)
@@ -138,7 +139,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
             return _CANCEL_TOP!!
         }
     private var _SELECT_ALL: String? = null
-    private inline val SELECT_ALL: String
+    private val SELECT_ALL: String
         get() {
             if (_SELECT_ALL == null) {
                 _SELECT_ALL = getString(R.string.selectAll)
@@ -146,7 +147,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
             return _SELECT_ALL!!
         }
     private var _SELECT_NONE: String? = null
-    private inline val SELECT_NONE: String
+    private val SELECT_NONE: String
         get() {
             if (_SELECT_NONE == null) {
                 _SELECT_NONE = getString(R.string.selectNone)
@@ -154,8 +155,8 @@ class LocalVideoListFragment : SwipeBackFragment(),
             return _SELECT_NONE!!
         }
 
-    private inline val miniThumbSize
-        get() = (512f * (resources.displayMetrics.widthPixels / 1080f) + 0.5f).toInt()
+    private val miniThumbSize
+        get() = Utils.roundFloat(512f * (resources.displayMetrics.widthPixels / 1080f))
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -1243,7 +1244,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
             val placeholder = ContextCompat.getDrawable(context, R.drawable.ic_default_thumb)!!
 
             fun showPlaceHolderDrawable() {
-                placeholder.setBounds(0, 0, thumbSize, (thumbSize * 9f / 16f + 0.5f).toInt())
+                placeholder.setBounds(0, 0, thumbSize, Utils.roundFloat(thumbSize * 9f / 16f))
                 thumbTextView.setCompoundDrawables(null, placeholder, null, null)
             }
 

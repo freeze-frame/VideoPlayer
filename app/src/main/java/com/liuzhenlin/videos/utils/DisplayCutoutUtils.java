@@ -18,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.liuzhenlin.texturevideoview.utils.Utils;
+
 /**
  * @author 刘振林
  */
@@ -161,7 +163,7 @@ public class DisplayCutoutUtils {
      * 获取vivo手机刘海的高度 (27dp)
      */
     public static int getNotchHeightForFuntouchOS(@NonNull Context context) {
-        return (int) (context.getResources().getDisplayMetrics().density * 27f + 0.5f);
+        return Utils.roundFloat(context.getResources().getDisplayMetrics().density * 27f);
     }
 
     /**

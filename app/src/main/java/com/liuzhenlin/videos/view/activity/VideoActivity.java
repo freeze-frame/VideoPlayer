@@ -136,12 +136,8 @@ public class VideoActivity extends SwipeBackActivity {
 
     @Synthetic Handler mHandler;
 
-    private final Runnable mHideLockUnlockOrientationButtonRunnable = new Runnable() {
-        @Override
-        public void run() {
-            showLockUnlockOrientationButton(false);
-        }
-    };
+    private final Runnable mHideLockUnlockOrientationButtonRunnable =
+            () -> showLockUnlockOrientationButton(false);
     private static final int DELAY_TIME_HIDE_LOCK_UNLOCK_ORIENTATION_BUTTON = 2500;
 
     /** The arguments to be used for Picture-in-Picture mode. */
@@ -419,12 +415,8 @@ public class VideoActivity extends SwipeBackActivity {
         mVideoView.setVideoPlayer(videoPlayer);
 
         mLockUnlockOrientationButton = findViewById(R.id.btn_lockUnlockOrientation);
-        mLockUnlockOrientationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setScreenOrientationLocked((mPrivateFlags & PFLAG_SCREEN_ORIENTATION_LOCKED) == 0);
-            }
-        });
+        mLockUnlockOrientationButton.setOnClickListener(v ->
+                setScreenOrientationLocked((mPrivateFlags & PFLAG_SCREEN_ORIENTATION_LOCKED) == 0));
 
         if (mVideos.length > 1) {
             mVideoView.setPlayListAdapter(new VideoEpisodesAdapter());
@@ -835,7 +827,7 @@ public class VideoActivity extends SwipeBackActivity {
         }
     }
 
-    @Synthetic void setScreenOrientationLocked(boolean locked) {
+    private void setScreenOrientationLocked(boolean locked) {
         if (locked) {
             mPrivateFlags |= PFLAG_SCREEN_ORIENTATION_LOCKED;
             mLockUnlockOrientationButton.setImageResource(R.drawable.ic_unlock);
@@ -1009,7 +1001,7 @@ public class VideoActivity extends SwipeBackActivity {
                 } else {
                     final int screenWidth = App.getInstance(this).getRealScreenWidthIgnoreOrientation();
                     // portrait w : h = 16 : 9
-                    final int minLayoutHeight = (int) ((float) screenWidth / 16f * 9f + 0.5f);
+                    final int minLayoutHeight = Utils.roundFloat((float) screenWidth / 16f * 9f);
 
                     setVideoViewSize(screenWidth, minLayoutHeight);
                     if ((mPrivateFlags & PFLAG_SCREEN_NOTCH_SUPPORT) != 0) {
@@ -1100,12 +1092,9 @@ public class VideoActivity extends SwipeBackActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 final View decorView = window.getDecorView();
                 final int visibility = decorView.getSystemUiVisibility();
-                decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-                    @Override
-                    public void onSystemUiVisibilityChange(int newVisibility) {
-                        if (newVisibility != visibility) {
-                            decorView.setSystemUiVisibility(visibility);
-                        }
+                decorView.setOnSystemUiVisibilityChangeListener(newVisibility -> {
+                    if (newVisibility != visibility) {
+                        decorView.setSystemUiVisibility(visibility);
                     }
                 });
             }
@@ -1259,8 +1248,8 @@ public class VideoActivity extends SwipeBackActivity {
                     // 1dp -> 2.75px (5.5inch  w * h = 1080 * 1920)
                     final float dp = getResources().getDisplayMetrics().density;
                     ratioOfProgressHeightToVideoSize = 1.0f / (12121.2f * dp); // 1 : 33333.3 (px)
-                    progressMinHeight = (int) (dp * 1.8f + 0.5f); // 5.45px -> 5px
-                    progressMaxHeight = (int) (dp * 2.5f + 0.5f); // 7.375px -> 7px
+                    progressMinHeight = Utils.roundFloat(dp * 1.8f); // 5.45px -> 5px
+                    progressMaxHeight = Utils.roundFloat(dp * 2.5f); // 7.375px -> 7px
                     if (BuildConfig.DEBUG) {
                         Log.i(TAG, "ratioOfProgressHeightToVideoSize = " + ratioOfProgressHeightToVideoSize
                                 + "    " + "progressMinHeight = " + progressMinHeight
@@ -1275,7 +1264,7 @@ public class VideoActivity extends SwipeBackActivity {
 
                     final float videoAspectRatio = (float) mVideoWidth / mVideoHeight;
                     final int width = right - left;
-                    final int height = (int) (width / videoAspectRatio + 0.5f);
+                    final int height = Utils.roundFloat(width / videoAspectRatio);
                     final int size = width * height;
                     final float sizeRatio = (float) size / cachedSize;
 
@@ -1285,7 +1274,7 @@ public class VideoActivity extends SwipeBackActivity {
                         final int progressHeight = Math.max(
                                 progressMinHeight,
                                 Math.min(progressMaxHeight,
-                                        (int) (size * ratioOfProgressHeightToVideoSize + 0.5f)));
+                                        Utils.roundFloat(size * ratioOfProgressHeightToVideoSize)));
                         if (BuildConfig.DEBUG) {
                             Log.i(TAG, "sizeRatio = " + sizeRatio
                                     + "    " + "progressHeight = " + progressHeight

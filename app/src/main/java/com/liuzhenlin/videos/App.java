@@ -17,6 +17,7 @@ import androidx.multidex.MultiDex;
 import com.bumptech.glide.Glide;
 import com.liuzhenlin.floatingmenu.DensityUtils;
 import com.liuzhenlin.texturevideoview.utils.SystemBarUtils;
+import com.liuzhenlin.texturevideoview.utils.Utils;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -193,7 +194,7 @@ public class App extends Application {
         if (mVideoThumbWidth == -1) {
             synchronized (this) {
                 if (mVideoThumbWidth == -1) {
-                    mVideoThumbWidth = (int) (getScreenWidthIgnoreOrientation() * 0.2778f + 0.5f);
+                    mVideoThumbWidth = Utils.roundFloat(getScreenWidthIgnoreOrientation() * 0.2778f);
                 }
             }
         }

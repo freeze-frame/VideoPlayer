@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.liuzhenlin.simrv.Utils;
+
 public class TopWrappedDividerItemDecoration extends RecyclerView.ItemDecoration {
     public static final int HORIZONTAL = LinearLayout.HORIZONTAL;
     public static final int VERTICAL = LinearLayout.VERTICAL;
@@ -114,7 +116,7 @@ public class TopWrappedDividerItemDecoration extends RecyclerView.ItemDecoration
         for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
             parent.getDecoratedBoundsWithMargins(child, mBounds);
-            final int bottom = mBounds.bottom + Math.round(child.getTranslationY());
+            final int bottom = mBounds.bottom + Utils.roundFloat(child.getTranslationY());
             final int top = bottom - mDivider.getIntrinsicHeight();
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(canvas);
@@ -145,7 +147,7 @@ public class TopWrappedDividerItemDecoration extends RecyclerView.ItemDecoration
         for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
             parent.getDecoratedBoundsWithMargins(child, mBounds);
-            final int right = mBounds.right + Math.round(child.getTranslationX());
+            final int right = mBounds.right + Utils.roundFloat(child.getTranslationX());
             final int left = right - mDivider.getIntrinsicWidth();
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(canvas);

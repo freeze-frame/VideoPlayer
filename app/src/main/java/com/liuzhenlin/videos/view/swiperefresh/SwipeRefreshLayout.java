@@ -51,6 +51,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.widget.ListViewCompat;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
+import com.liuzhenlin.texturevideoview.utils.Utils;
+
 /**
  * The SwipeRefreshLayout should be used whenever the user can refresh the
  * contents of a view via a vertical swipe gesture. The activity that
@@ -89,7 +91,7 @@ public class SwipeRefreshLayout extends ViewGroup
     private static final String LOG_TAG = SwipeRefreshLayout.class.getSimpleName();
 
     private static final int MAX_ALPHA = 255;
-    private static final int STARTING_PROGRESS_ALPHA = (int) (.3f * MAX_ALPHA);
+    private static final int STARTING_PROGRESS_ALPHA = Utils.roundFloat(.3f * MAX_ALPHA);
 
     private static final float DECELERATE_INTERPOLATION_FACTOR = 2f;
     private static final int INVALID_POINTER = -1;
@@ -384,9 +386,9 @@ public class SwipeRefreshLayout extends ViewGroup
         }
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
         if (size == CircularProgressDrawable.LARGE) {
-            mCircleDiameter = (int) (CIRCLE_DIAMETER_LARGE * metrics.density);
+            mCircleDiameter = Utils.roundFloat(CIRCLE_DIAMETER_LARGE * metrics.density);
         } else {
-            mCircleDiameter = (int) (CIRCLE_DIAMETER * metrics.density);
+            mCircleDiameter = Utils.roundFloat(CIRCLE_DIAMETER * metrics.density);
         }
         // force the bounds of the progress circle inside the circle view to
         // update by setting it to null before updating its size and then
@@ -418,12 +420,12 @@ public class SwipeRefreshLayout extends ViewGroup
         mDecelerateInterpolator = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
 
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
-        mCircleDiameter = (int) (CIRCLE_DIAMETER * metrics.density);
+        mCircleDiameter = Utils.roundFloat(CIRCLE_DIAMETER * metrics.density);
 
         createProgressView();
         setChildrenDrawingOrderEnabled(true);
         // the absolute offset has to take into account that the circle starts at an offset
-        mSpinnerOffsetEnd = (int) (DEFAULT_CIRCLE_TARGET * metrics.density);
+        mSpinnerOffsetEnd = Utils.roundFloat(DEFAULT_CIRCLE_TARGET * metrics.density);
         mTotalDragDistance = mSpinnerOffsetEnd;
         mNestedScrollingParentHelper = new NestedScrollingParentHelper(this);
 
@@ -558,8 +560,8 @@ public class SwipeRefreshLayout extends ViewGroup
         Animation alpha = new Animation() {
             @Override
             public void applyTransformation(float interpolatedTime, Transformation t) {
-                mProgress.setAlpha(
-                        (int) (startingAlpha + ((endingAlpha - startingAlpha) * interpolatedTime)));
+                mProgress.setAlpha(Utils.roundFloat(
+                        startingAlpha + ((endingAlpha - startingAlpha) * interpolatedTime)));
             }
         };
         alpha.setDuration(ALPHA_ANIMATION_DURATION);
@@ -968,7 +970,7 @@ public class SwipeRefreshLayout extends ViewGroup
         // before allowing the list to scroll
         if (dy > 0 && mTotalUnconsumed > 0) {
             if (dy > mTotalUnconsumed) {
-                consumed[1] = (int) mTotalUnconsumed;
+                consumed[1] = Utils.roundFloat(mTotalUnconsumed);
                 mTotalUnconsumed = 0;
             } else {
                 mTotalUnconsumed -= dy;
@@ -1148,7 +1150,7 @@ public class SwipeRefreshLayout extends ViewGroup
                 (tensionSlingshotPercent / 4), 2)) * 2f;
         float extraMove = slingshotDist * tensionPercent * 2;
 
-        int targetY = mOriginalOffsetTop + (int) ((slingshotDist * dragPercent) + extraMove);
+        int targetY = mOriginalOffsetTop + Utils.roundFloat(slingshotDist * dragPercent + extraMove);
         // where 1.0f is a full circle
         if (mCircleView.getVisibility() != View.VISIBLE) {
             mCircleView.setVisibility(View.VISIBLE);
@@ -1345,7 +1347,7 @@ public class SwipeRefreshLayout extends ViewGroup
             } else {
                 endTarget = mSpinnerOffsetEnd;
             }
-            int targetTop = (mFrom + (int) ((endTarget - mFrom) * interpolatedTime));
+            int targetTop = (mFrom + Utils.roundFloat((endTarget - mFrom) * interpolatedTime));
             int offset = targetTop - mCircleView.getTop();
             setTargetOffsetTopAndBottom(offset);
             mProgress.setArrowScale(1 - interpolatedTime);
@@ -1353,7 +1355,7 @@ public class SwipeRefreshLayout extends ViewGroup
     };
 
     void moveToStart(float interpolatedTime) {
-        int targetTop = (mFrom + (int) ((mOriginalOffsetTop - mFrom) * interpolatedTime));
+        int targetTop = (mFrom + Utils.roundFloat((mOriginalOffsetTop - mFrom) * interpolatedTime));
         int offset = targetTop - mCircleView.getTop();
         setTargetOffsetTopAndBottom(offset);
     }

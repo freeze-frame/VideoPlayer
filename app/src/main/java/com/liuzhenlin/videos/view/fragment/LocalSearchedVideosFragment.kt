@@ -34,6 +34,7 @@ import com.bumptech.glide.Glide
 import com.liuzhenlin.floatingmenu.FloatingMenu
 import com.liuzhenlin.texturevideoview.adapter.HeaderAndFooterWrapper
 import com.liuzhenlin.texturevideoview.adapter.ImageLoadingListAdapter
+import com.liuzhenlin.texturevideoview.utils.Utils
 import com.liuzhenlin.videos.*
 import com.liuzhenlin.videos.bean.Video
 import com.liuzhenlin.videos.model.LocalSearchedVideoListModel
@@ -48,7 +49,6 @@ import com.liuzhenlin.videos.view.swiperefresh.SwipeRefreshLayout
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 /**
  * @author 刘振林
@@ -71,7 +71,7 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
 
     private lateinit var mModel: LocalSearchedVideoListModel
     private var _mVideos: ArrayList<Video>? = null
-    private inline val mVideos: ArrayList<Video>
+    private val mVideos: ArrayList<Video>
         get() {
             if (_mVideos == null) {
                 _mVideos = arguments?.getParcelableArrayList(KEY_VIDEOS) ?: arrayListOf()
@@ -184,8 +184,8 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
         }
         v.parent === mRecyclerView -> {
             if (event.action == MotionEvent.ACTION_DOWN) {
-                mDownX = event.rawX.toInt()
-                mDownY = event.rawY.toInt()
+                mDownX = Utils.roundFloat(event.rawX)
+                mDownY = Utils.roundFloat(event.rawY)
 
                 UiUtils.hideSoftInput(mSearchSrcEditText)
                 mRecyclerView.requestFocus()
@@ -523,7 +523,7 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
                 val child = parent[i]
                 if (parent.getChildAdapterPosition(child) >= HEADER_COUNT) {
                     parent.getDecoratedBoundsWithMargins(child, mBounds)
-                    val bottom = mBounds.bottom + child.translationY.roundToInt()
+                    val bottom = mBounds.bottom + Utils.roundFloat(child.translationY)
                     val top = bottom - divider.intrinsicHeight
                     divider.setBounds(left, top, right, bottom)
                     divider.draw(canvas)

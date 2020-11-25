@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 //import org.mp4parser.muxer.container.mp4.MovieCreator;
 //import org.mp4parser.muxer.tracks.ClippedTrack;
 
+import com.google.android.exoplayer2.util.Util;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
@@ -112,13 +113,17 @@ public class VideoUtils {
             //noinspection ResultOfMethodCallIgnored
             destParentFile.mkdirs();
         }
-        try (FileOutputStream fos = new FileOutputStream(destFile)) {
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(destFile);
             new DefaultMp4Builder().build(movie).writeContainer(fos.getChannel());
         } catch (Throwable t) {
             //noinspection ResultOfMethodCallIgnored
             destFile.delete();
             // Deliver the cause to the caller
             throw t;
+        } finally {
+            Util.closeQuietly(fos);
         }
         return destFile;
     }
@@ -171,7 +176,7 @@ public class VideoUtils {
             videoH = swap;
         }
         if (pixelWidthHeightRatio > 0.0f && pixelWidthHeightRatio != 1.0f) {
-            videoW = (int) (videoW * pixelWidthHeightRatio + 0.5f);
+            videoW = Utils.roundFloat(videoW * pixelWidthHeightRatio);
         }
 
         return new int[] {videoW, videoH};

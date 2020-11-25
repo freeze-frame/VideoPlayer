@@ -1164,7 +1164,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
     }
 
     @Synthetic int progressToVolume(int progress) {
-        return (int) ((float) progress / RATIO_VOLUME_PROGRESS_TO_VOLUME + 0.5f);
+        return Utils.roundFloat((float) progress / RATIO_VOLUME_PROGRESS_TO_VOLUME);
     }
 
     /**
@@ -1485,9 +1485,9 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                 final int tvw, tvh;
                 if (videoAspectRatio >= aspectRatio) {
                     tvw = width;
-                    tvh = (int) (width / videoAspectRatio + 0.5f);
+                    tvh = Utils.roundFloat(width / videoAspectRatio);
                 } else {
-                    tvw = (int) (height * videoAspectRatio + 0.5f);
+                    tvw = Utils.roundFloat(height * videoAspectRatio);
                     tvh = height;
                 }
 
@@ -1523,7 +1523,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
             // to preview the video content.
             if (aspectRatio > 1.0f) {
                 mDrawerViewMinimumHeight = height;
-                lp.width = (int) (width / 2f + 0.5f); // XXX: to make this more adaptable
+                lp.width = Utils.roundFloat(width / 2f); // XXX: to make this more adaptable
             } else {
                 mDrawerViewMinimumHeight = 0;
                 lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -1532,7 +1532,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         } else {
             mDrawerViewMinimumHeight = 0;
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.height = (int) (height * 0.85f + 0.5f);
+            lp.height = Utils.roundFloat(height * 0.85f);
         }
 //        mDrawerView.setLayoutParams(lp);
 
@@ -2164,7 +2164,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                                     //    large font size mode.
                                     shareButton.post(() -> {
                                         lp.width = shareButton.getWidth();
-                                        lp.height = (int) (lp.width / aspectRatio + 0.5f);
+                                        lp.height = Utils.roundFloat(lp.width / aspectRatio);
                                         photoImage.setLayoutParams(lp);
                                     });
                                 } else {
@@ -2180,7 +2180,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
 
                                     shareButton.post(() -> {
                                         lp.height = shareButton.getHeight();
-                                        lp.width = (int) (lp.height * aspectRatio + 0.5f);
+                                        lp.width = Utils.roundFloat(lp.height * aspectRatio);
                                         photoImage.setLayoutParams(lp);
                                     });
                                 }
@@ -2265,7 +2265,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
             if (intervalEnd > duration) {
                 intervalEnd = duration;
             }
-            rangeOffset = Math.max((int) (intervalEnd - range + 0.5f), 0);
+            rangeOffset = Math.max(Utils.roundFloat(intervalEnd - range), 0);
         } else {
             range = duration;
             rangeOffset = 0;
@@ -2372,7 +2372,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
 
 //        view.measure(MeasureSpec.makeMeasureSpec(mContentView.getWidth(), MeasureSpec.EXACTLY),
 //                MeasureSpec.makeMeasureSpec(mContentView.getHeight(), MeasureSpec.EXACTLY));
-//        sv.getLayoutParams().width = (int) (sv.getMeasuredHeight() * videoAspectRatio + 0.5f);
+//        sv.getLayoutParams().width = Utils.roundFloat(sv.getMeasuredHeight() * videoAspectRatio);
         ConstraintLayout.LayoutParams svlp = (ConstraintLayout.LayoutParams) sv.getLayoutParams();
         svlp.dimensionRatio = String.valueOf(videoAspectRatio);
 
@@ -2414,8 +2414,8 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                 interval[0] = rangeOffset + start;
                 interval[1] = rangeOffset + end;
 
-                final int total = (int) (vcv.getMaximumClipDuration() / 1000f + 0.5f);
-                final int selected = (int) ((end - start) / 1000f + 0.5f);
+                final int total = Utils.roundFloat(vcv.getMaximumClipDuration() / 1000f);
+                final int selected = Utils.roundFloat((end - start) / 1000f);
                 final String s = mResources.getString(
                         R.string.canTakeUpToXSecondsXSecondsSelected, total, selected);
                 final SpannableString ss = new SpannableString(s);
@@ -2458,7 +2458,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         final int minUnselectedClipDuration = vcv.getMinimumUnselectedClipDuration();
         final int totalDuration = maxClipDuration + minUnselectedClipDuration;
         final int initialSelection = progress - rangeOffset;
-        final int tmpInterval = (int) (maxClipDuration / 2f + 0.5f);
+        final int tmpInterval = Utils.roundFloat(maxClipDuration / 2f);
         int intervalEnd = initialSelection + tmpInterval;
         if (intervalEnd > totalDuration) {
             intervalEnd = totalDuration;
@@ -2480,8 +2480,8 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
             final int thumbHeight = vcv.getThumbDisplayHeight();
             final float thumbWidth = thumbHeight * videoAspectRatio;
             final int thumbGalleryWidth = vcv.getThumbGalleryWidth();
-            final int thumbCount = (int) (thumbGalleryWidth / thumbWidth + 0.5f);
-            final int finalThumbWidth = (int) ((float) thumbGalleryWidth / thumbCount + 0.5f);
+            final int thumbCount = Utils.roundFloat(thumbGalleryWidth / thumbWidth);
+            final int finalThumbWidth = Utils.roundFloat((float) thumbGalleryWidth / thumbCount);
             mLoadClipThumbsTask = new AsyncTask<Void, Bitmap, Void>() {
                 @Override
                 public Void doInBackground(Void... voids) {
@@ -2495,8 +2495,8 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                         }
                         if (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO) != null) {
                             for (int i = 0; i < thumbCount && !isCancelled(); ) {
-                                Bitmap frame = mmr.getFrameAtTime((long)
-                                        (rangeOffset + (i++ + 0.5) * range / thumbCount) * 1000L);
+                                Bitmap frame = mmr.getFrameAtTime(Utils.roundDouble(
+                                        (rangeOffset + (i++ + 0.5) * range / thumbCount) * 1000.0));
                                 if (frame == null) {
                                     // If no frame at the specified time position is retrieved,
                                     // create a empty placeholder bitmap instead.
@@ -2984,8 +2984,8 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                     switch (touchFlags & MASK_ADJUSTING_PROGRESS_FLAGS) {
                         case TFLAG_ADJUSTING_BRIGHTNESS: {
                             final int progress = mBrightnessOrVolumeProgress.getProgress();
-                            final int newProgress = computeProgressOnTrackTouchVertically(
-                                    mBrightnessOrVolumeProgress, deltaY, 1.0f);
+                            final int newProgress = computeProgressOnTrackTouchSeekBar(
+                                    mBrightnessOrVolumeProgress, mContentView.getHeight(), deltaY, 1.0f);
                             if (newProgress == progress) {
                                 if (progress == 0 && deltaY < 0) {
                                     setBrightness(-1);
@@ -2998,8 +2998,8 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
 
                         case TFLAG_ADJUSTING_VOLUME: {
                             final int progress = mBrightnessOrVolumeProgress.getProgress();
-                            final int newProgress = computeProgressOnTrackTouchVertically(
-                                    mBrightnessOrVolumeProgress, deltaY, 1.0f);
+                            final int newProgress = computeProgressOnTrackTouchSeekBar(
+                                    mBrightnessOrVolumeProgress, mContentView.getHeight(), deltaY, 1.0f);
                             if (newProgress != progress) {
                                 mAudioManager.setStreamVolume(
                                         AudioManager.STREAM_MUSIC, progressToVolume(newProgress), 0);
@@ -3010,8 +3010,8 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
 
                         case TFLAG_ADJUSTING_VIDEO_PROGRESS: {
                             final int progress = mVideoSeekBar.getProgress();
-                            final int newProgress = computeProgressOnTrackTouchHorizontally(
-                                    mVideoSeekBar, deltaX, 0.33333334f);
+                            final int newProgress = computeProgressOnTrackTouchSeekBar(
+                                    mVideoSeekBar, mContentView.getWidth(), deltaX, 0.33333334f);
                             if (newProgress != progress) {
                                 mVideoSeekBar.setProgress(newProgress);
                                 mOnVideoSeekBarChangeListener.onProgressChanged(
@@ -3102,21 +3102,12 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
             }
         }
 
-        int computeProgressOnTrackTouchHorizontally(
-                ProgressBar progressBar, float deltaX,
+        int computeProgressOnTrackTouchSeekBar(
+                ProgressBar progressBar, float touchRange, float deltaDist,
                 @SuppressWarnings("SameParameterValue") float sensitivity) {
             final int maxProgress = progressBar.getMax();
             final int progress = progressBar.getProgress()
-                    + Math.round((float) maxProgress / mContentView.getWidth() * deltaX * sensitivity);
-            return Util.constrainValue(progress, 0, maxProgress);
-        }
-
-        int computeProgressOnTrackTouchVertically(
-                ProgressBar progressBar, float deltaY,
-                @SuppressWarnings("SameParameterValue") float sensitivity) {
-            final int maxProgress = progressBar.getMax();
-            final int progress = progressBar.getProgress()
-                    + Math.round((float) maxProgress / mContentView.getHeight() * deltaY * sensitivity);
+                    + Utils.roundFloat(maxProgress / touchRange * deltaDist * sensitivity);
             return Util.constrainValue(progress, 0, maxProgress);
         }
     }
@@ -3560,7 +3551,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
 
                             if (isFadeAnimation) {
                                 animation.setDuration(isReverse || isThumbVisible ?
-                                        DURATION : (long) (DURATION * 2f / 3f + 0.5f));
+                                        DURATION : Utils.roundFloat(DURATION * 2f / 3f));
                             }
                         }
 
@@ -3736,8 +3727,8 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                     last = now;
 
                     View tv = mTextureView;
-                    final int width = (int) (tv.getWidth()/* * tv.getScaleX()*/ * RATIO + 0.5f);
-                    final int height = (int) (tv.getHeight()/* * tv.getScaleY()*/ * RATIO + 0.5f);
+                    final int width = Utils.roundFloat(tv.getWidth()/* * tv.getScaleX()*/ * RATIO);
+                    final int height = Utils.roundFloat(tv.getHeight()/* * tv.getScaleY()*/ * RATIO);
 
                     Bitmap thumb = null;
                     if (RETRIEVE_SCALED_FRAME_FROM_MMR

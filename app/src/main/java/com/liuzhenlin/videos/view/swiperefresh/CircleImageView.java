@@ -33,6 +33,8 @@ import android.widget.ImageView;
 import androidx.core.view.ViewCompat;
 import androidx.swiperefreshlayout.R;
 
+import com.liuzhenlin.texturevideoview.utils.Utils;
+
 /**
  * Private class created to work around issues with AnimationListeners being
  * called before the animation is actually complete and support shadows on older
@@ -59,10 +61,10 @@ class CircleImageView extends ImageView {
         super(context);
 
         final float density = getContext().getResources().getDisplayMetrics().density;
-        final int shadowYOffset = (int) (density * Y_OFFSET);
-        final int shadowXOffset = (int) (density * X_OFFSET);
+        final int shadowYOffset = Utils.roundFloat(density * Y_OFFSET);
+        final int shadowXOffset = Utils.roundFloat(density * X_OFFSET);
 
-        mShadowRadius = (int) (density * SHADOW_RADIUS);
+        mShadowRadius = Utils.roundFloat(density * SHADOW_RADIUS);
 
         // The style attribute is named SwipeRefreshLayout instead of CircleImageView because
         // CircleImageView is not part of the public api.
@@ -145,13 +147,13 @@ class CircleImageView extends ImageView {
             mCircleImageView = circleImageView;
             mShadowPaint = new Paint();
             mShadowRadius = shadowRadius;
-            updateRadialGradient((int) rect().width());
+            updateRadialGradient(Utils.roundFloat(rect().width()));
         }
 
         @Override
         protected void onResize(float width, float height) {
             super.onResize(width, height);
-            updateRadialGradient((int) width);
+            updateRadialGradient(Utils.roundFloat(width));
         }
 
         @Override

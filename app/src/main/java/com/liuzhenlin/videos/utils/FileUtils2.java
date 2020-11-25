@@ -24,8 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * @author 刘振林
@@ -98,11 +97,7 @@ public class FileUtils2 {
 
         try (InputStream in = new FileInputStream(srcFile);
              OutputStream out = new FileOutputStream(desFile)) {
-            final byte[] bytes = new byte[8 * 1024];
-            int i;
-            while ((i = in.read(bytes)) != -1) {
-                out.write(bytes, 0, i);
-            }
+            IOUtils.copy(in, out);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -134,7 +129,9 @@ public class FileUtils2 {
                 //noinspection ResultOfMethodCallIgnored
                 filePart.createNewFile();
 
-                try (OutputStream out = new FileOutputStream(filePart)) {
+                OutputStream out = null;
+                try {
+                    out = new FileOutputStream(filePart);
                     while (true) {
                         filePartLength = filePart.length();
                         remainingBytesToWrite = filePartLengthLimit - filePartLength;
@@ -147,9 +144,8 @@ public class FileUtils2 {
                             break;
                         }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return 0;
+                } finally {
+                    IOUtils.closeSilently(out);
                 }
             }
         } catch (IOException e) {
@@ -176,14 +172,15 @@ public class FileUtils2 {
         try (OutputStream out = new BufferedOutputStream(new FileOutputStream(dstFile))) {
             final byte[] buffer = new byte[8 * 1024];
             for (File file : files) {
-                try (InputStream in = new FileInputStream(file)) {
+                InputStream in = null;
+                try {
+                    in = new FileInputStream(file);
                     int len;
                     while ((len = in.read(buffer)) != -1) {
                         out.write(buffer, 0, len);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return false;
+                } finally {
+                    IOUtils.closeSilently(in);
                 }
             }
         } catch (IOException e) {
@@ -203,52 +200,27 @@ public class FileUtils2 {
 
     // 计算文件的 MD5 值
     @Nullable
-    public static String getFileMD5(@Nullable File file) {
+    public static String getFileMD5(@NonNull File file) {
         return getFileDigest(file, "MD5");
     }
 
     // 计算文件的 SHA-1 值
     @Nullable
-    public static String getFileSha1(@Nullable File file) {
+    public static String getFileSha1(@NonNull File file) {
         return getFileDigest(file, "SHA-1");
     }
 
-    // 计算文件的 SHA-256 值
     @Nullable
-    public static String getFileSha256(@Nullable File file) {
-        return getFileDigest(file, "SHA-256");
-    }
-
-    // 计算文件的 SHA-384 值
-    @Nullable
-    public static String getFileSha384(@Nullable File file) {
-        return getFileDigest(file, "SHA-384");
-    }
-
-    // 计算文件的 SHA-512 值
-    @Nullable
-    public static String getFileSha512(@Nullable File file) {
-        return getFileDigest(file, "SHA-512");
-    }
-
-    private static String getFileDigest(File file, String algorithm) {
-        if (file == null || !file.isFile()) {
-            return null;
-        }
-
-        try (InputStream in = new FileInputStream(file)) {
-            MessageDigest digest = MessageDigest.getInstance(algorithm);
-
-            int len;
-            final byte[] buffer = new byte[8 * 1024];
-            while ((len = in.read(buffer)) != -1) {
-                digest.update(buffer, 0, len);
-            }
-
-            return new BigInteger(1, digest.digest()).toString(16);
-        } catch (Exception e) {
+    public static String getFileDigest(@NonNull File file, @NonNull String algorithm) {
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            return IOUtils.getDigest(in, algorithm);
+        } catch (IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return null;
+        } finally {
+            IOUtils.closeSilently(in);
         }
+        return null;
     }
 }

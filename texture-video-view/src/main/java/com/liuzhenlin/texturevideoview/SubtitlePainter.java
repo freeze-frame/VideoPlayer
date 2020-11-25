@@ -46,6 +46,7 @@ import com.google.android.exoplayer2.text.Cue;
 import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.Util;
+import com.liuzhenlin.texturevideoview.utils.Utils;
 
 //import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 //import org.checkerframework.checker.nullness.qual.RequiresNonNull;
@@ -121,7 +122,7 @@ import com.google.android.exoplayer2.util.Util;
 
     Resources resources = context.getResources();
     DisplayMetrics displayMetrics = resources.getDisplayMetrics();
-    int twoDpInPx = Math.round((2f * displayMetrics.densityDpi) / DisplayMetrics.DENSITY_DEFAULT);
+    int twoDpInPx = Utils.roundFloat((2f * displayMetrics.densityDpi) / DisplayMetrics.DENSITY_DEFAULT);
     outlineWidth = twoDpInPx;
     shadowRadius = twoDpInPx;
     shadowOffset = twoDpInPx;
@@ -257,11 +258,11 @@ import com.google.android.exoplayer2.util.Util;
     int parentHeight = parentBottom - parentTop;
 
     textPaint.setTextSize(defaultTextSizePx);
-    int textPaddingX = (int) (defaultTextSizePx * INNER_PADDING_RATIO + 0.5f);
+    int textPaddingX = Utils.roundFloat(defaultTextSizePx * INNER_PADDING_RATIO);
 
     int availableWidth = parentWidth - textPaddingX * 2;
     if (cueSize != Cue.DIMEN_UNSET) {
-      availableWidth = (int) (availableWidth * cueSize);
+      availableWidth = Utils.roundFloat(availableWidth * cueSize);
     }
     if (availableWidth <= 0) {
       Log.w(TAG, "Skipped drawing subtitle cue (insufficient space)");
@@ -291,7 +292,7 @@ import com.google.android.exoplayer2.util.Util;
         // cueTextSizePx.
         SpannableStringBuilder newCueText = new SpannableStringBuilder(cueText);
         newCueText.setSpan(
-            new AbsoluteSizeSpan((int) cueTextSizePx),
+            new AbsoluteSizeSpan(Utils.roundFloat(cueTextSizePx)),
             /* start= */ 0,
             /* end= */ newCueText.length(),
             Spanned.SPAN_PRIORITY);
@@ -350,7 +351,7 @@ import com.google.android.exoplayer2.util.Util;
     int textLeft;
     int textRight;
     if (cuePosition != Cue.DIMEN_UNSET) {
-      int anchorPosition = Math.round(parentWidth * cuePosition) + parentLeft;
+      int anchorPosition = Utils.roundFloat(parentWidth * cuePosition) + parentLeft;
       switch (cuePositionAnchor) {
         case Cue.ANCHOR_TYPE_END:
           textLeft = anchorPosition - textWidth;
@@ -381,14 +382,14 @@ import com.google.android.exoplayer2.util.Util;
     if (cueLine != Cue.DIMEN_UNSET) {
       int anchorPosition;
       if (cueLineType == Cue.LINE_TYPE_FRACTION) {
-        anchorPosition = Math.round(parentHeight * cueLine) + parentTop;
+        anchorPosition = Utils.roundFloat(parentHeight * cueLine) + parentTop;
       } else {
         // cueLineType == Cue.LINE_TYPE_NUMBER
         int firstLineHeight = textLayout.getLineBottom(0) - textLayout.getLineTop(0);
         if (cueLine >= 0) {
-          anchorPosition = Math.round(cueLine * firstLineHeight) + parentTop;
+          anchorPosition = Utils.roundFloat(cueLine * firstLineHeight) + parentTop;
         } else {
-          anchorPosition = Math.round((cueLine + 1) * firstLineHeight) + parentBottom;
+          anchorPosition = Utils.roundFloat((cueLine + 1) * firstLineHeight) + parentBottom;
         }
       }
       textTop = cueLineAnchor == Cue.ANCHOR_TYPE_END ? anchorPosition - textHeight
@@ -400,7 +401,7 @@ import com.google.android.exoplayer2.util.Util;
         textTop = parentTop;
       }
     } else {
-      textTop = parentBottom - textHeight - (int) (parentHeight * bottomPaddingFraction);
+      textTop = parentBottom - textHeight - Utils.roundFloat(parentHeight * bottomPaddingFraction);
     }
 
     // Update the derived drawing variables.
@@ -421,17 +422,17 @@ import com.google.android.exoplayer2.util.Util;
     int parentHeight = parentBottom - parentTop;
     float anchorX = parentLeft + (parentWidth * cuePosition);
     float anchorY = parentTop + (parentHeight * cueLine);
-    int width = Math.round(parentWidth * cueSize);
+    int width = Utils.roundFloat(parentWidth * cueSize);
     //noinspection ConstantConditions
-    int height = cueBitmapHeight != Cue.DIMEN_UNSET ? Math.round(parentHeight * cueBitmapHeight)
-        : Math.round(width * ((float) cueBitmap.getHeight() / cueBitmap.getWidth()));
+    int height = cueBitmapHeight != Cue.DIMEN_UNSET ? Utils.roundFloat(parentHeight * cueBitmapHeight)
+        : Utils.roundFloat(width * ((float) cueBitmap.getHeight() / cueBitmap.getWidth()));
     int x =
-        Math.round(
+        Utils.roundFloat(
             cuePositionAnchor == Cue.ANCHOR_TYPE_END
                 ? (anchorX - width)
                 : cuePositionAnchor == Cue.ANCHOR_TYPE_MIDDLE ? (anchorX - (width / 2f)) : anchorX);
     int y =
-        Math.round(
+        Utils.roundFloat(
             cueLineAnchor == Cue.ANCHOR_TYPE_END
                 ? (anchorY - height)
                 : cueLineAnchor == Cue.ANCHOR_TYPE_MIDDLE ? (anchorY - (height / 2f)) : anchorY);

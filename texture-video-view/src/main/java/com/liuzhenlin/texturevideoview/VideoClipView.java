@@ -271,7 +271,7 @@ public class VideoClipView extends FrameLayout {
         super(context, attrs, defStyleAttr);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mDip = getResources().getDisplayMetrics().density;
-        mFrameBarHeight = (int) (2.5f * mDip + 0.5f);
+        mFrameBarHeight = Utils.roundFloat(2.5f * mDip);
         mProgressStrokeWidth = 3.0f * mDip;
         mProgressHeaderFooterStrokeWidth = 1.8f * mDip;
         mProgressHeaderFooterLength = 8.0f * mDip;
@@ -296,7 +296,7 @@ public class VideoClipView extends FrameLayout {
         mProgressPaint.setColor(ContextCompat.getColor(context, R.color.colorAccent));
         mProgressPaint.setStyle(Paint.Style.STROKE);
 
-        final int verticalEndPadding = (int) (4.0f * mDip + 0.5f);
+        final int verticalEndPadding = Utils.roundFloat(4.0f * mDip);
         super.setPadding(mDrawableWidth, verticalEndPadding, mDrawableWidth, verticalEndPadding);
 
         View.inflate(context, R.layout.view_videoclip, this);
@@ -500,10 +500,10 @@ public class VideoClipView extends FrameLayout {
         final float framebarLeft = mDrawableWidth + frameLeftOffsetPixels;
         final float framebarRight = width - mDrawableWidth - frameRightOffsetPixels;
 //        final float framebarWidth = framebarRight - framebarLeft;
-        final int leftDrawableLeft = (int) (frameLeftOffsetPixels + 0.5f);
-        final int leftDrawableRight = (int) (framebarLeft + 0.5f);
-        final int rightDrawableLeft = (int) (framebarRight + 0.5f);
-        final int rightDrawableRight = (int) (width - frameRightOffsetPixels + 0.5f);
+        final int leftDrawableLeft = Utils.roundFloat(frameLeftOffsetPixels);
+        final int leftDrawableRight = Utils.roundFloat(framebarLeft);
+        final int rightDrawableLeft = Utils.roundFloat(framebarRight);
+        final int rightDrawableRight = Utils.roundFloat(width - frameRightOffsetPixels);
 
         final boolean dark;
         Drawable leftDrawable;
@@ -625,7 +625,8 @@ public class VideoClipView extends FrameLayout {
      * @return position of the selected millisecond within the selectable time interval
      */
     public int getSelection() {
-        return (int) ((mMaximumClipDuration + mMinimumUnselectedClipDuration) * mProgressPercent + 0.5f);
+        return Utils.roundFloat(
+                (mMaximumClipDuration + mMinimumUnselectedClipDuration) * mProgressPercent);
     }
 
     /**
@@ -653,14 +654,14 @@ public class VideoClipView extends FrameLayout {
         // The frame offset properties may have not been determined yet
         if (Float.isNaN(mFrameLeftOffset)) {
             outInterval[0] = 0;
-            outInterval[1] = Math.max((int) (mMaximumClipDuration / 2f + 0.5f), mMinimumClipDuration);
+            outInterval[1] = Math.max(Utils.roundFloat(mMaximumClipDuration / 2f), mMinimumClipDuration);
         } else {
             final boolean rtl = Utils.isLayoutRtl(this);
             final float duration = mMaximumClipDuration + mMinimumUnselectedClipDuration;
-            outInterval[0] = (int) (0.5f + duration *
-                    (rtl ? mFrameRightOffset : mFrameLeftOffset));
-            outInterval[1] = (int) (0.5f + duration *
-                    (1.0f - (rtl ? mFrameLeftOffset : mFrameRightOffset)));
+            outInterval[0] = Utils.roundFloat(
+                    duration * (rtl ? mFrameRightOffset : mFrameLeftOffset));
+            outInterval[1] = Utils.roundFloat(
+                    duration * (1.0f - (rtl ? mFrameLeftOffset : mFrameRightOffset)));
         }
     }
 
@@ -1033,7 +1034,7 @@ public class VideoClipView extends FrameLayout {
                 ViewGroup.LayoutParams lp = holder.thumbImage.getLayoutParams();
                 if (thumbWidth != 0 && thumbHeight != 0) {
                     lp.height = mThumbDisplayHeight;
-                    lp.width = (int) (lp.height * (float) thumbWidth / thumbHeight + 0.5f);
+                    lp.width = Utils.roundFloat(lp.height * (float) thumbWidth / thumbHeight);
                 } else {
                     lp.width = lp.height = 0;
                 }
