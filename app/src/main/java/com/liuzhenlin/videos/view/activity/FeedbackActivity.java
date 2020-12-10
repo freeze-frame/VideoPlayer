@@ -37,7 +37,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialog;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.widget.TextViewCompat;
 
 import com.bumptech.glide.util.Synthetic;
@@ -47,31 +46,21 @@ import com.liuzhenlin.galleryviewer.GalleryViewPager;
 import com.liuzhenlin.simrv.Utils;
 import com.liuzhenlin.swipeback.SwipeBackActivity;
 import com.liuzhenlin.swipeback.SwipeBackLayout;
-import com.liuzhenlin.texturevideoview.utils.BitmapUtils;
 import com.liuzhenlin.texturevideoview.utils.FileUtils;
 import com.liuzhenlin.texturevideoview.utils.SystemBarUtils;
 import com.liuzhenlin.videos.App;
 import com.liuzhenlin.videos.Consts;
 import com.liuzhenlin.videos.R;
-import com.liuzhenlin.videos.dao.FeedbackSavedPrefs;
 import com.liuzhenlin.videos.observer.OnOrientationChangeListener;
 import com.liuzhenlin.videos.observer.RotationObserver;
 import com.liuzhenlin.videos.observer.ScreenNotchSwitchObserver;
-import com.liuzhenlin.videos.utils.BitmapUtils2;
+import com.liuzhenlin.videos.presenter.IFeedbackPresenter;
 import com.liuzhenlin.videos.utils.DisplayCutoutUtils;
-import com.liuzhenlin.videos.utils.Executors;
-import com.liuzhenlin.videos.utils.MailUtil;
-import com.liuzhenlin.videos.utils.NetworkUtil;
 import com.liuzhenlin.videos.utils.OSHelper;
 import com.liuzhenlin.videos.utils.UiUtils;
 import com.liuzhenlin.videos.view.adapter.GalleryPagerAdapter;
 
-import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
@@ -82,35 +71,20 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAI
 /**
  * @author 刘振林
  */
-public class FeedbackActivity extends SwipeBackActivity implements View.OnClickListener {
+public class FeedbackActivity extends SwipeBackActivity implements IFeedbackView, View.OnClickListener {
 
     @Synthetic EditText mEnterProblemsOrAdviceEditor;
     @Synthetic TextView mWordCountIndicator;
-    @Synthetic TextView mPictureCountIndicator;
+    private TextView mPictureCountIndicator;
     private EditText mEnterContactWayEditor;
     @Synthetic Button mCommitButton;
-
-    @Synthetic PictureGridAdapter mGridAdapter;
 
     private Dialog mConfirmSaveDataDialog;
     @Synthetic Dialog mPicturePreviewDialog;
 
     @Synthetic boolean mShouldSaveDataOnDestroy;
 
-    private FeedbackSavedPrefs mFeedbackSPs;
-    private String mSavedFeedbackText = Consts.EMPTY_STRING;
-    private String mSavedContactWay = Consts.EMPTY_STRING;
-    private List<String> mSavedPicturePaths;
-
-    private static final String PREFIX_MAIL_SUBJECT = "[视频反馈] ";
-
-    private static final String KEY_SAVED_FEEDBACK_TEXT = "ksft";
-    private static final String KEY_SAVED_CONTACT_WAY = "kscw";
-    private static final String KEY_SAVED_PICTURE_PATHS = "kspp";
-
-    private static final String KEY_FILLED_FEEDBACK_TEXT = "kfft";
-    private static final String KEY_FILLED_CONTACT_WAY = "kfcw";
-    private static final String KEY_FILLED_PICTURE_PATHS = "kfpp";
+    @Synthetic final IFeedbackPresenter mPresenter = IFeedbackPresenter.newInstance();
 
     @Nullable
     @Override
@@ -202,36 +176,18 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
             return false;
         });
 
+        mPresenter.attachToView(this);
+
+        BaseAdapter adapter = mPresenter.getPictureGridAdapter();
         GridView gridView = findViewById(R.id.grid_pictures);
-        mGridAdapter = new PictureGridAdapter(this);
-        gridView.setAdapter(mGridAdapter);
-        gridView.setOnItemClickListener(mGridAdapter);
+        gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener((AdapterView.OnItemClickListener) adapter);
 
         mCommitButton.setOnClickListener(this);
 
-        mFeedbackSPs = new FeedbackSavedPrefs(this);
         // 恢复上次退出此页面时保存的数据
         if (savedInstanceState == null) {
-            cacheCurrData(mFeedbackSPs.getText(), mFeedbackSPs.getContactWay(),
-                    mFeedbackSPs.getPicturePaths());
-            refreshCurrTexts(mSavedFeedbackText, mSavedContactWay);
-            if (mSavedPicturePaths != null) {
-                List<String> invalidPaths = null;
-                for (String path : mSavedPicturePaths) {
-                    // 有可能该路径下的图片已被删除：如果删除了，从sp文件中移除该保存的路径
-                    if (!new File(path).exists()) {
-                        if (invalidPaths == null)
-                            invalidPaths = new LinkedList<>();
-                        invalidPaths.add(path);
-                        continue;
-                    }
-                    addPicture(path);
-                }
-                if (invalidPaths != null) {
-                    mSavedPicturePaths.removeAll(invalidPaths);
-                    mFeedbackSPs.savePicturePaths(mSavedPicturePaths);
-                }
-            }
+            mPresenter.restoreData(null);
         }
     }
 
@@ -262,59 +218,22 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        final String[] savedPicturePaths = (String[])
-                savedInstanceState.getSerializable(KEY_SAVED_PICTURE_PATHS);
-        cacheCurrData(savedInstanceState.getString(KEY_SAVED_FEEDBACK_TEXT, Consts.EMPTY_STRING),
-                savedInstanceState.getString(KEY_SAVED_CONTACT_WAY, Consts.EMPTY_STRING),
-                savedPicturePaths == null ? null : Arrays.asList(savedPicturePaths));
-        if (mSavedPicturePaths != null) {
-            Iterator<String> it = mSavedPicturePaths.iterator();
-            while (it.hasNext()) {
-                if (!new File(it.next()).exists()) {
-                    it.remove();
-                }
-            }
-        }
-
-        refreshCurrTexts(savedInstanceState.getString(KEY_FILLED_FEEDBACK_TEXT, Consts.EMPTY_STRING),
-                savedInstanceState.getString(KEY_FILLED_CONTACT_WAY, Consts.EMPTY_STRING));
-        final String[] picturePaths = (String[])
-                savedInstanceState.getSerializable(KEY_FILLED_PICTURE_PATHS);
-        if (picturePaths != null) {
-            for (String path : picturePaths) {
-                if (!new File(path).exists()) {
-                    continue;
-                }
-                addPicture(path);
-            }
-        }
+        mPresenter.restoreData(savedInstanceState);
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(KEY_SAVED_FEEDBACK_TEXT, mSavedFeedbackText);
-        outState.putString(KEY_SAVED_CONTACT_WAY, mSavedContactWay);
-        if (mSavedPicturePaths != null) {
-            outState.putSerializable(KEY_SAVED_PICTURE_PATHS,
-                    mSavedPicturePaths.toArray(Consts.EMPTY_STRING_ARRAY));
-        }
-
-        outState.putString(KEY_FILLED_FEEDBACK_TEXT,
-                mEnterProblemsOrAdviceEditor.getText().toString());
-        outState.putString(KEY_FILLED_CONTACT_WAY,
+        mPresenter.saveData(outState,
+                mEnterProblemsOrAdviceEditor.getText().toString(),
                 mEnterContactWayEditor.getText().toString().trim());
-        if (!mGridAdapter.mPicturePaths.isEmpty()) {
-            outState.putSerializable(KEY_FILLED_PICTURE_PATHS,
-                    mGridAdapter.mPicturePaths.toArray(Consts.EMPTY_STRING_ARRAY));
-        }
     }
 
     @Override
     public void onBackPressed() {
         final String text = mEnterProblemsOrAdviceEditor.getText().toString();
         final String contactWay = mEnterContactWayEditor.getText().toString().trim();
-        if (hasDataChanged(text, contactWay)) {
+        if (mPresenter.hasDataChanged(text, contactWay)) {
             View view = View.inflate(this, R.layout.dialog_confirm_save, null);
             view.findViewById(R.id.btn_notSave).setOnClickListener(this);
             view.findViewById(R.id.btn_save).setOnClickListener(this);
@@ -342,20 +261,24 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
             mPicturePreviewDialog.dismiss();
         }
         // 回收Bitmaps
-        for (Bitmap bitmap : mGridAdapter.mPictures) {
-            bitmap.recycle();
-        }
-        mGridAdapter.mPictures.clear();
+        mPresenter.recyclePictures();
+        mPresenter.detachFromView(this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data != null && requestCode == Consts.REQUEST_CODE_ADD_PICTURE) {
-            final Uri uri = data.getData();
+        if (data != null && requestCode == Consts.REQUEST_CODE_GET_PICTURE) {
+            Uri uri = data.getData();
             if (uri != null)
-                addPicture(FileUtils.UriResolver.getPath(this, uri));
+                mPresenter.addPicture(FileUtils.UriResolver.getPath(this, uri));
         }
+    }
+
+    @Override
+    public void pickPicture() {
+        startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT).setType("image/*"),
+                Consts.REQUEST_CODE_GET_PICTURE);
     }
 
     @Override
@@ -370,7 +293,9 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
                 break;
 
             case R.id.btn_commit:
-                sendFeedback();
+                final String text = mEnterProblemsOrAdviceEditor.getText().toString();
+                final String contactWay = mEnterContactWayEditor.getText().toString().trim();
+                mPresenter.sendFeedback(text, contactWay);
                 break;
 
             case R.id.btn_save:
@@ -382,492 +307,333 @@ public class FeedbackActivity extends SwipeBackActivity implements View.OnClickL
         }
     }
 
-    private void refreshCurrTexts(String text, String contactWay) {
+    private void saveUserFilledData(@SuppressWarnings("SameParameterValue") boolean toastResultIfSaved) {
+        final String text = mEnterProblemsOrAdviceEditor.getText().toString();
+        final String contactWay = mEnterContactWayEditor.getText().toString().trim();
+        mPresenter.persistentlySaveUserFilledData(text, contactWay, toastResultIfSaved);
+    }
+
+    @Override
+    public void toastResultOnUserFilledDataSaved() {
+        Activity preActivity = getPreviousActivity();
+        if (preActivity == null) {
+            showToast(this, R.string.saveSuccessful, Toast.LENGTH_SHORT);
+        } else {
+            UiUtils.showUserCancelableSnackbar(preActivity.getWindow().getDecorView(),
+                    R.string.saveSuccessful, Snackbar.LENGTH_SHORT);
+        }
+    }
+
+    @Override
+    public void refreshCurrTexts(@NonNull String text, @NonNull String contactWay) {
         mEnterProblemsOrAdviceEditor.setText(text);
         mEnterProblemsOrAdviceEditor.setSelection(text.length());
         mEnterContactWayEditor.setText(contactWay);
     }
 
-    private void cacheCurrData(String text, String contactWay, List<String> picturePaths) {
-        mSavedFeedbackText = text;
-        mSavedContactWay = contactWay;
-        mSavedPicturePaths = picturePaths;
-    }
+    @NonNull
+    @Override
+    public IFeedbackView.PictureGridViewHolder getPictureGridViewHolder(
+            int position, @Nullable View convertView, @NonNull ViewGroup parent,
+            @NonNull Bitmap picture, int pictureCount) {
+        PictureGridViewHolder vh;
+        if (convertView == null) {
+            vh = new PictureGridViewHolder(parent);
+            convertView = vh.itemView;
+            convertView.setTag(vh);
 
-    private void saveUserFilledData(boolean showResult) {
-        final String text = mEnterProblemsOrAdviceEditor.getText().toString();
-        final String contactWay = mEnterContactWayEditor.getText().toString().trim();
-        if (hasDataChanged(text, contactWay)) {
-            cacheCurrData(text, contactWay,
-                    mGridAdapter.mPicturePaths.isEmpty() ?
-                            null : new ArrayList<>(mGridAdapter.mPicturePaths));
+            final int screenWidth = App.getInstance(this).getScreenWidthIgnoreOrientation();
+            final int dp_20 = DensityUtils.dp2px(this, 20f);
 
-            mFeedbackSPs.saveText(mSavedFeedbackText);
-            mFeedbackSPs.saveContactWay(mSavedContactWay);
-            mFeedbackSPs.savePicturePaths(mSavedPicturePaths);
+            ViewGroup.LayoutParams lp = convertView.getLayoutParams();
+            lp.height = lp.width = com.liuzhenlin.texturevideoview.utils.
+                    Utils.roundFloat((screenWidth - dp_20 * 1.5f) / 3f);
 
-            if (showResult) {
-                Activity preActivity = getPreviousActivity();
-                if (preActivity == null) {
-                    Toast.makeText(this, R.string.saveSuccessful, Toast.LENGTH_SHORT).show();
-                } else {
-                    UiUtils.showUserCancelableSnackbar(preActivity.getWindow().getDecorView(),
-                            R.string.saveSuccessful, Snackbar.LENGTH_SHORT);
-                }
-            }
-        }
-    }
-
-    private boolean hasDataChanged(@NonNull String text, @NonNull String contactWay) {
-        if (!(text.equals(mSavedFeedbackText) && contactWay.equals(mSavedContactWay)))
-            return true;
-
-        final boolean arraysAreNull =
-                mGridAdapter.mPicturePaths == null && mSavedPicturePaths == null;
-        if (arraysAreNull) return false;
-
-        final boolean arraysAreNonnull =
-                !(mGridAdapter.mPicturePaths == null || mSavedPicturePaths == null);
-        if (arraysAreNonnull) {
-            //@formatter:off
-            return !(mGridAdapter.mPicturePaths.isEmpty() && mSavedPicturePaths.isEmpty()
-                    || Arrays.equals(
-                            mGridAdapter.mPicturePaths.toArray(Consts.EMPTY_STRING_ARRAY),
-                            mSavedPicturePaths.toArray(Consts.EMPTY_STRING_ARRAY)));
-            //@formatter:on
+            ViewGroup.LayoutParams plp = parent.getLayoutParams();
+            plp.width = screenWidth - dp_20;
+            plp.height = lp.height;
         } else {
-            return !(mGridAdapter.mPicturePaths != null && mGridAdapter.mPicturePaths.isEmpty()
-                    || mSavedPicturePaths != null && mSavedPicturePaths.isEmpty());
+            vh = (PictureGridViewHolder) convertView.getTag();
+        }
+        vh.pictureImage.setImageBitmap(picture);
+        vh.pictureText.setVisibility(position != pictureCount - 1 ? View.GONE : View.VISIBLE);
+        mPictureCountIndicator.setText(getString(R.string.pictureCount, pictureCount - 1));
+        return vh;
+    }
+
+    private static final class PictureGridViewHolder extends IFeedbackView.PictureGridViewHolder {
+        final ImageView pictureImage;
+        final TextView pictureText;
+
+        PictureGridViewHolder(ViewGroup adapterView) {
+            super(LayoutInflater.from(adapterView.getContext())
+                    .inflate(R.layout.item_picture_grid, adapterView, false));
+            pictureImage = itemView.findViewById(R.id.image_picture);
+            pictureText = itemView.findViewById(R.id.text_picture);
         }
     }
 
-    private void sendFeedback() {
-        if (NetworkUtil.isNetworkConnected(this)) {
-            MailUtil.sendMail(this,
-                    PREFIX_MAIL_SUBJECT + mEnterContactWayEditor.getText().toString().trim(),
-                    mEnterProblemsOrAdviceEditor.getText().toString(),
-                    null,
-                    mGridAdapter.mPicturePaths.isEmpty() ?
-                            null : mGridAdapter.mPicturePaths.toArray(Consts.EMPTY_STRING_ARRAY));
+    @Override
+    public void showPicturePreviewDialog(@NonNull List<Bitmap> pictures, int currentItem) {
+        if (mPicturePreviewDialog == null) {
+            mPicturePreviewDialog = new PicturePreviewDialog(pictures, currentItem);
+            mPicturePreviewDialog.show();
+        }
+    }
 
-            // 提交反馈后，清除sp文件保存的数据
-            mFeedbackSPs.clear();
+    @Override
+    public void hidePicturePreviewDialog() {
+        if (mPicturePreviewDialog != null) {
+            mPicturePreviewDialog.dismiss();
+        }
+    }
 
-            // 重设临时缓存的数据
-            mSavedFeedbackText = Consts.EMPTY_STRING;
-            mSavedContactWay = Consts.EMPTY_STRING;
-            // 刷新TextView的显示
-            refreshCurrTexts(mSavedFeedbackText, mSavedContactWay);
+    private final class PicturePreviewDialog extends Dialog implements DialogInterface.OnDismissListener,
+            View.OnClickListener, View.OnLongClickListener {
+        final Context mContext = FeedbackActivity.this;
+        final Window mParentWindow;
+        final Window mWindow;
 
-            // 清空PictureGridAdapter的数据
-            if (!mGridAdapter.mPicturePaths.isEmpty()) {
-                if (mSavedPicturePaths != null) {
-                    mSavedPicturePaths.clear();
-                }
+        final GalleryViewPager mGalleryViewPager;
+        final GalleryPagerAdapter<ImageView> mGalleryPagerAdapter;
+        final FrameLayout mDeleteFrame;
 
-                Bitmap temp = mGridAdapter.mPictures.get(mGridAdapter.mPictures.size() - 1);
-                Iterator<Bitmap> it = mGridAdapter.mPictures.iterator();
-                while (it.hasNext()) {
-                    Bitmap bitmap = it.next();
-                    if (temp == bitmap) continue;
-                    bitmap.recycle();
-                    it.remove();
-                }
-                mGridAdapter.mPicturePaths.clear();
-                mGridAdapter.mLoadedPicturePaths.clear();
-                // 刷新GridView
-                mGridAdapter.notifyDataSetChanged();
+        Dialog mConfirmDeletePictureDialog;
+
+        RotationObserver mRotationObserver;
+        OnOrientationChangeListener mOnOrientationChangeListener;
+        boolean mIsRotationEnabled;
+        int mScreenOrientation = SCREEN_ORIENTATION_PORTRAIT;
+
+        boolean mIsNotchSupport;
+        boolean mIsNotchSupportOnMIUI;
+        boolean mIsNotchSupportOnEMUI;
+        boolean mIsNotchHidden;
+        int mNotchHeight;
+        ScreenNotchSwitchObserver mNotchSwitchObserver;
+
+        PicturePreviewDialog(List<Bitmap> pictures, int currentItem) {
+            super(FeedbackActivity.this, R.style.DialogStyle_PicturePreview);
+            setOnDismissListener(this);
+
+            mParentWindow = FeedbackActivity.this.getWindow();
+            mWindow = getWindow();
+
+            //noinspection ConstantConditions
+            View view = View.inflate(mContext,
+                    R.layout.dialog_picture_preview,
+                    mWindow.getDecorView().findViewById(Window.ID_ANDROID_CONTENT));
+
+            int pictureCount = pictures.size();
+            List<ImageView> images = new ArrayList<>(pictureCount);
+            for (int i = 0; i < pictureCount; i++) {
+                ImageView image = (ImageView) View.inflate(
+                        mContext, R.layout.item_gallery_view_pager, null);
+                image.setImageBitmap(pictures.get(i));
+                image.setOnClickListener(this);
+                image.setOnLongClickListener(this);
+                images.add(image);
             }
-        } else {
-            Toast.makeText(this, R.string.noNetworkConnection, Toast.LENGTH_SHORT).show();
-            saveUserFilledData(false);
-        }
-    }
+            mGalleryPagerAdapter = new GalleryPagerAdapter<>(images);
+            mGalleryViewPager = view.findViewById(R.id.galley_view_pager);
+            mGalleryViewPager.setAdapter(mGalleryPagerAdapter);
+            mGalleryViewPager.setItemCallback(mGalleryPagerAdapter);
+            mGalleryViewPager.setCurrentItem(currentItem);
+            mGalleryViewPager.setPageMargin(DensityUtils.dp2px(mContext, 25f));
 
-    private void addPicture(String path) {
-        List<String> picturePaths = mGridAdapter.mPicturePaths;
-        if (path != null && !picturePaths.contains(path)) {
-            picturePaths.add(path);
-            Executors.SERIAL_EXECUTOR.execute(new LoadPictureTask(this, path));
-        }
-    }
+            mDeleteFrame = view.findViewById(R.id.frame_btn_delete);
+            mDeleteFrame.setOnClickListener(this);
+            view.findViewById(R.id.btn_delete).setOnClickListener(this);
 
-    private static final class LoadPictureTask implements Runnable {
-        final WeakReference<FeedbackActivity> mActivityRef;
-        final String mPicturePath;
-
-        LoadPictureTask(FeedbackActivity activity, String picturePath) {
-            mActivityRef = new WeakReference<>(activity);
-            mPicturePath = picturePath;
+            mWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.MATCH_PARENT);
         }
 
         @Override
-        public void run() {
-            final FeedbackActivity activity = mActivityRef.get();
-            if (activity == null || activity.isFinishing()) {
+        public void show() {
+            if (isShowing()) {
                 return;
             }
 
-            final Bitmap bitmap = BitmapUtils2.decodeRotatedBitmapFormFile(mPicturePath);
-            if (bitmap != null) {
-                Executors.MAIN_EXECUTOR.post(() -> {
-                    PictureGridAdapter gridAdapter = activity.mGridAdapter;
-                    if (!activity.isFinishing() && gridAdapter.mPicturePaths.contains(mPicturePath)) {
-                        List<String> loadedPicturePaths = gridAdapter.mLoadedPicturePaths;
-                        List<Bitmap> pictures = gridAdapter.mPictures;
-                        loadedPicturePaths.add(loadedPicturePaths.size(), mPicturePath);
-                        pictures.add(pictures.size() - 1, bitmap);
-                        gridAdapter.notifyDataSetChanged();
-                    } else {
-                        if (!gridAdapter.mPictures.contains(bitmap)) {
-                            bitmap.recycle();
+            setLayoutInDisplayCutout();
+            mWindow.getDecorView().setOnSystemUiVisibilityChangeListener(
+                    visibility -> {
+                        // FIXME: 对于Dialog, 在API24（Android 7.0）及以下不起作用
+                        SystemBarUtils.showSystemBars(mWindow, false);
+                    });
+            super.show();
+
+            mRotationObserver = new RotationObserver(
+                    mParentWindow.getDecorView().getHandler(), mContext) {
+                @Override
+                public void onRotationChange(boolean selfChange, boolean enabled) {
+                    mIsRotationEnabled = enabled;
+                }
+            };
+            mOnOrientationChangeListener = new OnOrientationChangeListener(
+                    mContext, mScreenOrientation) {
+                @Override
+                public void onOrientationChange(int orientation) {
+                    if (orientation != SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+                        if (!mIsRotationEnabled &&
+                                !(orientation != SCREEN_ORIENTATION_PORTRAIT
+                                        && mScreenOrientation != SCREEN_ORIENTATION_PORTRAIT)) {
+                            setOrientation(mScreenOrientation);
+                            return;
                         }
+                        mScreenOrientation = orientation;
+                        setRequestedOrientation(orientation);
                     }
-                });
-            }
-        }
-    }
-
-    private final class PictureGridAdapter extends BaseAdapter implements AdapterView.OnItemClickListener {
-        final Context mContext;
-
-        final List<Bitmap> mPictures = new ArrayList<>(MAX_COUNT_UPLOAD_PICTURES + 1);
-        final List<String> mPicturePaths = new LinkedList<>();
-        final List<String> mLoadedPicturePaths = new LinkedList<>();
-
-        static final int MAX_COUNT_UPLOAD_PICTURES = 3;
-
-        PictureGridAdapter(@NonNull Context context) {
-            mContext = context;
-            //noinspection ConstantConditions
-            mPictures.add(BitmapUtils.drawableToBitmap(
-                    AppCompatResources.getDrawable(context, R.drawable.ic_add_photo_gray_36dp)));
-        }
-
-        @Override
-        public int getCount() {
-            final int count = mPictures.size();
-            return Math.min(count, MAX_COUNT_UPLOAD_PICTURES);
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mPictures.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder vh;
-            if (convertView == null) {
-                vh = new ViewHolder(parent);
-                convertView = vh.itemView;
-                convertView.setTag(vh);
-
-                final int screenWidth = App.getInstance(mContext).getScreenWidthIgnoreOrientation();
-                final int dp_20 = DensityUtils.dp2px(mContext, 20f);
-
-                ViewGroup.LayoutParams lp = convertView.getLayoutParams();
-                lp.height = lp.width = com.liuzhenlin.texturevideoview.utils.
-                        Utils.roundFloat((screenWidth - dp_20 * 1.5f) / 3f);
-
-                ViewGroup.LayoutParams plp = parent.getLayoutParams();
-                plp.width = screenWidth - dp_20;
-                plp.height = lp.height;
-            } else {
-                vh = (ViewHolder) convertView.getTag();
-            }
-            vh.pictureImage.setImageBitmap(mPictures.get(position));
-            vh.pictureText.setVisibility(position != mPictures.size() - 1 ? View.GONE : View.VISIBLE);
-            mPictureCountIndicator.setText(
-                    getString(R.string.pictureCount, mPictures.size() - 1));
-            return convertView;
-        }
-
-        final class ViewHolder {
-            final View itemView;
-            final ImageView pictureImage;
-            final TextView pictureText;
-
-            ViewHolder(ViewGroup adapterView) {
-                itemView = LayoutInflater.from(adapterView.getContext())
-                        .inflate(R.layout.item_picture_grid, adapterView, false);
-                pictureImage = itemView.findViewById(R.id.image_picture);
-                pictureText = itemView.findViewById(R.id.text_picture);
-            }
-        }
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final int pictureCount = mPictures.size();
-            if (position == pictureCount - 1) {
-                if (mPicturePaths.size() < MAX_COUNT_UPLOAD_PICTURES) {
-                    startActivityForResult(
-                            new Intent(Intent.ACTION_GET_CONTENT)
-                                    .setType("image/*"), Consts.REQUEST_CODE_ADD_PICTURE);
                 }
-            } else {
-                mPicturePreviewDialog = new PicturePreviewDialog(position);
-                mPicturePreviewDialog.show();
+            };
+            mRotationObserver.startObserver();
+            mOnOrientationChangeListener.setEnabled(true);
+        }
+
+        @SuppressLint("SourceLockedOrientationActivity")
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            mPicturePreviewDialog = null;
+            if (mNotchSwitchObserver != null) {
+                mNotchSwitchObserver.stopObserver();
+            }
+            mOnOrientationChangeListener.setEnabled(false);
+            mRotationObserver.stopObserver();
+            if (mScreenOrientation != SCREEN_ORIENTATION_PORTRAIT) {
+                setRequestedOrientation(SCREEN_ORIENTATION_PORTRAIT);
             }
         }
 
-        final class PicturePreviewDialog extends Dialog implements DialogInterface.OnDismissListener,
-                View.OnClickListener, View.OnLongClickListener {
-            final Window mParentWindow;
-            final Window mWindow;
-
-            final GalleryViewPager mGalleryViewPager;
-            final GalleryPagerAdapter<ImageView> mGalleryPagerAdapter;
-            final FrameLayout mDeleteFrame;
-
-            Dialog mConfirmDeletePictureDialog;
-
-            RotationObserver mRotationObserver;
-            OnOrientationChangeListener mOnOrientationChangeListener;
-            boolean mIsRotationEnabled;
-            int mScreenOrientation = SCREEN_ORIENTATION_PORTRAIT;
-
-            boolean mIsNotchSupport;
-            boolean mIsNotchSupportOnMIUI;
-            boolean mIsNotchSupportOnEMUI;
-            boolean mIsNotchHidden;
-            int mNotchHeight;
-            ScreenNotchSwitchObserver mNotchSwitchObserver;
-
-            PicturePreviewDialog(int currentItem) {
-                super(mContext, R.style.DialogStyle_PicturePreview);
-                setOnDismissListener(this);
-
-                mParentWindow = FeedbackActivity.this.getWindow();
-                mWindow = getWindow();
-
-                //noinspection ConstantConditions
-                View view = View.inflate(mContext,
-                        R.layout.dialog_picture_preview,
-                        mWindow.getDecorView().findViewById(Window.ID_ANDROID_CONTENT));
-
-                List<ImageView> images = new ArrayList<>(mPictures.size() - 1);
-                for (int i = 0, count = mPictures.size() - 1; i < count; i++) {
-                    ImageView image = (ImageView) View.inflate(
-                            mContext, R.layout.item_gallery_view_pager, null);
-                    image.setImageBitmap(mPictures.get(i));
-                    image.setOnClickListener(this);
-                    image.setOnLongClickListener(this);
-                    images.add(image);
-                }
-                mGalleryPagerAdapter = new GalleryPagerAdapter<>(images);
-                mGalleryViewPager = view.findViewById(R.id.galley_view_pager);
-                mGalleryViewPager.setAdapter(mGalleryPagerAdapter);
-                mGalleryViewPager.setItemCallback(mGalleryPagerAdapter);
-                mGalleryViewPager.setCurrentItem(currentItem);
-                mGalleryViewPager.setPageMargin(DensityUtils.dp2px(mContext, 25f));
-
-                mDeleteFrame = view.findViewById(R.id.frame_btn_delete);
-                mDeleteFrame.setOnClickListener(this);
-                view.findViewById(R.id.btn_delete).setOnClickListener(this);
-
-                mWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-                        WindowManager.LayoutParams.MATCH_PARENT);
-            }
-
-            @Override
-            public void show() {
-                if (isShowing()) {
-                    return;
-                }
-
-                setLayoutInDisplayCutout();
-                mWindow.getDecorView().setOnSystemUiVisibilityChangeListener(
-                        visibility -> {
-                            // FIXME: 对于Dialog, 在API24（Android 7.0）及以下不起作用
-                            SystemBarUtils.showSystemBars(mWindow, false);
-                        });
-                super.show();
-
-                mRotationObserver = new RotationObserver(
-                        mParentWindow.getDecorView().getHandler(), mContext) {
-                    @Override
-                    public void onRotationChange(boolean selfChange, boolean enabled) {
-                        mIsRotationEnabled = enabled;
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.image_picture:
+                    if (mDeleteFrame.getVisibility() == View.VISIBLE) {
+                        mDeleteFrame.setVisibility(View.GONE);
+                        break;
                     }
-                };
-                mOnOrientationChangeListener = new OnOrientationChangeListener(
-                        mContext, mScreenOrientation) {
+                    cancel();
+                    break;
+
+                case R.id.frame_btn_delete:
+                case R.id.btn_delete:
+                    View view = View.inflate(mContext, R.layout.dialog_message, null);
+                    view.<TextView>findViewById(R.id.text_message)
+                            .setText(R.string.areYouSureToDeleteThisPicture);
+                    view.findViewById(R.id.btn_cancel).setOnClickListener(this);
+                    view.findViewById(R.id.btn_ok).setOnClickListener(this);
+                    mConfirmDeletePictureDialog = new AppCompatDialog(
+                            mContext, R.style.DialogStyle_MinWidth_NoTitle);
+                    mConfirmDeletePictureDialog.setContentView(view);
+                    mConfirmDeletePictureDialog.show();
+                    break;
+
+                case R.id.btn_cancel:
+                    mConfirmDeletePictureDialog.cancel();
+                    mConfirmDeletePictureDialog = null;
+                    break;
+                case R.id.btn_ok:
+                    mConfirmDeletePictureDialog.cancel();
+                    mConfirmDeletePictureDialog = null;
+
+                    final int currentItem = mGalleryViewPager.getCurrentItem();
+                    mGalleryPagerAdapter.views.remove(currentItem);
+                    mGalleryPagerAdapter.notifyDataSetChanged();
+                    mPresenter.removePictureAt(currentItem);
+                    break;
+            }
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            //noinspection SwitchStatementWithTooFewBranches
+            switch (v.getId()) {
+                case R.id.image_picture:
+                    if (mDeleteFrame.getVisibility() != View.VISIBLE) {
+                        mDeleteFrame.setVisibility(View.VISIBLE);
+                        return true;
+                    }
+                    break;
+            }
+            return false;
+        }
+
+        // 使View占用刘海区（如果有）
+        void setLayoutInDisplayCutout() {
+            View parentDecorView = mParentWindow.getDecorView();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                DisplayCutout dc = parentDecorView.getRootWindowInsets().getDisplayCutout();
+                if (dc != null) {
+                    mIsNotchSupport = true;
+                    if (OSHelper.isEMUI()) {
+                        mIsNotchSupportOnEMUI = true;
+                    } else if (OSHelper.isMIUI()) {
+                        mIsNotchSupportOnMIUI = true;
+                    }
+                    mNotchHeight = dc.getSafeInsetTop();
+                    DisplayCutoutUtils.setLayoutInDisplayCutoutSinceP(mWindow, true);
+                }
+            } else if (OSHelper.isEMUI()) {
+                if (DisplayCutoutUtils.hasNotchInScreenForEMUI(mContext)) {
+                    mIsNotchSupport = mIsNotchSupportOnEMUI = true;
+                    mNotchHeight = DisplayCutoutUtils.getNotchSizeForEMUI(mContext)[1];
+                    DisplayCutoutUtils.setLayoutInDisplayCutoutForEMUI(mWindow, true);
+                }
+            } else if (OSHelper.isColorOS()) {
+                if (DisplayCutoutUtils.hasNotchInScreenForColorOS(mContext)) {
+                    mIsNotchSupport = true;
+                    mNotchHeight = DisplayCutoutUtils.getNotchSizeForColorOS()[1];
+                }
+            } else if (OSHelper.isFuntouchOS()) {
+                if (DisplayCutoutUtils.hasNotchInScreenForFuntouchOS(mContext)) {
+                    mIsNotchSupport = true;
+                    mNotchHeight = DisplayCutoutUtils.getNotchHeightForFuntouchOS(mContext);
+                }
+            } else if (OSHelper.isMIUI()) {
+                if (DisplayCutoutUtils.hasNotchInScreenForMIUI()) {
+                    mIsNotchSupport = mIsNotchSupportOnMIUI = true;
+                    mNotchHeight = DisplayCutoutUtils.getNotchHeightForMIUI(mContext);
+                    DisplayCutoutUtils.setLayoutInDisplayCutoutForMIUI(mWindow, true);
+                }
+            }
+            if (mIsNotchSupportOnEMUI || mIsNotchSupportOnMIUI) {
+                mNotchSwitchObserver = new ScreenNotchSwitchObserver(
+                        parentDecorView.getHandler(), mContext,
+                        mIsNotchSupportOnEMUI, mIsNotchSupportOnMIUI) {
+                    boolean first = true;
+
                     @Override
-                    public void onOrientationChange(int orientation) {
-                        if (orientation != SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-                            if (!mIsRotationEnabled &&
-                                    !(orientation != SCREEN_ORIENTATION_PORTRAIT
-                                            && mScreenOrientation != SCREEN_ORIENTATION_PORTRAIT)) {
-                                setOrientation(mScreenOrientation);
-                                return;
-                            }
-                            mScreenOrientation = orientation;
-                            setRequestedOrientation(orientation);
+                    public void onNotchChange(boolean selfChange, boolean hidden) {
+                        if (first || mIsNotchHidden != hidden) {
+                            first = false;
+                            mIsNotchHidden = hidden;
+                            adjustVisibleRegion();
                         }
                     }
                 };
-                mRotationObserver.startObserver();
-                mOnOrientationChangeListener.setEnabled(true);
+                mNotchSwitchObserver.startObserver();
+            } else {
+                adjustVisibleRegion();
             }
+        }
 
-            @SuppressLint("SourceLockedOrientationActivity")
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                mPicturePreviewDialog = null;
-                if (mNotchSwitchObserver != null) {
-                    mNotchSwitchObserver.stopObserver();
-                }
-                mOnOrientationChangeListener.setEnabled(false);
-                mRotationObserver.stopObserver();
-                if (mScreenOrientation != SCREEN_ORIENTATION_PORTRAIT) {
-                    setRequestedOrientation(SCREEN_ORIENTATION_PORTRAIT);
-                }
+        void adjustVisibleRegion() {
+            if (!mIsNotchSupport) {
+                return;
             }
-
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.image_picture:
-                        if (mDeleteFrame.getVisibility() == View.VISIBLE) {
-                            mDeleteFrame.setVisibility(View.GONE);
-                            break;
-                        }
-                        cancel();
-                        break;
-
-                    case R.id.frame_btn_delete:
-                    case R.id.btn_delete:
-                        View view = View.inflate(mContext, R.layout.dialog_message, null);
-                        view.<TextView>findViewById(R.id.text_message)
-                                .setText(R.string.areYouSureToDeleteThisPicture);
-                        view.findViewById(R.id.btn_cancel).setOnClickListener(this);
-                        view.findViewById(R.id.btn_ok).setOnClickListener(this);
-                        mConfirmDeletePictureDialog = new AppCompatDialog(
-                                mContext, R.style.DialogStyle_MinWidth_NoTitle);
-                        mConfirmDeletePictureDialog.setContentView(view);
-                        mConfirmDeletePictureDialog.show();
-                        break;
-
-                    case R.id.btn_cancel:
-                        mConfirmDeletePictureDialog.cancel();
-                        mConfirmDeletePictureDialog = null;
-                        break;
-                    case R.id.btn_ok:
-                        mConfirmDeletePictureDialog.cancel();
-                        mConfirmDeletePictureDialog = null;
-
-                        final int currentItem = mGalleryViewPager.getCurrentItem();
-                        mGalleryPagerAdapter.views.remove(currentItem);
-                        mGalleryPagerAdapter.notifyDataSetChanged();
-                        // 图片全部被删除时，销毁此对话框
-                        if (mPictures.size() == 2) {
-                            dismiss();
-                        }
-                        mPictures.get(currentItem).recycle();
-                        mPictures.remove(currentItem);
-                        mPicturePaths.remove(mLoadedPicturePaths.remove(currentItem));
-                        notifyDataSetChanged();
-                        break;
-                }
-            }
-
-            @Override
-            public boolean onLongClick(View v) {
-                //noinspection SwitchStatementWithTooFewBranches
-                switch (v.getId()) {
-                    case R.id.image_picture:
-                        if (mDeleteFrame.getVisibility() != View.VISIBLE) {
-                            mDeleteFrame.setVisibility(View.VISIBLE);
-                            return true;
-                        }
-                        break;
-                }
-                return false;
-            }
-
-            // 使View占用刘海区（如果有）
-            void setLayoutInDisplayCutout() {
-                View parentDecorView = mParentWindow.getDecorView();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    DisplayCutout dc = parentDecorView.getRootWindowInsets().getDisplayCutout();
-                    if (dc != null) {
-                        mIsNotchSupport = true;
-                        if (OSHelper.isEMUI()) {
-                            mIsNotchSupportOnEMUI = true;
-                        } else if (OSHelper.isMIUI()) {
-                            mIsNotchSupportOnMIUI = true;
-                        }
-                        mNotchHeight = dc.getSafeInsetTop();
-                        DisplayCutoutUtils.setLayoutInDisplayCutoutSinceP(mWindow, true);
-                    }
-                } else if (OSHelper.isEMUI()) {
-                    if (DisplayCutoutUtils.hasNotchInScreenForEMUI(mContext)) {
-                        mIsNotchSupport = mIsNotchSupportOnEMUI = true;
-                        mNotchHeight = DisplayCutoutUtils.getNotchSizeForEMUI(mContext)[1];
-                        DisplayCutoutUtils.setLayoutInDisplayCutoutForEMUI(mWindow, true);
-                    }
-                } else if (OSHelper.isColorOS()) {
-                    if (DisplayCutoutUtils.hasNotchInScreenForColorOS(mContext)) {
-                        mIsNotchSupport = true;
-                        mNotchHeight = DisplayCutoutUtils.getNotchSizeForColorOS()[1];
-                    }
-                } else if (OSHelper.isFuntouchOS()) {
-                    if (DisplayCutoutUtils.hasNotchInScreenForFuntouchOS(mContext)) {
-                        mIsNotchSupport = true;
-                        mNotchHeight = DisplayCutoutUtils.getNotchHeightForFuntouchOS(mContext);
-                    }
-                } else if (OSHelper.isMIUI()) {
-                    if (DisplayCutoutUtils.hasNotchInScreenForMIUI()) {
-                        mIsNotchSupport = mIsNotchSupportOnMIUI = true;
-                        mNotchHeight = DisplayCutoutUtils.getNotchHeightForMIUI(mContext);
-                        DisplayCutoutUtils.setLayoutInDisplayCutoutForMIUI(mWindow, true);
-                    }
-                }
-                if (mIsNotchSupportOnEMUI || mIsNotchSupportOnMIUI) {
-                    mNotchSwitchObserver = new ScreenNotchSwitchObserver(
-                            parentDecorView.getHandler(), mContext,
-                            mIsNotchSupportOnEMUI, mIsNotchSupportOnMIUI) {
-                        boolean first = true;
-
-                        @Override
-                        public void onNotchChange(boolean selfChange, boolean hidden) {
-                            if (first || mIsNotchHidden != hidden) {
-                                first = false;
-                                mIsNotchHidden = hidden;
-                                adjustVisibleRegion();
-                            }
-                        }
-                    };
-                    mNotchSwitchObserver.startObserver();
-                } else {
-                    adjustVisibleRegion();
-                }
-            }
-
-            void adjustVisibleRegion() {
-                if (!mIsNotchSupport) {
-                    return;
-                }
-                switch (mScreenOrientation) {
-                    case SCREEN_ORIENTATION_PORTRAIT:
-                        mGalleryViewPager.setPadding(0, mNotchHeight, 0, 0);
-                        break;
-                    case SCREEN_ORIENTATION_LANDSCAPE:
-                        mGalleryViewPager.setPadding(
-                                mIsNotchSupportOnEMUI && mIsNotchHidden ? 0 : mNotchHeight, 0,
-                                0, 0);
-                        break;
-                    case SCREEN_ORIENTATION_REVERSE_LANDSCAPE:
-                        mGalleryViewPager.setPadding(0, 0,
-                                mIsNotchSupportOnEMUI && mIsNotchHidden ? 0 : mNotchHeight, 0);
-                        break;
-                }
+            switch (mScreenOrientation) {
+                case SCREEN_ORIENTATION_PORTRAIT:
+                    mGalleryViewPager.setPadding(0, mNotchHeight, 0, 0);
+                    break;
+                case SCREEN_ORIENTATION_LANDSCAPE:
+                    mGalleryViewPager.setPadding(
+                            mIsNotchSupportOnEMUI && mIsNotchHidden ? 0 : mNotchHeight, 0,
+                            0, 0);
+                    break;
+                case SCREEN_ORIENTATION_REVERSE_LANDSCAPE:
+                    mGalleryViewPager.setPadding(0, 0,
+                            mIsNotchSupportOnEMUI && mIsNotchHidden ? 0 : mNotchHeight, 0);
+                    break;
             }
         }
     }

@@ -37,8 +37,8 @@ internal const val RESULT_CODE_LOCAL_SEARCHED_VIDEOS_FRAGMENT = 3
 internal const val REQUEST_CODE_LOCAL_FOLDED_VIDEOS_FRAGMENT = 4
 internal const val RESULT_CODE_LOCAL_FOLDED_VIDEOS_FRAGMENT = 4
 
-internal const val REQUEST_CODE_ADD_PICTURE = 5
-internal const val RESULT_CODE_ADD_PICTURE = 5
+internal const val REQUEST_CODE_GET_PICTURE = 5
+internal const val RESULT_CODE_GET_PICTURE = 5
 
 internal const val TOLERANCE_VIDEO_DURATION = 100 // ms
 

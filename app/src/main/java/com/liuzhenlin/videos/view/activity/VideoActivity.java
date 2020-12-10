@@ -17,11 +17,9 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.transition.ChangeBounds;
 import android.transition.TransitionManager;
 import android.util.Log;
@@ -56,27 +54,23 @@ import com.liuzhenlin.texturevideoview.IjkVideoPlayer;
 import com.liuzhenlin.texturevideoview.TextureVideoView;
 import com.liuzhenlin.texturevideoview.VideoPlayer;
 import com.liuzhenlin.texturevideoview.utils.FileUtils;
-import com.liuzhenlin.texturevideoview.utils.ShareUtils;
 import com.liuzhenlin.texturevideoview.utils.SystemBarUtils;
 import com.liuzhenlin.texturevideoview.utils.Utils;
 import com.liuzhenlin.videos.App;
 import com.liuzhenlin.videos.BuildConfig;
 import com.liuzhenlin.videos.Consts;
-import com.liuzhenlin.videos.Files;
 import com.liuzhenlin.videos.R;
 import com.liuzhenlin.videos.bean.Video;
-import com.liuzhenlin.videos.dao.VideoListItemDao;
 import com.liuzhenlin.videos.observer.OnOrientationChangeListener;
 import com.liuzhenlin.videos.observer.RotationObserver;
 import com.liuzhenlin.videos.observer.ScreenNotchSwitchObserver;
+import com.liuzhenlin.videos.presenter.IVideoPresenter;
 import com.liuzhenlin.videos.utils.DisplayCutoutUtils;
 import com.liuzhenlin.videos.utils.OSHelper;
 import com.liuzhenlin.videos.utils.UiUtils;
 import com.liuzhenlin.videos.utils.VideoUtils2;
-import com.liuzhenlin.videos.view.fragment.VideoListItemOpsKt;
 
 import java.io.File;
-import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,7 +83,7 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAI
 /**
  * @author 刘振林
  */
-public class VideoActivity extends SwipeBackActivity {
+public class VideoActivity extends SwipeBackActivity implements IVideoView {
 
     private static WeakReference<VideoActivity> sActivityInPiP;
 
@@ -97,14 +91,9 @@ public class VideoActivity extends SwipeBackActivity {
     @Synthetic TextureVideoView mVideoView;
     private ImageView mLockUnlockOrientationButton;
 
-    @Synthetic RecyclerView mPlayList;
-    @Synthetic static final Object sRefreshVideoProgressPayload = new Object();
-    @Synthetic static final Object sHighlightSelectedItemIfExistsPayload = new Object();
-
     @Synthetic IVideoPlayer mVideoPlayer;
+    @Synthetic final IVideoPresenter mPresenter = IVideoPresenter.newInstance();
 
-    @Synthetic Video[] mVideos;
-    @Synthetic int mVideoIndex = -1;
     @Synthetic int mVideoWidth;
     @Synthetic int mVideoHeight;
 
@@ -176,7 +165,6 @@ public class VideoActivity extends SwipeBackActivity {
     private String mFastRewind;
     private String mLockOrientation;
     private String mUnlockOrientation;
-    @Synthetic String mWatching;
 
     private View.OnLayoutChangeListener mOnPipLayoutChangeListener;
 
@@ -223,7 +211,6 @@ public class VideoActivity extends SwipeBackActivity {
         super.attachBaseContext(newBase);
         mLockOrientation = getString(R.string.lockScreenOrientation);
         mUnlockOrientation = getString(R.string.unlockScreenOrientation);
-        mWatching = getString(R.string.watching);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mPlay = getString(R.string.play);
             mPause = getString(R.string.pause);
@@ -238,14 +225,15 @@ public class VideoActivity extends SwipeBackActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (initVideos(savedInstanceState, getIntent())) {
+        mPresenter.attachToView(this);
+        if (mPresenter.initPlaylist(savedInstanceState, getIntent())) {
             setRequestedOrientation(mScreenOrientation);
             setContentView(R.layout.activity_video);
             initViews(savedInstanceState);
         } else {
             Activity preactivity = getPreviousActivity();
             if (preactivity == null) {
-                Toast.makeText(this, R.string.cannotPlayThisVideo, Toast.LENGTH_LONG).show();
+                showToast(this, R.string.cannotPlayThisVideo, Toast.LENGTH_LONG);
             } else {
                 UiUtils.showUserCancelableSnackbar(preactivity.getWindow().getDecorView(),
                         R.string.cannotPlayThisVideo, Snackbar.LENGTH_LONG);
@@ -256,14 +244,11 @@ public class VideoActivity extends SwipeBackActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Video video = mVideos[mVideoIndex];
-        if (initVideos(null, intent)) {
+        if (mPresenter.initPlaylistAndRecordCurrentVideoProgress(null, intent)) {
             super.onNewIntent(intent);
             setIntent(intent);
 
-            recordVideoProgress(video);
-
-            final boolean needPlaylist = mVideos.length > 1;
+            final boolean needPlaylist = mPresenter.getPlaylistSize() > 1;
             //noinspection rawtypes
             TextureVideoView.PlayListAdapter adapter = mVideoView.getPlayListAdapter();
             if (needPlaylist && adapter != null) {
@@ -271,126 +256,13 @@ public class VideoActivity extends SwipeBackActivity {
             }
             //noinspection unchecked
             mVideoView.setPlayListAdapter(needPlaylist
-                    ? adapter == null ? new VideoEpisodesAdapter() : adapter
+                    ? adapter == null ? mPresenter.newPlaylistAdapter() : adapter
                     : null);
             mVideoView.setCanSkipToPrevious(needPlaylist);
             mVideoView.setCanSkipToNext(needPlaylist);
 
-            setVideoToPlay(mVideos[mVideoIndex]);
+            mPresenter.playCurrentVideo();
         }
-    }
-
-    private boolean initVideos(Bundle savedInstanceState, Intent intent) {
-        final boolean stateRestore = savedInstanceState != null;
-        Video video;
-
-        Parcelable[] parcelables = intent.getParcelableArrayExtra(Consts.KEY_VIDEOS);
-        if (parcelables != null) {
-            final int length = parcelables.length;
-            if (length > 0) {
-                mVideos = new Video[length];
-                for (int i = 0; i < length; i++) {
-                    video = (Video) parcelables[i];
-                    if (stateRestore) {
-                        video.setProgress(
-                                VideoListItemDao.getSingleton(this).getVideoProgress(video.getId()));
-                    }
-                    mVideos[i] = video;
-                }
-                if (stateRestore) {
-                    mVideoIndex = savedInstanceState.getInt(KEY_VIDEO_INDEX);
-                } else {
-                    mVideoIndex = intent.getIntExtra(Consts.KEY_SELECTION, 0);
-                    if (mVideoIndex < 0 || mVideoIndex >= length) {
-                        mVideoIndex = 0;
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-
-        video = intent.getParcelableExtra(Consts.KEY_VIDEO);
-        if (video != null) {
-            if (stateRestore) {
-                video.setProgress(
-                        VideoListItemDao.getSingleton(this).getVideoProgress(video.getId()));
-            }
-            mVideos = new Video[]{video};
-            mVideoIndex = 0;
-            return true;
-        }
-
-        Parcelable[] videoUriParcels = (Parcelable[]) intent.getSerializableExtra(Consts.KEY_VIDEO_URIS);
-        Serializable[] videoTitleSerials = (Serializable[]) intent.getSerializableExtra(Consts.KEY_VIDEO_TITLES);
-        if (videoUriParcels != null) {
-            final int length = videoUriParcels.length;
-            if (length > 0) {
-                mVideos = new Video[length];
-                for (int i = 0; i < length; i++) {
-                    video = buildVideoForUri((Uri) videoUriParcels[i],
-                            (String) (videoTitleSerials != null ? videoTitleSerials[i] : null));
-                    if (stateRestore && video.getId() != Consts.NO_ID) {
-                        video.setProgress(
-                                VideoListItemDao.getSingleton(this).getVideoProgress(video.getId()));
-                    }
-                    mVideos[i] = video;
-                }
-                if (stateRestore) {
-                    mVideoIndex = savedInstanceState.getInt(KEY_VIDEO_INDEX);
-                } else {
-                    mVideoIndex = intent.getIntExtra(Consts.KEY_SELECTION, 0);
-                    if (mVideoIndex < 0 || mVideoIndex >= length) {
-                        mVideoIndex = 0;
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-
-        Uri uri = intent.getData();
-        if (uri == null) {
-            uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-            if (uri == null) {
-                CharSequence uriCharSequence = intent.getCharSequenceExtra(Intent.EXTRA_TEXT);
-                if (uriCharSequence != null) {
-                    uri = Uri.parse(uriCharSequence.toString());
-                }
-            }
-        }
-        if (uri != null) {
-            video = buildVideoForUri(uri, intent.getStringExtra(Consts.KEY_VIDEO_TITLE));
-            if (stateRestore && video.getId() != Consts.NO_ID) {
-                video.setProgress(
-                        VideoListItemDao.getSingleton(this).getVideoProgress(video.getId()));
-            }
-            mVideos = new Video[]{video};
-            mVideoIndex = 0;
-            return true;
-        }
-
-        return false;
-    }
-
-    private Video buildVideoForUri(Uri uri, String videoTitle) {
-        String videoUrl = FileUtils.UriResolver.getPath(this, uri);
-        if (videoUrl == null) {
-            videoUrl = uri.toString();
-        }
-
-        Video video = VideoListItemDao.getSingleton(this).queryVideoByPath(videoUrl);
-        if (video == null) {
-            video = new Video();
-            video.setId(Consts.NO_ID);
-            video.setPath(videoUrl);
-            if (videoTitle != null) {
-                video.setName(videoTitle);
-            } else {
-                video.setName(FileUtils.getFileNameFromFilePath(videoUrl));
-            }
-        }
-        return video;
     }
 
     private void initViews(Bundle savedInstanceState) {
@@ -418,27 +290,21 @@ public class VideoActivity extends SwipeBackActivity {
         mLockUnlockOrientationButton.setOnClickListener(v ->
                 setScreenOrientationLocked((mPrivateFlags & PFLAG_SCREEN_ORIENTATION_LOCKED) == 0));
 
-        if (mVideos.length > 1) {
-            mVideoView.setPlayListAdapter(new VideoEpisodesAdapter());
+        if (mPresenter.getPlaylistSize() > 1) {
+            mVideoView.setPlayListAdapter(mPresenter.newPlaylistAdapter());
             mVideoView.setCanSkipToPrevious(true);
             mVideoView.setCanSkipToNext(true);
         }
         // Ensures the list scrolls to the position of the video to be played
-        if (savedInstanceState == null && mVideoIndex != 0) {
-            notifyItemSelectionChanged(0, mVideoIndex, true);
+        final int position = mPresenter.getCurrentVideoPositionInList();
+        if (savedInstanceState == null && position != 0) {
+            notifyPlaylistSelectionChanged(0, position, true);
         }
-        setVideoToPlay(mVideos[mVideoIndex]);
+        mPresenter.playCurrentVideo();
         videoPlayer.addVideoListener(new IVideoPlayer.VideoListener() {
             @Override
             public void onVideoStarted() {
-                Video video = mVideos[mVideoIndex];
-                final int progress = video.getProgress();
-                if (progress > 0 && progress < video.getDuration() - Consts.TOLERANCE_VIDEO_DURATION) {
-                    // Restores the playback position saved when the VideoActivity for
-                    // the same video was closed
-                    mVideoPlayer.seekTo(progress, false);
-                    video.setProgress(0);
-                }
+                mPresenter.onCurrentVideoStarted();
 
                 if (mVideoWidth == 0 && mVideoHeight == 0) {
                     mVideoWidth = mVideoPlayer.getVideoWidth();
@@ -509,30 +375,12 @@ public class VideoActivity extends SwipeBackActivity {
         videoPlayer.setOnSkipPrevNextListener(new VideoPlayer.OnSkipPrevNextListener() {
             @Override
             public void onSkipToPrevious() {
-                recordCurrVideoProgress();
-
-                final int oldVideoIndex = mVideoIndex;
-                if (oldVideoIndex == 0) {
-                    mVideoIndex = mVideos.length - 1;
-                } else {
-                    --mVideoIndex;
-                }
-                setVideoToPlay(mVideos[mVideoIndex]);
-                notifyItemSelectionChanged(oldVideoIndex, mVideoIndex, true);
+                mPresenter.skipToPreviousVideo();
             }
 
             @Override
             public void onSkipToNext() {
-                recordCurrVideoProgress();
-
-                final int oldVideoIndex = mVideoIndex;
-                if (oldVideoIndex == mVideos.length - 1) {
-                    mVideoIndex = 0;
-                } else {
-                    ++mVideoIndex;
-                }
-                setVideoToPlay(mVideos[mVideoIndex]);
-                notifyItemSelectionChanged(oldVideoIndex, mVideoIndex, true);
+                mPresenter.skipToNextVideo();
             }
         });
         mVideoView.setEventListener(new TextureVideoView.EventListener() {
@@ -585,13 +433,14 @@ public class VideoActivity extends SwipeBackActivity {
 
             @Override
             public void onShareVideo() {
-                VideoListItemOpsKt.shareVideo(VideoActivity.this, mVideos[mVideoIndex]);
+                Context context = VideoActivity.this;
+                mPresenter.shareCurrentVideo(context);
             }
 
             @Override
             public void onShareCapturedVideoPhoto(@NonNull File photo) {
                 Context context = VideoActivity.this;
-                ShareUtils.shareFile(context, Files.PROVIDER_AUTHORITY, photo, "image/*");
+                mPresenter.shareCapturedVideoPhoto(context, photo);
             }
         });
         mVideoView.setOpCallback(new TextureVideoView.OpCallback() {
@@ -615,9 +464,21 @@ public class VideoActivity extends SwipeBackActivity {
         });
     }
 
-    @Synthetic void setVideoToPlay(Video video) {
+    @Override
+    public void setVideoToPlay(@NonNull Video video) {
         mVideoPlayer.setVideoPath(video.getPath());
         mVideoView.setTitle(FileUtils.getFileTitleFromFileName(video.getName()));
+    }
+
+    @Override
+    public void seekPositionOnVideoStarted(int position) {
+        // Restores the playback position saved at the last time
+        mVideoPlayer.seekTo(position, false);
+    }
+
+    @Override
+    public int getPlayingVideoProgress() {
+        return mVideoPlayer.getVideoProgress();
     }
 
     @Override
@@ -750,7 +611,7 @@ public class VideoActivity extends SwipeBackActivity {
 
         // Saves the video progress when current Activity is put into background
         if (!isFinishing()) {
-            recordCurrVideoProgress();
+            mPresenter.recordCurrVideoProgress();
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !isInPictureInPictureMode()) {
@@ -765,34 +626,13 @@ public class VideoActivity extends SwipeBackActivity {
 
     @Override
     public void finish() {
-        if (mVideos != null && mVideos.length > 0) {
-            if (mVideos.length == 1) {
-                recordCurrVideoProgress();
-                setResult(Consts.RESULT_CODE_PLAY_VIDEO, new Intent().putExtra(Consts.KEY_VIDEO, mVideos[0]));
-            } else {
-                recordCurrVideoProgress();
-                setResult(Consts.RESULT_CODE_PLAY_VIDEOS, new Intent().putExtra(Consts.KEY_VIDEOS, mVideos));
-            }
-        }
+        mPresenter.recordCurrVideoProgressAndSetResult();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // finish() does not remove the activity in PIP mode from the recents stack.
             // Only finishAndRemoveTask() does this.
             finishAndRemoveTask();
         } else {
             super.finish();
-        }
-    }
-
-    @Synthetic void recordCurrVideoProgress() {
-        recordVideoProgress(mVideos[mVideoIndex]);
-    }
-
-    private void recordVideoProgress(Video video) {
-        video.setProgress(mVideoPlayer.getVideoProgress());
-
-        final long id = video.getId();
-        if (id != Consts.NO_ID) {
-            VideoListItemDao.getSingleton(this).setVideoProgress(id, video.getProgress());
         }
     }
 
@@ -806,6 +646,7 @@ public class VideoActivity extends SwipeBackActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mPresenter.detachFromView(this);
         if (sActivityInPiP != null && sActivityInPiP.get() == this) {
             sActivityInPiP.clear();
             sActivityInPiP = null;
@@ -1106,7 +947,7 @@ public class VideoActivity extends SwipeBackActivity {
      */
     @RequiresApi(Build.VERSION_CODES.O)
     @Synthetic void updatePictureInPictureActions(int pipActions) {
-        final List<RemoteAction> actions = new LinkedList<>();
+        List<RemoteAction> actions = new LinkedList<>();
         if ((pipActions & PIP_ACTION_FAST_REWIND) != 0) {
             actions.add(createPipAction(R.drawable.ic_fast_rewind_white_24dp,
                     mFastRewind, PIP_ACTION_FAST_REWIND, REQUEST_FAST_REWIND));
@@ -1326,28 +1167,25 @@ public class VideoActivity extends SwipeBackActivity {
         }
     }
 
-    /**
-     * Jumps to the system default player app for playback purpose
-     */
-    private void playVideoByDefault() {
-        final String path = mVideos[mVideoIndex].getPath();
-        startActivity(new Intent(Intent.ACTION_VIEW)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .setDataAndType(Uri.parse(path), FileUtils.getMimeTypeFromPath(path, "video/*")));
+    @Override
+    public void showUserCancelableSnackbar(@NonNull CharSequence text, int duration) {
+        UiUtils.showUserCancelableSnackbar(mVideoView, text, duration);
     }
 
-    @Synthetic void notifyItemSelectionChanged(int oldPosition, int position, boolean checkNewItemVisibility) {
-        if (mPlayList == null) return;
-
+    @Override
+    public void notifyPlaylistSelectionChanged(int oldPosition, int position, boolean checkNewItemVisibility) {
+        RecyclerView playlist = mVideoView.findViewById(R.id.rv_playlist);
         //noinspection rawtypes
-        RecyclerView.Adapter adapter = mPlayList.getAdapter();
+        RecyclerView.Adapter adapter = playlist.getAdapter();
         //noinspection ConstantConditions
-        adapter.notifyItemChanged(oldPosition, sRefreshVideoProgressPayload);
-        adapter.notifyItemChanged(oldPosition, sHighlightSelectedItemIfExistsPayload);
-        adapter.notifyItemChanged(position, sRefreshVideoProgressPayload);
-        adapter.notifyItemChanged(position, sHighlightSelectedItemIfExistsPayload);
+        adapter.notifyItemChanged(oldPosition,
+                IVideoPresenter.PLAYLIST_ADAPTER_PAYLOAD_VIDEO_PROGRESS_CHANGED
+                        | IVideoPresenter.PLAYLIST_ADAPTER_PAYLOAD_HIGHLIGHT_ITEM_IF_SELECTED);
+        adapter.notifyItemChanged(position,
+                IVideoPresenter.PLAYLIST_ADAPTER_PAYLOAD_VIDEO_PROGRESS_CHANGED
+                        | IVideoPresenter.PLAYLIST_ADAPTER_PAYLOAD_HIGHLIGHT_ITEM_IF_SELECTED);
         if (checkNewItemVisibility) {
-            RecyclerView.LayoutManager lm = mPlayList.getLayoutManager();
+            RecyclerView.LayoutManager lm = playlist.getLayoutManager();
             if (lm instanceof LinearLayoutManager) {
                 LinearLayoutManager llm = (LinearLayoutManager) lm;
                 if (llm.findFirstCompletelyVisibleItemPosition() > position
@@ -1377,138 +1215,61 @@ public class VideoActivity extends SwipeBackActivity {
         }
     }
 
-    private final class VideoEpisodesAdapter
-            extends TextureVideoView.PlayListAdapter<VideoEpisodesAdapter.ViewHolder> {
-        VideoEpisodesAdapter() {
+    @NonNull
+    @Override
+    public IVideoView.PlaylistViewHolder newPlaylistViewHolder(@NonNull ViewGroup parent) {
+        return new PlaylistViewHolder(
+                LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_video_play_list, parent, false));
+    }
+
+    private static final class PlaylistViewHolder extends IVideoView.PlaylistViewHolder {
+        final ImageView videoImage;
+        final TextView videoNameText;
+        final TextView videoProgressDurationText;
+
+        PlaylistViewHolder(@NonNull View itemView) {
+            super(itemView);
+            videoImage = itemView.findViewById(R.id.image_video);
+            videoNameText = itemView.findViewById(R.id.text_videoName);
+            videoProgressDurationText = itemView.findViewById(R.id.text_videoProgressAndDuration);
+            VideoUtils2.adjustVideoThumbView(videoImage);
         }
 
         @Override
-        public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
-            mPlayList = recyclerView;
+        public void loadVideoThumb(@NonNull Video video) {
+            VideoUtils2.loadVideoThumbIntoImageView(videoImage, video);
         }
 
         @Override
-        public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-            super.onDetachedFromRecyclerView(recyclerView);
-            mPlayList = null;
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new ViewHolder(
-                    LayoutInflater.from(VideoActivity.this)
-                            .inflate(R.layout.item_video_play_list, parent, false));
+        public void cancelLoadingVideoThumb() {
+            Glide.with(videoImage.getContext()).clear(videoImage);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
-            if (payloads.isEmpty()) {
-                super.onBindViewHolder(holder, position, payloads);
-            } else {
-                for (Object payload : payloads) {
-                    if (payload == sRefreshVideoProgressPayload) {
-                        Video video = mVideos[position];
-                        if (position == mVideoIndex) {
-                            holder.videoProgressDurationText.setText(mWatching);
-                        } else {
-                            if (video.getId() != Consts.NO_ID) {
-                                holder.videoProgressDurationText.setText(
-                                        VideoUtils2.concatVideoProgressAndDuration(
-                                                video.getProgress(), video.getDuration()));
-                            } else {
-                                holder.videoProgressDurationText.setText(null);
-                            }
-                        }
-                    } else if (payload == sHighlightSelectedItemIfExistsPayload) {
-                        highlightSelectedItemIfExists(holder, position);
-                    }
-                }
-            }
+        public void setVideoTitle(@Nullable String text) {
+            videoNameText.setText(text);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            super.onBindViewHolder(holder, position);
-            highlightSelectedItemIfExists(holder, position);
-
-            Video video = mVideos[position];
-            holder.videoNameText.setText(video.getName());
-            if (position == mVideoIndex) {
-                holder.videoProgressDurationText.setText(mWatching);
-            } else {
-                if (video.getId() != Consts.NO_ID) {
-                    holder.videoProgressDurationText.setText(
-                            VideoUtils2.concatVideoProgressAndDuration(
-                                    video.getProgress(), video.getDuration()));
-                } else {
-                    holder.videoProgressDurationText.setText(null);
-                }
-            }
+        public void setVideoProgressAndDurationText(@Nullable String text) {
+            videoProgressDurationText.setText(text);
         }
 
         @Override
-        public void loadItemImages(@NonNull ViewHolder holder) {
-            Video video = mVideos[holder.getAdapterPosition()];
-            VideoUtils2.loadVideoThumbIntoImageView(holder.videoImage, video);
-        }
-
-        @Override
-        public void cancelLoadingItemImages(@NonNull ViewHolder holder) {
-            Glide.with(holder.videoImage.getContext()).clear(holder.videoImage);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mVideos.length;
-        }
-
-        void highlightSelectedItemIfExists(ViewHolder holder, int position) {
-            final boolean selected = position == mVideoIndex;
-            holder.itemView.setSelected(selected);
-            holder.videoNameText.setTextColor(selected ? Consts.COLOR_ACCENT : Color.WHITE);
-            holder.videoProgressDurationText.setTextColor(
+        public void highlightItemIfSelected(boolean selected) {
+            itemView.setSelected(selected);
+            videoNameText.setTextColor(selected ? Consts.COLOR_ACCENT : Color.WHITE);
+            videoProgressDurationText.setTextColor(
                     selected ? Consts.COLOR_ACCENT : 0x80FFFFFF);
-        }
-
-        @Override
-        public void onItemClick(@NonNull View view, int position) {
-            if (mVideoIndex == position) {
-                UiUtils.showUserCancelableSnackbar(mVideoView,
-                        R.string.theVideoIsPlaying, Snackbar.LENGTH_SHORT);
-            } else {
-                recordCurrVideoProgress();
-
-                final int oldPosition = mVideoIndex;
-                mVideoIndex = position;
-                setVideoToPlay(mVideos[position]);
-                notifyItemSelectionChanged(oldPosition, position, false);
-            }
-        }
-
-        final class ViewHolder extends RecyclerView.ViewHolder {
-            final ImageView videoImage;
-            final TextView videoNameText;
-            final TextView videoProgressDurationText;
-
-            ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                videoImage = itemView.findViewById(R.id.image_video);
-                videoNameText = itemView.findViewById(R.id.text_videoName);
-                videoProgressDurationText = itemView.findViewById(R.id.text_videoProgressAndDuration);
-                VideoUtils2.adjustVideoThumbView(videoImage);
-            }
         }
     }
 
     // --------------- Saved Instance State ------------------------
 
-    private static final String KEY_VIDEO_INDEX = "kvi";
-
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(KEY_VIDEO_INDEX, mVideoIndex);
+        mPresenter.saveData(outState);
     }
 }
