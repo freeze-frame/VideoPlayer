@@ -58,11 +58,13 @@ public final class ParallelThreadExecutor extends ThreadPoolExecutor {
                 @NonNull
                 @Override
                 protected Executor onCreate(Void... voids) {
-                    return new ThreadPoolExecutor(
-                            0, BACKUP_POOL_SIZE,
+                    ThreadPoolExecutor executor = new ThreadPoolExecutor(
+                            BACKUP_POOL_SIZE, BACKUP_POOL_SIZE,
                             KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
                             new LinkedBlockingQueue<>(),
                             sThreadFactory);
+                    executor.allowCoreThreadTimeOut(true);
+                    return executor;
                 }
             };
 
