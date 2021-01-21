@@ -58,7 +58,7 @@
         <item name="android:windowBackground">@android:color/black</item>
     </style>
 
-    <style name="WindowAnimations_PicturePreviewDialog">
+    <style name="WindowAnimations_PicturePreviewDialog" tools:keep="@style/WindowAnimations_PicturePreviewDialog">
         <item name="android:windowEnterAnimation">@anim/anim_window_stretch_enter</item>
         <item name="android:windowExitAnimation">@anim/anim_window_shrink_exit</item>
     </style>
@@ -73,7 +73,7 @@
         <item name="android:windowExitAnimation">@anim/anim_bottom_window_down</item>
     </style>
 
-    <style name="TextAppearance_ActionBarTitle">
+    <style name="TextAppearance_ActionBarTitle" tools:keep="@style/TextAppearance_ActionBarTitle">
         <item name="android:textSize" tools:ignore="SpUsage">
             @dimen/homepage_actionbar_title_text_size
         </item>

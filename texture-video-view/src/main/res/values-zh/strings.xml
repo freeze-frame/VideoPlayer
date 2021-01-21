@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="close">关闭</string>
     <string name="back">返回</string>
     <string name="share">分享</string>
@@ -17,9 +17,10 @@
     <string name="clipVideo">剪切视频</string>
     <string name="cutoutShortVideo">截片段</string>
     <string name="cutoutGif">截GIF</string>
-    <string name="clipForward">向前裁剪</string>
-    <string name="clipBackwards">向后裁剪</string>
-    <string name="videoclipPlaybackProgress">视频片段播放进度</string>
+    <string name="clipForward" tools:keep="@string/clipForward">向前裁剪</string>
+    <string name="clipBackwards" tools:keep="@string/clipBackwards">向后裁剪</string>
+    <string name="videoclipPlaybackProgress" tools:keep="@string/videoclipPlaybackProgress">
+        视频片段播放进度</string>
     <string name="canTakeUpToXSecondsXSecondsSelected">最多可截取%d秒，已选%d秒</string>
     <string name="gifClippingIsNotYetSupported">暂不支持截取GIF！</string>
     <string name="shortVideoHasBeenSavedTo">短视频“%s”已保存至“%s”</string>

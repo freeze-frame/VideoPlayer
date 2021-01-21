@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="IconDuplicates">
+        <ignore path="src/main/res/drawable-ldrtl-xxhdpi/ic_clip_forward.png" />
+        <ignore path="src/main/res/drawable-ldrtl-xxhdpi/ic_clip_forward_dark.png" />
+        <ignore path="src/main/res/drawable-ldrtl-xxhdpi/ic_clip_backwards.png" />
+        <ignore path="src/main/res/drawable-ldrtl-xxhdpi/ic_clip_backwards_dark.png" />
+    </issue>
+</lint>

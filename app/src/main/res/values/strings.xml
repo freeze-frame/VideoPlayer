@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="aTotalOfSeveralVideos">%d videos in all</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="aTotalOfSeveralVideos" tools:ignore="PluralsCandidate">%d videos in all</string>
     <string name="aboutApp">About App</string>
     <string name="adviceAndFeedback">Advice &amp; Feedback</string>
     <string name="alias">Alias: %s</string>
-    <string name="appIcon">App icon</string>
+    <string name="appIcon" tools:keep="@string/appIcon">App icon</string>
     <string name="appName">Videos</string>
     <string name="areYouSureToDelete">Are you sure to delete?</string>
     <string name="areYouSureToDeleteSomeVideoDir">
@@ -25,7 +25,7 @@
     <string name="contactWay">Contact way</string>
     <string name="copyURL">Copy URL</string>
     <string name="delete">Delete</string>
-    <string name="deleteFailed">Failed to delete %s</string>
+    <string name="deleteFailed" tools:keep="@string/deleteFailed">Failed to delete %s</string>
     <string name="deletePicture">Delete picture</string>
     <string name="details">Details</string>
     <string name="directoryDetails">Directory Details</string>
@@ -33,7 +33,7 @@
     <string name="doYouNeedToUpdateItSoon">Do you need to update it soon?</string>
     <string name="downloadError">Download error</string>
     <string name="downloadNotificationChannelName">Download</string>
-    <string name="downloading">Downloading…</string>
+    <string name="downloading" tools:keep="@string/downloading">Downloading…</string>
     <string name="downloadingUpdates">Downloading Updates…</string>
     <string name="drawerBackground">Drawer background</string>
     <string name="drawerSettings">Drawer Settings</string>
@@ -47,7 +47,7 @@
     <string name="hasBeenPlacedInTheBackground">Has been placed in the background</string>
     <string name="illegalInputLink">Illegal input link!</string>
     <string name="isTheLatestVersion">Is the latest version</string>
-    <string name="loadingVideos">Loading videos, please wait…</string>
+    <string name="loadingVideos" tools:keep="@string/loadingVideos">Loading videos, please wait…</string>
     <string name="localVideos">Local Videos</string>
     <string name="lockScreenOrientation">Lock screen orientation</string>
     <string name="msgNotificationChannelName">Message</string>
@@ -67,7 +67,7 @@
     <string name="playWithThisApp">Play with Videos</string>
     <string name="pleaseEnterTheIssuesYouEncounteredOrYourAdvice">
         Please enter the issues you encountered or your advice…</string>
-    <string name="pleaseGoToAppSettingsScreenFirstToAllowAppsFromThisSourceToBeInstalled">
+    <string name="pleaseGoToAppSettingsScreenFirstToAllowAppsFromThisSourceToBeInstalled" tools:keep="@string/pleaseGoToAppSettingsScreenFirstToAllowAppsFromThisSourceToBeInstalled">
         Please go to application settings screen first to allow apps from this source to be installed.</string>
     <string name="pleaseInputVideoLinkFirst">Please input video link first!</string>
     <string name="pleaseInsertSdCardOnYourDeviceFirst">Please insert SD card on your device first.</string>
@@ -84,7 +84,8 @@
     </string>
     <string name="readTimeout">Read timeout</string>
     <string name="refreshError">Refresh Error</string>
-    <string name="refreshingVideos">Refreshing videos, please wait…</string>
+    <string name="refreshingVideos" tools:keep="@string/refreshingVideos">
+        Refreshing videos, please wait…</string>
     <string name="rename">Rename</string>
     <string name="renameDirectory">Rename Directory</string>
     <string name="renameFailed">Rename failed</string>
@@ -101,7 +102,7 @@
     <string name="searchVideos">Search videos</string>
     <string name="selectAll">Select All</string>
     <string name="selectNone">Select None</string>
-    <string name="sendCanceled">Send canceled</string>
+    <string name="sendCanceled" tools:keep="@string/sendCanceled">Send canceled</string>
     <string name="sendFailed">Send failed</string>
     <string name="sendSuccessful">Send successful</string>
     <string name="sending">Sending…</string>
@@ -111,7 +112,7 @@
     <string name="setForeground">Set foreground</string>
     <string name="setLightStatus">Set light status</string>
     <string name="setLightTexts">Set light texts</string>
-    <string name="severalItemsHaveBeenSelected">%d items selected</string>
+    <string name="severalItemsHaveBeenSelected" tools:ignore="PluralsCandidate">%d items selected</string>
     <string name="share">Share</string>
     <string name="size">Size: %s</string>
     <string name="someDirectory">\"%s\" directory</string>
@@ -127,7 +128,7 @@
     <string name="videoDetails">Video Details</string>
     <string name="videoTitle">Video Title</string>
     <string name="videoLink">Video Link</string>
-    <string name="videoNotExists">That video does not exist</string>
+    <string name="videoNotExists" tools:keep="@string/videoNotExists">That video does not exist</string>
     <string name="videoThumbnail">Video thumbnail</string>
     <string name="videodirThumbnail">Video directory thumbnail</string>
     <string name="watching">Watching…</string>

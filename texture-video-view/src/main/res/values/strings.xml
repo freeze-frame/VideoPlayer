@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"
+    xmlns:tools="http://schemas.android.com/tools">
     <string name="close">Close</string>
     <string name="back">Back</string>
     <string name="share">Share</string>
@@ -18,10 +19,11 @@
     <string name="clipVideo">Clip Video</string>
     <string name="cutoutShortVideo">Short Video</string>
     <string name="cutoutGif">GIF</string>
-    <string name="clipForward">Clip Forward</string>
-    <string name="clipBackwards">Clip Backwards</string>
-    <string name="videoclipPlaybackProgress">Playback Progress of the Video Clip</string>
-    <string name="canTakeUpToXSecondsXSecondsSelected">
+    <string name="clipForward" tools:keep="@string/clipForward">Clip Forward</string>
+    <string name="clipBackwards" tools:keep="@string/clipBackwards">Clip Backwards</string>
+    <string name="videoclipPlaybackProgress" tools:keep="@string/videoclipPlaybackProgress">
+        Playback Progress of the Video Clip</string>
+    <string name="canTakeUpToXSecondsXSecondsSelected" tools:ignore="PluralsCandidate">
         You can take up to %d seconds. %d seconds is selected.</string>
     <string name="gifClippingIsNotYetSupported">GIF clipping is not yet supported!</string>
     <string name="shortVideoHasBeenSavedTo">Short video \"%s\" has been saved to \"%s\"</string>

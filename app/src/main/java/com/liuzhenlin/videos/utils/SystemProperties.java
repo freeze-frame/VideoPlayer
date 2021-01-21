@@ -37,7 +37,8 @@ public class SystemProperties {
         try {
             Class<?> clz = Class.forName("android.os.SystemProperties");
             Method getLong = clz.getMethod("getLong", String.class, long.class);
-            return (long) getLong.invoke(clz, key, def);
+            Long ret = (Long) getLong.invoke(clz, key, def);
+            return ret != null ? ret : def;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -52,7 +53,8 @@ public class SystemProperties {
         try {
             Class<?> clz = Class.forName("android.os.SystemProperties");
             Method getInt = clz.getMethod("getInt", String.class, int.class);
-            return (int) getInt.invoke(clz, key, def);
+            Integer ret = (Integer) getInt.invoke(clz, key, def);
+            return ret != null ? ret : def;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,7 +69,8 @@ public class SystemProperties {
         try {
             Class<?> clz = Class.forName("android.os.SystemProperties");
             Method getBoolean = clz.getMethod("getBoolean", String.class, boolean.class);
-            return (boolean) getBoolean.invoke(clz, key, def);
+            Boolean ret = (Boolean) getBoolean.invoke(clz, key, def);
+            return ret != null ? ret : def;
         } catch (Exception e) {
             e.printStackTrace();
         }

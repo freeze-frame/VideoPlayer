@@ -24,6 +24,7 @@ public interface IView<P extends IPresenter> {
 
     default void showUserCancelableSnackbar(@StringRes int resId, @Snackbar.Duration int duration) {
         Context context = App.getInstanceUnsafe();
+        //noinspection ConstantConditions
         showUserCancelableSnackbar(context.getText(resId), duration);
     }
 

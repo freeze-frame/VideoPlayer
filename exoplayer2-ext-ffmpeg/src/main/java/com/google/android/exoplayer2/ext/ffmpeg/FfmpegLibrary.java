@@ -37,6 +37,7 @@ public final class FfmpegLibrary {
   private static final LibraryLoader LOADER =
       new LibraryLoader("avutil", "swresample", "avcodec", "ffmpeg_jni");
 
+  @SuppressWarnings("NotNullFieldNotInitialized")
   private static /*@MonotonicNonNull*/ String version;
   private static int inputBufferPaddingSize = C.LENGTH_UNSET;
 
@@ -66,6 +67,7 @@ public final class FfmpegLibrary {
     if (!isAvailable()) {
       return null;
     }
+    //noinspection ConstantConditions
     if (version == null) {
       version = ffmpegGetVersion();
     }

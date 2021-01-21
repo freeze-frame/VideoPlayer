@@ -7,7 +7,7 @@
     android:layout_gravity="center_vertical"
     android:background="@color/bg_popup_dark"
     android:clickable="true"
-    tools:ignore="KeyboardInaccessibleWidget">
+    tools:ignore="KeyboardInaccessibleWidget,Overdraw">
 
     <LinearLayout
         android:layout_width="match_parent"

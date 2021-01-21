@@ -49,8 +49,9 @@ public class FloatingWindowPermissionUtils {
             Class<AppOpsManager> clazz = AppOpsManager.class;
             //noinspection JavaReflectionMemberAccess
             Method method = clazz.getMethod("checkOp", int.class, int.class, String.class);
-            return (int) method.invoke(aom, op, Binder.getCallingUid(), context.getPackageName())
-                    == AppOpsManager.MODE_ALLOWED;
+            Integer ret = (Integer)
+                    method.invoke(aom, op, Binder.getCallingUid(), context.getPackageName());
+            return ret != null && ret == AppOpsManager.MODE_ALLOWED;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }

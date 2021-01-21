@@ -8,7 +8,7 @@
     android:paddingBottom="25dp"
     android:background="@color/bg_popup_dark"
     android:clickable="true"
-    tools:ignore="KeyboardInaccessibleWidget">
+    tools:ignore="KeyboardInaccessibleWidget,Overdraw">
 
     <TextView
         android:id="@+id/btn_cancel"

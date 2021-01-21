@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@color/color_selector_white">
+
     <item android:color="@android:color/white" android:state_pressed="false" android:state_enabled="true" />
     <item android:color="@color/white_translucent" android:state_pressed="true" android:state_enabled="true" />
     <item android:color="@color/white_translucent" android:state_enabled="false" />

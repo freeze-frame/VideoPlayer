@@ -141,6 +141,7 @@ public final class FfmpegAudioRenderer extends DecoderAudioRenderer<FfmpegAudioD
    * Returns whether the renderer's {@link AudioSink} supports the PCM format that will be output
    * from the decoder for the given input format and requested output encoding.
    */
+  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   private boolean sinkSupportsFormat(Format inputFormat, @C.PcmEncoding int pcmEncoding) {
     return sinkSupportsFormat(
         Util.getPcmFormat(pcmEncoding, inputFormat.channelCount, inputFormat.sampleRate));

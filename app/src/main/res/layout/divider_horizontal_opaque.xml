@@ -2,7 +2,9 @@
 
 <!-- 水平分割线 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="1dp"
     android:background="@android:color/white"
-    android:foreground="?android:attr/listDivider" />
+    android:foreground="?android:attr/listDivider"
+    tools:ignore="Overdraw" />

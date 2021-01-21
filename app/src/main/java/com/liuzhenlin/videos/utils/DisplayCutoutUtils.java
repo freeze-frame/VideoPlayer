@@ -42,9 +42,10 @@ public class DisplayCutoutUtils {
         try {
             Class<?> hwNotchSizeUtil = context.getClassLoader()
                     .loadClass("com.huawei.android.util.HwNotchSizeUtil");
-            return (boolean) hwNotchSizeUtil
+            Boolean ret = (Boolean) hwNotchSizeUtil
                     .getMethod("hasNotchInScreen")
                     .invoke(hwNotchSizeUtil);
+            return ret != null && ret;
         } catch (Exception e) {
             //
         }
@@ -150,9 +151,10 @@ public class DisplayCutoutUtils {
             @SuppressLint("PrivateApi")
             Class<?> ftFeature = context.getClassLoader()
                     .loadClass("android.util.FtFeature");
-            return (boolean) ftFeature
+            Boolean ret = (Boolean) ftFeature
                     .getMethod("isFeatureSupport", int.class)
                     .invoke(ftFeature, VIVO_FLAG_HAS_NOTCH_IN_SCREEN);
+            return ret != null && ret;
         } catch (Exception e) {
             //
         }
