@@ -43,8 +43,8 @@ import com.google.android.exoplayer2.source.dash.DashMediaSource;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.ExoTrackSelection;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
@@ -179,6 +179,7 @@ public class ExoVideoPlayer extends VideoPlayer {
      * @return the default {@link DataSource.Factory} created by this class, which will be used for
      *         various of {@link MediaSourceFactory}s (if the user specified one is not set).
      */
+    @SuppressWarnings("deprecation")
     @NonNull
     public DataSource.Factory getDefaultDataSourceFactory() {
         if (sDefaultDataSourceFactory == null) {
@@ -260,7 +261,7 @@ public class ExoVideoPlayer extends VideoPlayer {
                     .setTrackSelector(mTrackSelector)
                     .build();
             mExoPlayer.setVideoSurface(surface);
-            mExoPlayer.setAudioAttributes(sDefaultAudioAttrs);
+            mExoPlayer.setAudioAttributes(sDefaultAudioAttrs, false);
             setPlaybackSpeed(mUserPlaybackSpeed);
             mExoPlayer.setRepeatMode(
                     isSingleVideoLoopPlayback() ? Player.REPEAT_MODE_ONE : Player.REPEAT_MODE_OFF);
@@ -288,7 +289,7 @@ public class ExoVideoPlayer extends VideoPlayer {
                 }
 
                 @Override
-                public void onTimelineChanged(Timeline timeline, int reason) {
+                public void onTimelineChanged(@NonNull Timeline timeline, int reason) {
                     // Duration had been changed when new Uri was set and before the player was reset.
                     if (reason == Player.TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED) return;
 
@@ -307,7 +308,7 @@ public class ExoVideoPlayer extends VideoPlayer {
                 }
 
                 @Override
-                public void onPlayerError(ExoPlaybackException error) {
+                public void onPlayerError(@NonNull ExoPlaybackException error) {
                     Log.e(TAG, "playback error", error);
                     // Show video error toast
                     final int stringRes;
@@ -909,7 +910,9 @@ public class ExoVideoPlayer extends VideoPlayer {
                     for (int currSelectionIndex = 0;
                          currSelectionIndex < currTrackSelections.length;
                          currSelectionIndex++) {
-                        TrackSelection currTrackSelection = currTrackSelections.get(currSelectionIndex);
+                        // XXX: Uncast currTrackSelection to ExoTrackSelection from TrackSelection
+                        ExoTrackSelection currTrackSelection =
+                                (ExoTrackSelection) currTrackSelections.get(currSelectionIndex);
                         if (currTrackSelection == null
                                 || currTrackSelection.getTrackGroup() != currTrackGroup) {
                             continue;

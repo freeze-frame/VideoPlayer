@@ -19,7 +19,6 @@ import androidx.annotation.Nullable;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.decoder.DecoderInputBuffer;
-import com.google.android.exoplayer2.decoder.OutputBuffer;
 import com.google.android.exoplayer2.decoder.SimpleDecoder;
 import com.google.android.exoplayer2.decoder.SimpleOutputBuffer;
 import com.google.android.exoplayer2.util.Assertions;
@@ -90,12 +89,7 @@ import java.util.List;
 
   @Override
   protected SimpleOutputBuffer createOutputBuffer() {
-    return new SimpleOutputBuffer(new OutputBuffer.Owner<SimpleOutputBuffer>() {
-      @Override
-      public void releaseOutputBuffer(SimpleOutputBuffer outputBuffer) {
-        FfmpegAudioDecoder.this.releaseOutputBuffer(outputBuffer);
-      }
-    });
+    return new SimpleOutputBuffer(this::releaseOutputBuffer);
   }
 
   @Override
