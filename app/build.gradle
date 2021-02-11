@@ -9,8 +9,8 @@ android {
         applicationId "com.liuzhenlin.videos"
         minSdkVersion 14
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 39
-        versionName "1.9.3"
+        versionCode 39 // 39 -> 40
+        versionName "1.9.4-beta01"
 
         vectorDrawables.useSupportLibrary = true
 
