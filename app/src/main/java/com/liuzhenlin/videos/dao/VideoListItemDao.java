@@ -66,9 +66,11 @@ public final class VideoListItemDao implements IVideoListItemDao {
                             VIDEO_RESOLUTION
                     }; //@formatter:on
 
-    private static volatile String sResolutionSeparator;
     private static final String SEPARATOR_LOWERCASE_X = "x";
     private static final String SEPARATOR_MULTIPLE_SIGN = "×";
+    private static final String DEFAULT_RESOLUTION_SEPARATOR =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                    ? SEPARATOR_MULTIPLE_SIGN : SEPARATOR_LOWERCASE_X;
 
     private static final Singleton<Context, VideoListItemDao> sVideoListItemDaoSingleton =
             new Singleton<Context, VideoListItemDao>() {
@@ -88,35 +90,6 @@ public final class VideoListItemDao implements IVideoListItemDao {
         context = context.getApplicationContext();
         mContentResolver = context.getContentResolver();
         mDB = new DbOpenHelper(context).getWritableDatabase();
-    }
-
-    private void ensureResolutionSeparator() {
-        if (sResolutionSeparator == null) {
-            synchronized (VideoListItemDao.class) {
-                if (sResolutionSeparator == null) {
-                    String separator = null;
-                    Cursor cursor = mContentResolver.query(
-                            VIDEO_URI,
-                            new String[]{VIDEO_RESOLUTION},
-                            VIDEO_DURATION + " IS NOT NULL", null,
-                            "NULL LIMIT 1");
-                    if (cursor != null) {
-                        if (cursor.moveToFirst()) {
-                            if (cursor.getString(0).contains(SEPARATOR_LOWERCASE_X)) {
-                                separator = SEPARATOR_LOWERCASE_X;
-                            } else {
-                                separator = SEPARATOR_MULTIPLE_SIGN;
-                            }
-                        }
-                        cursor.close();
-                    }
-                    if (separator == null) {
-                        separator = SEPARATOR_LOWERCASE_X;
-                    }
-                    sResolutionSeparator = separator;
-                }
-            }
-        }
     }
 
     @Override
@@ -139,8 +112,8 @@ public final class VideoListItemDao implements IVideoListItemDao {
             values.put(VIDEO_PATH, video.getPath());
             values.put(VIDEO_SIZE, video.getSize());
             values.put(VIDEO_DURATION, video.getDuration());
-            ensureResolutionSeparator();
-            values.put(VIDEO_RESOLUTION, video.getWidth() + sResolutionSeparator + video.getHeight());
+            values.put(VIDEO_RESOLUTION,
+                    video.getWidth() + DEFAULT_RESOLUTION_SEPARATOR + video.getHeight());
             if (mContentResolver.insert(VIDEO_URI, values) != null) {
                 mDB.setTransactionSuccessful();
                 return true;
@@ -190,8 +163,8 @@ public final class VideoListItemDao implements IVideoListItemDao {
             values.put(VIDEO_PATH, video.getPath());
             values.put(VIDEO_SIZE, video.getSize());
             values.put(VIDEO_DURATION, video.getDuration());
-            ensureResolutionSeparator();
-            values.put(VIDEO_RESOLUTION, video.getWidth() + sResolutionSeparator + video.getHeight());
+            values.put(VIDEO_RESOLUTION,
+                    video.getWidth() + DEFAULT_RESOLUTION_SEPARATOR + video.getHeight());
             if (mContentResolver.update(VIDEO_URI, values, VIDEO_ID + "=" + id, null) == 1) {
                 mDB.setTransactionSuccessful();
                 return true;
@@ -370,22 +343,9 @@ public final class VideoListItemDao implements IVideoListItemDao {
                 case VIDEO_RESOLUTION:
                     final String resolution = cursor.getString(i);
                     if (resolution != null) {
-                        int separatorIndex = -1;
-                        if (sResolutionSeparator == null) {
-                            synchronized (VideoListItemDao.class) {
-                                if (sResolutionSeparator == null) {
-                                    separatorIndex = resolution.indexOf(SEPARATOR_LOWERCASE_X);
-                                    if (separatorIndex != -1) {
-                                        sResolutionSeparator = SEPARATOR_LOWERCASE_X;
-                                    } else {
-                                        separatorIndex = resolution.indexOf(SEPARATOR_MULTIPLE_SIGN);
-                                        sResolutionSeparator = SEPARATOR_MULTIPLE_SIGN;
-                                    }
-                                }
-                            }
-                        }
+                        int separatorIndex = resolution.indexOf(SEPARATOR_LOWERCASE_X);
                         if (separatorIndex == -1) {
-                            separatorIndex = resolution.indexOf(sResolutionSeparator);
+                            separatorIndex = resolution.indexOf(SEPARATOR_MULTIPLE_SIGN);
                         }
                         video.setWidth(Integer.parseInt(resolution.substring(0, separatorIndex)));
                         video.setHeight(Integer.parseInt(resolution.substring(separatorIndex + 1)));
