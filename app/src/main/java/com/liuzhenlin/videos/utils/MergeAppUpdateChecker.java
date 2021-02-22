@@ -451,8 +451,7 @@ public final class MergeAppUpdateChecker {
                     if (mApk.length() == mApkLength
                             && ObjectsCompat.equals(FileUtils2.getFileSha1(mApk), sha1)) {
                         if (!mCanceled.get()) {
-                            stopService();
-                            getHandler().post(() -> onAppDownloaded(mApk));
+                            stopServiceAndShowInstallAppPrompt();
                         }
                         return;
                         // 否则先删除旧的apk
@@ -541,6 +540,51 @@ public final class MergeAppUpdateChecker {
             stopForeground(false);
             mNotificationManager.cancel(ID_NOTIFICATION);
             getHandler().sendEmptyMessage(H.MSG_STOP_UPDATE_APP_SERVICE);
+        }
+
+        @Synthetic void stopServiceAndShowInstallAppPrompt() {
+            stopService();
+            // Double post here! Because the Context's stopService method will asynchronously cancel
+            // the notification with id ID_NOTIFICATION, we need to make sure the notification
+            // to be showed to remind the user to install the downloaded app will not be canceled
+            // as the service dies.
+            Handler handler = getHandler();
+            handler.post(() -> handler.post(() -> showInstallAppPromptNotification(mApk)));
+        }
+
+        void showInstallAppPromptNotification(File apk) {
+            if (apk == null || !apk.exists() || apk.length() != mApkLength) {
+                Toast.makeText(mContext, R.string.theInstallationPackageHasBeenDamaged,
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Intent it = Utils.createPackageInstaller(mContext, apk);
+
+//            mContext.startActivity(it); // MIUI默认应用在后台时无法弹出界面
+
+            String channelId = NotificationChannelManager.getMessageNotificationChannelId(mContext);
+            String title = mContext.getString(R.string.newAppDownloaded);
+            PendingIntent pi = PendingIntent.getActivity(mContext, 0, it, 0);
+            mNotificationManager.notify(
+                    ID_NOTIFICATION,
+                    mNotificationBuilder
+                            .setChannelId(channelId)
+                            .setTicker(title)
+                            .setContentTitle(title)
+                            .setContentText(mContext.getString(R.string.clickToInstallIt))
+                            .setContentIntent(pi)
+//                            .setFullScreenIntent(pi, true)
+                            .setAutoCancel(true)
+                            .setCustomContentView(null)
+                            .setCustomBigContentView(null)
+                            .setStyle(null)
+                            .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS)
+                            .setOnlyAlertOnce(false)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH) // 高优先级以显示抬头式通知
+                            .setCategory(NotificationCompat.CATEGORY_PROMO)
+                            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+                            .build());
         }
 
         @Synthetic Handler getHandler() {
@@ -674,45 +718,11 @@ public final class MergeAppUpdateChecker {
                     Executors.THREAD_POOL_EXECUTOR.execute(() -> {
                         FileUtils2.mergeFiles(mApkParts, mApk, true);
                         if (!mCanceled.get()) {
-                            stopService();
-                            getHandler().post(() -> onAppDownloaded(mApk));
+                            stopServiceAndShowInstallAppPrompt();
                         }
                     });
                 }
             }
-        }
-
-        void onAppDownloaded(File apk) {
-            if (apk == null || !apk.exists() || apk.length() != mApkLength) {
-                Toast.makeText(mContext, R.string.theInstallationPackageHasBeenDamaged,
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Intent it = Utils.createPackageInstaller(mContext, apk);
-
-//            mContext.startActivity(it); // MIUI默认应用在后台时无法弹出界面
-
-            String title = mContext.getString(R.string.newAppDownloaded);
-            PendingIntent pi = PendingIntent.getActivity(mContext, 0, it, 0);
-            mNotificationManager.notify(
-                    ID_NOTIFICATION,
-                    mNotificationBuilder
-                            .setChannelId(NotificationChannelManager.getMessageNotificationChannelId(mContext))
-                            .setTicker(title)
-                            .setContentTitle(title)
-                            .setContentText(mContext.getString(R.string.clickToInstallIt))
-                            .setContentIntent(pi)
-//                            .setFullScreenIntent(pi, true)
-                            .setAutoCancel(true)
-                            .setCustomContentView(null)
-                            .setCustomBigContentView(null)
-                            .setStyle(null)
-                            .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS)
-                            .setPriority(NotificationCompat.PRIORITY_HIGH) // 高优先级以显示抬头式通知
-                            .setCategory(NotificationCompat.CATEGORY_PROMO)
-                            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-                            .build());
         }
 
         private static final class CancelAppUpdateReceiver extends BroadcastReceiver {
