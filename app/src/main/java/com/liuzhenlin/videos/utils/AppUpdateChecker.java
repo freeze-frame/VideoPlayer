@@ -570,7 +570,9 @@ public final class AppUpdateChecker {
             @Synthetic void stopService() {
                 mService.mTask = null;
                 mService.stopForeground(false);
-                mNotificationManager.cancel(ID_NOTIFICATION);
+                synchronized (mNotificationManager) {
+                    mNotificationManager.cancel(ID_NOTIFICATION);
+                }
                 getHandler().sendEmptyMessage(H.MSG_STOP_UPDATE_APP_SERVICE);
             }
 
@@ -725,13 +727,15 @@ public final class AppUpdateChecker {
                                     FileUtils2.formatFileSize(progress),
                                     FileUtils2.formatFileSize(mApkLength)));
 
-                    synchronized (mHost) {
-                        mNotificationBuilder.setCustomContentView(nv);
-                        mNotificationBuilder.setCustomBigContentView(nv);
-
-                        Notification n = mNotificationBuilder.build();
-
-                        // 确保下载被取消后不再有任何通知被弹出...
+                    Notification n;
+                    synchronized (mNotificationBuilder) {
+                        n = mNotificationBuilder
+                                .setCustomContentView(nv)
+                                .setCustomBigContentView(nv)
+                                .build();
+                    }
+                    // 确保下载被取消后不再有任何通知被弹出...
+                    synchronized (mNotificationManager) {
                         if (!mHost.isCancelled()) {
                             mNotificationManager.notify(ID_NOTIFICATION, n);
                         }

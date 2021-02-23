@@ -538,7 +538,10 @@ public final class MergeAppUpdateChecker {
         @Synthetic void stopService() {
             mRunning = false;
             stopForeground(false);
-            mNotificationManager.cancel(ID_NOTIFICATION);
+            //noinspection SynchronizeOnNonFinalField
+            synchronized (mNotificationManager) {
+                mNotificationManager.cancel(ID_NOTIFICATION);
+            }
             getHandler().sendEmptyMessage(H.MSG_STOP_UPDATE_APP_SERVICE);
         }
 
@@ -623,8 +626,6 @@ public final class MergeAppUpdateChecker {
 
         @SuppressLint("StaticFieldLeak")
         private final class DownloadAppPartTask extends AsyncTask<Integer, Integer, Void> {
-            final UpdateAppService mHost = UpdateAppService.this;
-
             DownloadAppPartTask() {
             }
 
@@ -686,6 +687,7 @@ public final class MergeAppUpdateChecker {
 //                notifyProgressUpdated(mProgress += values[0]);
             }
 
+            @SuppressWarnings("SynchronizeOnNonFinalField")
             private void notifyProgressUpdated(int progress) {
                 RemoteViews nv = createNotificationView();
                 nv.setProgressBar(R.id.progress, mApkLength, progress, false);
@@ -697,13 +699,15 @@ public final class MergeAppUpdateChecker {
                                 FileUtils2.formatFileSize(progress),
                                 FileUtils2.formatFileSize(mApkLength)));
 
-                synchronized (mHost) {
-                    mNotificationBuilder.setCustomContentView(nv);
-                    mNotificationBuilder.setCustomBigContentView(nv);
-
-                    Notification n = mNotificationBuilder.build();
-
-                    // 确保下载被取消后不再有任何通知被弹出...
+                Notification n;
+                synchronized (mNotificationBuilder) {
+                    n = mNotificationBuilder
+                            .setCustomContentView(nv)
+                            .setCustomBigContentView(nv)
+                            .build();
+                }
+                // 确保下载被取消后不再有任何通知被弹出...
+                synchronized (mNotificationManager) {
                     if (!mCanceled.get()) {
                         mNotificationManager.notify(ID_NOTIFICATION, n);
                     }
