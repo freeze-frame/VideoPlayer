@@ -89,10 +89,10 @@ public final class AppUpdateChecker {
 
     @Synthetic List<OnResultListener> mListeners;
 
-    private static final String EXTRA_APP_NAME = "extra_appName";
-    private static final String EXTRA_VERSION_NAME = "extra_versionName";
-    private static final String EXTRA_APP_LINK = "extra_appLink";
-    private static final String EXTRA_APP_SHA1 = "extra_appSha1";
+    private static final String EXTRA_APP_NAME = "appName";
+    private static final String EXTRA_VERSION_NAME = "versionName";
+    private static final String EXTRA_APP_LINK = "appLink";
+    private static final String EXTRA_APP_SHA1 = "appSha1";
     @Synthetic Intent mServiceIntent;
 
     private static final Singleton<Context, AppUpdateChecker> sAppUpdateCheckerSingleton =
@@ -393,8 +393,7 @@ public final class AppUpdateChecker {
         }
 
         private static final class CancelAppUpdateReceiver extends BroadcastReceiver {
-            static final String ACTION =
-                    "action_AppUpdateChecker$UpdateAppService$CancelAppUpdateReceiver";
+            static final String ACTION = CancelAppUpdateReceiver.class.getName();
 
             CancelAppUpdateReceiver() {
             }

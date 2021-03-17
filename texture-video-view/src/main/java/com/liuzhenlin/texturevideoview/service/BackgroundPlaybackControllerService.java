@@ -77,7 +77,7 @@ public class BackgroundPlaybackControllerService extends Service {
     @Synthetic NotificationCompat.Builder mNotificationBuilder;
     private static final int ID_NOTIFICATION = 20191203;
 
-    private static final String EXTRA_CONTROLLER_ACTION = "extra_controllerAction";
+    private static final String EXTRA_CONTROLLER_ACTION = "controller_action";
 
     private static final int CONTROLLER_ACTION_PLAY = 1;
     private static final int CONTROLLER_ACTION_PAUSE = 2;
@@ -97,7 +97,7 @@ public class BackgroundPlaybackControllerService extends Service {
     public static final int MSG_SKIP_TO_NEXT = Integer.MAX_VALUE - 3;
     public static final int MSG_CLOSE = Integer.MAX_VALUE - 4;
 
-    private final ControllerActionReceiver mReceiver = new ControllerActionReceiver();
+    private final ControllerActionReceiver mReceiver = new ControllerActionReceiver(this);
 
     @Synthetic boolean mIsForeground;
 
@@ -367,11 +367,13 @@ public class BackgroundPlaybackControllerService extends Service {
         }
     }
 
-    private final class ControllerActionReceiver extends BroadcastReceiver {
-        static final String ACTION =
-                "action_BackgroundPlaybackControllerService$ControllerActionReceiver";
+    private static final class ControllerActionReceiver extends BroadcastReceiver {
+        static final String ACTION = ControllerActionReceiver.class.getName();
 
-        ControllerActionReceiver() {
+        final BackgroundPlaybackControllerService mService;
+
+        ControllerActionReceiver(BackgroundPlaybackControllerService service) {
+            mService = service;
         }
 
         @Override
@@ -379,19 +381,19 @@ public class BackgroundPlaybackControllerService extends Service {
             final int action = intent.getIntExtra(EXTRA_CONTROLLER_ACTION, 0);
             switch (action) {
                 case CONTROLLER_ACTION_PLAY:
-                    sendMsg(MSG_PLAY);
+                    mService.sendMsg(MSG_PLAY);
                     break;
                 case CONTROLLER_ACTION_PAUSE:
-                    sendMsg(MSG_PAUSE);
+                    mService.sendMsg(MSG_PAUSE);
                     break;
                 case CONTROLLER_ACTION_SKIP_TO_PREVIOUS:
-                    sendMsg(MSG_SKIP_TO_PREVIOUS);
+                    mService.sendMsg(MSG_SKIP_TO_PREVIOUS);
                     break;
                 case CONTROLLER_ACTION_SKIP_TO_NEXT:
-                    sendMsg(MSG_SKIP_TO_NEXT);
+                    mService.sendMsg(MSG_SKIP_TO_NEXT);
                     break;
                 case CONTROLLER_ACTION_CLOSE:
-                    sendMsg(MSG_CLOSE);
+                    mService.sendMsg(MSG_CLOSE);
                     break;
             }
         }

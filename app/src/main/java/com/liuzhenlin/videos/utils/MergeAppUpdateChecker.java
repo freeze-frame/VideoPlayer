@@ -96,11 +96,11 @@ public final class MergeAppUpdateChecker {
 
     @Synthetic List<OnResultListener> mListeners;
 
-    private static final String EXTRA_APP_NAME = "extra_appName";
-    private static final String EXTRA_VERSION_NAME = "extra_versionName";
-    private static final String EXTRA_APP_PART_LINKS = "extra_appPartLinks";
-    private static final String EXTRA_APP_LENGTH = "extra_appLength";
-    private static final String EXTRA_APP_SHA1 = "extra_appSha1";
+    private static final String EXTRA_APP_NAME = "appName";
+    private static final String EXTRA_VERSION_NAME = "versionName";
+    private static final String EXTRA_APP_PART_LINKS = "appPartLinks";
+    private static final String EXTRA_APP_LENGTH = "appLength";
+    private static final String EXTRA_APP_SHA1 = "appSha1";
     @Synthetic Intent mServiceIntent;
 
     private static final Singleton<Context, MergeAppUpdateChecker> sMergeAppUpdateCheckerSingleton =
@@ -730,8 +730,7 @@ public final class MergeAppUpdateChecker {
         }
 
         private static final class CancelAppUpdateReceiver extends BroadcastReceiver {
-            static final String ACTION =
-                    "action_MergeAppUpdateChecker$UpdateAppService$CancelAppUpdateReceiver";
+            static final String ACTION = CancelAppUpdateReceiver.class.getName();
 
             CancelAppUpdateReceiver() {
             }

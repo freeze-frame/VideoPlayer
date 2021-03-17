@@ -28,25 +28,25 @@ public class InternalConsts {
     /*package*/ static final boolean DEBUG_LISTENER = DEBUG && false;
 
     @RestrictTo(LIBRARY)
-    public static final String EXTRA_MESSENGER = "extra_messenger";
+    public static final String EXTRA_MESSENGER = "messenger";
     @RestrictTo(LIBRARY)
-    public static final String EXTRA_PLAYBACK_ACTIVITY_CLASS = "extra_playbackActivityClass";
+    public static final String EXTRA_PLAYBACK_ACTIVITY_CLASS = "playbackActivityClass";
     @RestrictTo(LIBRARY)
-    public static final String EXTRA_MEDIA_URI = "extra_mediaUri";
+    public static final String EXTRA_MEDIA_URI = "mediaUri";
     @RestrictTo(LIBRARY)
-    public static final String EXTRA_MEDIA_TITLE = "extra_mediaTitle";
+    public static final String EXTRA_MEDIA_TITLE = "mediaTitle";
     @RestrictTo(LIBRARY)
-    public static final String EXTRA_IS_PLAYING = "extra_isPlaying";
+    public static final String EXTRA_IS_PLAYING = "isPlaying";
     @RestrictTo(LIBRARY)
-    public static final String EXTRA_IS_BUFFERING = "extra_isBuffering";
+    public static final String EXTRA_IS_BUFFERING = "isBuffering";
     @RestrictTo(LIBRARY)
-    public static final String EXTRA_CAN_SKIP_TO_PREVIOUS = "extra_canSkipToPrevious";
+    public static final String EXTRA_CAN_SKIP_TO_PREVIOUS = "canSkipToPrevious";
     @RestrictTo(LIBRARY)
-    public static final String EXTRA_CAN_SKIP_TO_NEXT = "extra_canSkipToNext";
+    public static final String EXTRA_CAN_SKIP_TO_NEXT = "canSkipToNext";
     @RestrictTo(LIBRARY)
-    public static final String EXTRA_MEDIA_PROGRESS = "extra_mediaProgress";
+    public static final String EXTRA_MEDIA_PROGRESS = "mediaProgress";
     @RestrictTo(LIBRARY)
-    public static final String EXTRA_MEDIA_DURATION = "extra_mediaDuration";
+    public static final String EXTRA_MEDIA_DURATION = "mediaDuration";
 
     public static Handler getMainThreadHandler() {
         return NoPreloadHolder.MAIN_THREAD_HANDLER;

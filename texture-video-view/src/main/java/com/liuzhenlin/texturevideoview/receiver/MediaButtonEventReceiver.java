@@ -19,7 +19,7 @@ public class MediaButtonEventReceiver extends BroadcastReceiver {
     @Nullable
     private static MediaButtonEventHandler sHandler;
 
-//    private static final String EXTRA_MEDIA_BUTTON_EVENT_HANDLER = "extra_mediaButtonEventHandler";
+//    private static final String EXTRA_MEDIA_BUTTON_EVENT_HANDLER = "mediaButtonEventHandler";
 
     @Override
     public void onReceive(Context context, Intent intent) {
