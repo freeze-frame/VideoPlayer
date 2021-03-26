@@ -10,7 +10,7 @@
         android:scaleType="centerCrop"
         android:contentDescription="@string/drawerBackground" />
 
-    <com.liuzhenlin.videos.view.ScrollDisableListView
+    <com.liuzhenlin.common.view.ScrollDisableListView
         android:id="@+id/list_drawer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

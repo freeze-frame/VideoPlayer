@@ -10,12 +10,12 @@ import android.content.Context
 import android.os.AsyncTask
 import androidx.core.util.AtomicFile
 import com.google.gson.Gson
-import com.liuzhenlin.texturevideoview.InternalConsts
-import com.liuzhenlin.texturevideoview.utils.FileUtils
+import com.liuzhenlin.common.Consts
+import com.liuzhenlin.common.utils.Executors
+import com.liuzhenlin.common.utils.FileUtils
+import com.liuzhenlin.common.utils.IOUtils
+import com.liuzhenlin.common.utils.Utils
 import com.liuzhenlin.videos.bean.TVGroup
-import com.liuzhenlin.videos.utils.Executors
-import com.liuzhenlin.videos.utils.IOUtils
-import com.liuzhenlin.videos.utils.Utils
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
@@ -107,7 +107,7 @@ class OnlineVideoListModel(context: Context) : BaseModel<Nothing, Array<TVGroup>
                             return Gson().fromJson(json.toString(), Array<TVGroup>::class.java)
 
                         ioException != null ->
-                            Utils.runOnHandlerSync(InternalConsts.getMainThreadHandler()) {
+                            Utils.runOnHandlerSync(Consts.getMainThreadHandler()) {
                                 if (!isCancelled) {
                                     onLoadError(ioException)
                                 }

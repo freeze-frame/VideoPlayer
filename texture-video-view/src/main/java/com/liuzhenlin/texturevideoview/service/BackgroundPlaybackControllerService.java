@@ -40,13 +40,14 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.util.Synthetic;
+import com.liuzhenlin.common.Consts;
+import com.liuzhenlin.common.compat.RemoteViewsCompat;
+import com.liuzhenlin.common.utils.BitmapUtils;
+import com.liuzhenlin.common.utils.NotificationChannelManager;
+import com.liuzhenlin.common.utils.ThemeUtils;
 import com.liuzhenlin.texturevideoview.InternalConsts;
 import com.liuzhenlin.texturevideoview.R;
-import com.liuzhenlin.texturevideoview.compat.RemoteViewsCompat;
-import com.liuzhenlin.texturevideoview.notification.NotificationChannelManager;
 import com.liuzhenlin.texturevideoview.notification.style.DecoratedMediaCustomViewStyle;
-import com.liuzhenlin.texturevideoview.utils.BitmapUtils;
-import com.liuzhenlin.texturevideoview.utils.ThemeUtils;
 
 /**
  * @author 刘振林
@@ -212,7 +213,7 @@ public class BackgroundPlaybackControllerService extends Service {
     }
 
     @Synthetic void postNotificationIfForeground() {
-        Handler handler = InternalConsts.getMainThreadHandler();
+        Handler handler = Consts.getMainThreadHandler();
         handler.removeCallbacks(mPostNotificationRunnable);
         if (mIsForeground) {
             // Use the Handler to post a delayed notification and remove any previously unpublished

@@ -15,9 +15,9 @@ import androidx.annotation.Nullable;
 import androidx.multidex.MultiDex;
 
 import com.bumptech.glide.Glide;
+import com.liuzhenlin.common.utils.SystemBarUtils;
+import com.liuzhenlin.common.utils.Utils;
 import com.liuzhenlin.floatingmenu.DensityUtils;
-import com.liuzhenlin.texturevideoview.utils.SystemBarUtils;
-import com.liuzhenlin.texturevideoview.utils.Utils;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 

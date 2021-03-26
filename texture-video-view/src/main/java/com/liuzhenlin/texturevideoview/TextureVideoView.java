@@ -96,17 +96,18 @@ import com.google.android.exoplayer2.text.CaptionStyleCompat;
 import com.google.android.exoplayer2.text.Cue;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.material.snackbar.Snackbar;
-import com.liuzhenlin.texturevideoview.adapter.ImageLoadingListAdapter;
+import com.liuzhenlin.common.adapter.ImageLoadingListAdapter;
+import com.liuzhenlin.common.utils.BitmapUtils;
+import com.liuzhenlin.common.utils.FileUtils;
+import com.liuzhenlin.common.utils.ParallelThreadExecutor;
+import com.liuzhenlin.common.utils.ScreenUtils;
+import com.liuzhenlin.common.utils.TimeUtil;
+import com.liuzhenlin.common.utils.TransitionListenerAdapter;
+import com.liuzhenlin.common.utils.URLUtils;
+import com.liuzhenlin.common.utils.UiUtils;
+import com.liuzhenlin.common.utils.Utils;
 import com.liuzhenlin.texturevideoview.drawable.CircularProgressDrawable;
 import com.liuzhenlin.texturevideoview.service.BackgroundPlaybackControllerService;
-import com.liuzhenlin.texturevideoview.utils.BitmapUtils;
-import com.liuzhenlin.texturevideoview.utils.FileUtils;
-import com.liuzhenlin.texturevideoview.utils.ParallelThreadExecutor;
-import com.liuzhenlin.texturevideoview.utils.ScreenUtils;
-import com.liuzhenlin.texturevideoview.utils.TimeUtil;
-import com.liuzhenlin.texturevideoview.utils.TransitionListenerAdapter;
-import com.liuzhenlin.texturevideoview.utils.URLUtils;
-import com.liuzhenlin.texturevideoview.utils.Utils;
 import com.liuzhenlin.texturevideoview.utils.VideoUtils;
 
 import java.io.File;
@@ -118,6 +119,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static com.liuzhenlin.texturevideoview.utils.Utils.canUseExoPlayer;
+import static com.liuzhenlin.texturevideoview.utils.Utils.canUseVlcPlayer;
+import static com.liuzhenlin.texturevideoview.utils.Utils.isMediaPlayerPlaybackSpeedAdjustmentSupported;
 
 /**
  * A View used to display video content onto {@link TextureView}, which takes care of computing
@@ -969,7 +974,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
 
     private void refreshSpeedSpinner() {
         if (!(mVideoPlayer instanceof SystemVideoPlayer)
-                || Utils.isMediaPlayerPlaybackSpeedAdjustmentSupported()) {
+                || isMediaPlayerPlaybackSpeedAdjustmentSupported()) {
             mSpeedSpinner.setEnabled(true);
         } else {
             mSpeedSpinner.setEnabled(false);
@@ -2125,7 +2130,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                     public void onPostExecute(File photo) {
                         mSavedPhoto = photo;
                         if (photo == null) {
-                            Utils.showUserCancelableSnackbar(TextureVideoView.this,
+                            UiUtils.showUserCancelableSnackbar(TextureVideoView.this,
                                     R.string.saveScreenshotFailed, Snackbar.LENGTH_SHORT);
                             if (capturedPhotoViewValid) {
                                 hideCapturedPhotoView(false);
@@ -2311,7 +2316,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
 
                 final boolean cutoutShortVideo = cutoutShortVideoButton.isSelected();
                 if (!cutoutShortVideo) {
-                    Utils.showUserCancelableSnackbar(this,
+                    UiUtils.showUserCancelableSnackbar(this,
                             R.string.gifClippingIsNotYetSupported, Snackbar.LENGTH_SHORT);
                     return;
                 }
@@ -2319,7 +2324,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                 final String srcPath = FileUtils.UriResolver.getPath(mContext, videoUri);
                 if (srcPath == null) {
                     Log.e(TAG, "Failed to resolve the path of the video being clipped.");
-                    Utils.showUserCancelableSnackbar(this,
+                    UiUtils.showUserCancelableSnackbar(this,
                             R.string.clippingFailed, Snackbar.LENGTH_SHORT);
                     return;
                 }
@@ -2345,21 +2350,21 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                     // TODO: the logic of cutting out a GIF
                 }
                 if (destFile == null) {
-                    Utils.showUserCancelableSnackbar(this,
+                    UiUtils.showUserCancelableSnackbar(this,
                             R.string.clippingFailed, Snackbar.LENGTH_SHORT);
                 } else //noinspection ConstantConditions
                     if (cutoutShortVideo) {
                         FileUtils.recordMediaFileToDatabaseAndScan(mContext,
                                 MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                                 destFile, "video/mp4");
-                        Utils.showUserCancelableSnackbar(this,
+                        UiUtils.showUserCancelableSnackbar(this,
                                 mResources.getString(R.string.shortVideoHasBeenSavedTo, destName, destDirectory),
                                 true, Snackbar.LENGTH_INDEFINITE);
                     } else {
                         FileUtils.recordMediaFileToDatabaseAndScan(mContext,
                                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                                 destFile, "image/gif");
-                        Utils.showUserCancelableSnackbar(this,
+                        UiUtils.showUserCancelableSnackbar(this,
                                 mResources.getString(R.string.gifHasBeenSavedTo, destName, destDirectory),
                                 true, Snackbar.LENGTH_INDEFINITE);
                     }
@@ -2378,7 +2383,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
 
         final SurfaceHolder holder = sv.getHolder();
         final MediaSourceFactory factory =
-                Utils.canUseExoPlayer() && videoPlayer instanceof ExoVideoPlayer
+                canUseExoPlayer() && videoPlayer instanceof ExoVideoPlayer
                         ? ((ExoVideoPlayer) videoPlayer).obtainMediaSourceFactory(videoUri) : null;
         final VideoClipPlayer player = new VideoClipPlayer(mContext, holder, videoUri, mExoUserAgent, factory);
         final Runnable trackProgressRunnable = new Runnable() {
@@ -3364,12 +3369,12 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
             _2HoursText.setSelected(tor != null && tor.offTime == TimedOffRunnable.OFF_TIME_2_HOURS);
             mediaplayerText.setSelected(videoPlayer instanceof SystemVideoPlayer);
             ijkplayerText.setSelected(videoPlayer instanceof IjkVideoPlayer);
-            if (Utils.canUseExoPlayer()) {
+            if (canUseExoPlayer()) {
                 exoplayerText.setSelected(videoPlayer instanceof ExoVideoPlayer);
             } else {
                 exoplayerText.setVisibility(View.GONE);
             }
-            if (Utils.canUseVlcPlayer()) {
+            if (canUseVlcPlayer()) {
                 vlcplayerText.setSelected(videoPlayer instanceof VlcVideoPlayer);
             } else {
                 vlcplayerText.setVisibility(View.GONE);

@@ -12,7 +12,7 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.liuzhenlin.videos.Consts;
+import com.liuzhenlin.common.Consts;
 import com.liuzhenlin.videos.Files;
 
 import java.io.File;

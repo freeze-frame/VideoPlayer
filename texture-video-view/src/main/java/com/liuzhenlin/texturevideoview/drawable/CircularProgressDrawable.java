@@ -42,7 +42,7 @@ import androidx.core.util.Preconditions;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import com.bumptech.glide.util.Synthetic;
-import com.liuzhenlin.texturevideoview.utils.Utils;
+import com.liuzhenlin.common.utils.Utils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

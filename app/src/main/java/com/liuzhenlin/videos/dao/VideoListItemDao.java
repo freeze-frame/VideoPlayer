@@ -18,9 +18,9 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.liuzhenlin.texturevideoview.utils.FileUtils;
-import com.liuzhenlin.texturevideoview.utils.Singleton;
-import com.liuzhenlin.videos.Consts;
+import com.liuzhenlin.common.Consts;
+import com.liuzhenlin.common.utils.FileUtils;
+import com.liuzhenlin.common.utils.Singleton;
 import com.liuzhenlin.videos.bean.Video;
 import com.liuzhenlin.videos.bean.VideoDirectory;
 import com.liuzhenlin.videos.bean.VideoListItem;

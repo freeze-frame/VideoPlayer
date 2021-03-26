@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="close">关闭</string>
     <string name="back">返回</string>
-    <string name="share">分享</string>
     <string name="clickToShare">点击分享</string>
     <string name="more">更多</string>
     <string name="brightnessProgress">亮度：%.0f%%</string>
@@ -51,10 +50,8 @@
     <string name="failedToLoadThisVideo">加载视频失败！</string>
     <string name="videoInThisFormatIsNotSupported">不支持该格式视频！</string>
     <string name="unknownErrorOccurredWhenVideoIsPlaying">视频播放时发生未知错误！</string>
-    <string name="undo">取消</string>
     <string name="cancel">取消</string>
     <string name="ok">确定</string>
-    <string name="playbackControlNotificationChannelName">播放控制</string>
     <string name="selectTracks">选择轨道</string>
     <string name="video">视频</string>
     <string name="audio">音频</string>

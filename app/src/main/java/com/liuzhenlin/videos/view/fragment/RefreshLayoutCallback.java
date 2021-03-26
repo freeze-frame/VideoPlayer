@@ -7,7 +7,7 @@ package com.liuzhenlin.videos.view.fragment;
 
 import androidx.annotation.Nullable;
 
-import com.liuzhenlin.videos.view.swiperefresh.SwipeRefreshLayout;
+import com.liuzhenlin.common.view.SwipeRefreshLayout;
 
 /**
  * @author 刘振林

@@ -11,10 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.liuzhenlin.common.view.SwipeRefreshLayout
 import com.liuzhenlin.slidingdrawerlayout.SlidingDrawerLayout
 import com.liuzhenlin.swipeback.SwipeBackLayout
 import com.liuzhenlin.videos.*
-import com.liuzhenlin.videos.view.swiperefresh.SwipeRefreshLayout
 
 /**
  * @author 刘振林

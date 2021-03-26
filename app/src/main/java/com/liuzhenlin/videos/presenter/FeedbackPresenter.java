@@ -18,14 +18,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 
-import com.liuzhenlin.texturevideoview.utils.BitmapUtils;
-import com.liuzhenlin.videos.Consts;
+import com.liuzhenlin.common.Consts;
+import com.liuzhenlin.common.utils.BitmapUtils;
+import com.liuzhenlin.common.utils.Executors;
+import com.liuzhenlin.common.utils.NetworkUtil;
 import com.liuzhenlin.videos.R;
 import com.liuzhenlin.videos.dao.FeedbackSavedPrefs;
-import com.liuzhenlin.videos.utils.BitmapUtils2;
-import com.liuzhenlin.videos.utils.Executors;
 import com.liuzhenlin.videos.utils.MailUtil;
-import com.liuzhenlin.videos.utils.NetworkUtil;
 import com.liuzhenlin.videos.view.activity.IFeedbackView;
 
 import java.io.File;
@@ -246,7 +245,7 @@ class FeedbackPresenter extends Presenter<IFeedbackView> implements IFeedbackPre
                 if (mView == null) {
                     return;
                 }
-                final Bitmap bitmap = BitmapUtils2.decodeRotatedBitmapFormFile(path);
+                final Bitmap bitmap = BitmapUtils.decodeRotatedBitmapFormFile(path);
                 if (bitmap != null) {
                     Executors.MAIN_EXECUTOR.post(() -> {
                         if (mView != null && picturePaths.contains(path)) {

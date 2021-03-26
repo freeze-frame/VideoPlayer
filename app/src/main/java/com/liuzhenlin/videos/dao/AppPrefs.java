@@ -12,7 +12,7 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.liuzhenlin.texturevideoview.utils.Singleton;
+import com.liuzhenlin.common.utils.Singleton;
 import com.liuzhenlin.videos.Files;
 
 /**

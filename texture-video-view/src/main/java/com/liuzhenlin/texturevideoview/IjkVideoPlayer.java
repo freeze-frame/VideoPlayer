@@ -22,14 +22,15 @@ import androidx.annotation.RestrictTo;
 
 import com.bumptech.glide.util.Synthetic;
 import com.google.android.material.snackbar.Snackbar;
+import com.liuzhenlin.common.receiver.HeadsetEventsReceiver;
+import com.liuzhenlin.common.receiver.MediaButtonEventHandler;
+import com.liuzhenlin.common.receiver.MediaButtonEventReceiver;
+import com.liuzhenlin.common.utils.UiUtils;
+import com.liuzhenlin.common.utils.Utils;
 import com.liuzhenlin.texturevideoview.bean.AudioTrackInfo;
 import com.liuzhenlin.texturevideoview.bean.SubtitleTrackInfo;
 import com.liuzhenlin.texturevideoview.bean.TrackInfo;
 import com.liuzhenlin.texturevideoview.bean.VideoTrackInfo;
-import com.liuzhenlin.texturevideoview.receiver.HeadsetEventsReceiver;
-import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventHandler;
-import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventReceiver;
-import com.liuzhenlin.texturevideoview.utils.Utils;
 import com.liuzhenlin.texturevideoview.utils.VideoUtils;
 
 import java.io.IOException;
@@ -42,6 +43,9 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import tv.danmaku.ijk.media.player.misc.ITrackInfo;
 import tv.danmaku.ijk.media.player.misc.IjkMediaFormat;
 import tv.danmaku.ijk.media.player.misc.IjkTrackInfo;
+
+import static com.liuzhenlin.texturevideoview.utils.Utils.getIjkAudioTrackChannelCount;
+import static com.liuzhenlin.texturevideoview.utils.Utils.getTrackTypeForIjkPlayer;
 
 /**
  * A sub implementation class of {@link VideoPlayer} to deal with the audio/video playback logic
@@ -318,7 +322,7 @@ public class IjkVideoPlayer extends VideoPlayer {
                 break;
         }
         if (mVideoView != null) {
-            Utils.showUserCancelableSnackbar(mVideoView, stringRes, Snackbar.LENGTH_SHORT);
+            UiUtils.showUserCancelableSnackbar(mVideoView, stringRes, Snackbar.LENGTH_SHORT);
         } else {
             Toast.makeText(mContext, stringRes, Toast.LENGTH_SHORT).show();
         }
@@ -652,7 +656,7 @@ public class IjkVideoPlayer extends VideoPlayer {
     @Override
     public boolean hasTrack(int trackType) {
         if (mIjkPlayer != null) {
-            trackType = Utils.getTrackTypeForIjkPlayer(trackType);
+            trackType = getTrackTypeForIjkPlayer(trackType);
             if (trackType == IjkTrackInfo.MEDIA_TRACK_TYPE_UNKNOWN) {
                 return false;
             }
@@ -711,7 +715,7 @@ public class IjkVideoPlayer extends VideoPlayer {
                             trackInfo = new AudioTrackInfo(
                                     mediaFormat.mCodecName,
                                     ijkTrackInfo.getLanguage(),
-                                    Utils.getIjkAudioTrackChannelCount(mediaFormat.mChannelLayout),
+                                    getIjkAudioTrackChannelCount(mediaFormat.mChannelLayout),
                                     mediaFormat.mSampleRate,
                                     (int) mediaFormat.mBitrate);
                         }
@@ -806,7 +810,7 @@ public class IjkVideoPlayer extends VideoPlayer {
     public int getSelectedTrackIndex(int trackType) {
         int index = -1;
         if (mIjkPlayer != null) {
-            trackType = Utils.getTrackTypeForIjkPlayer(trackType);
+            trackType = getTrackTypeForIjkPlayer(trackType);
             if (trackType != IjkTrackInfo.MEDIA_TRACK_TYPE_UNKNOWN) {
                 index = mIjkPlayer.getSelectedTrack(trackType);
                 if (index >= 0) {

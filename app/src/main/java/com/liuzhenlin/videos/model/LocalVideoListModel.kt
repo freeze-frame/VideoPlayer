@@ -8,13 +8,13 @@ package com.liuzhenlin.videos.model
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.AsyncTask
+import com.liuzhenlin.common.utils.Executors
 import com.liuzhenlin.videos.bean.Video
 import com.liuzhenlin.videos.bean.VideoListItem
 import com.liuzhenlin.videos.dao.VideoListItemDao
 import com.liuzhenlin.videos.deepCopy
 import com.liuzhenlin.videos.sortByElementName
 import com.liuzhenlin.videos.toVideoListItems
-import com.liuzhenlin.videos.utils.Executors
 import java.util.*
 
 /**

@@ -22,7 +22,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.exoplayer2.text.Cue;
 import com.google.android.exoplayer2.util.Util;
-import com.liuzhenlin.texturevideoview.utils.Utils;
+import com.liuzhenlin.common.utils.Utils;
 
 import java.util.List;
 

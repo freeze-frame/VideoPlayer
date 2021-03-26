@@ -32,7 +32,6 @@
     <string name="doYouNeedToSaveTheEditedContents">Do you need to save the edited contents?</string>
     <string name="doYouNeedToUpdateItSoon">Do you need to update it soon?</string>
     <string name="downloadError">Download error</string>
-    <string name="downloadNotificationChannelName">Download</string>
     <string name="downloading" tools:keep="@string/downloading">Downloading…</string>
     <string name="downloadingUpdates">Downloading Updates…</string>
     <string name="drawerBackground">Drawer background</string>
@@ -50,7 +49,6 @@
     <string name="loadingVideos" tools:keep="@string/loadingVideos">Loading videos, please wait…</string>
     <string name="localVideos">Local Videos</string>
     <string name="lockScreenOrientation">Lock screen orientation</string>
-    <string name="msgNotificationChannelName">Message</string>
     <string name="name">Name: %s</string>
     <string name="newAppDownloaded">New App Downloaded</string>
     <string name="noNetworkConnection">No network is connected!</string>
@@ -143,6 +141,4 @@
     <string name="charsequenceProgress" translatable="false">%1$s/%2$s</string>
     <string name="percentProgress" translatable="false">%.2f%%</string>
     <string name="updateAppendedColon" translatable="false">更新：</string>
-    <string name="downloadNotificationChannelId" translatable="false">%s__download_notification_channel</string>
-    <string name="msgNotificationChannelId" translatable="false">%s__msg_notification_channel</string>
 </resources>

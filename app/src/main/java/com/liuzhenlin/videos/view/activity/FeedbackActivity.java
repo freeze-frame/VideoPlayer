@@ -41,23 +41,22 @@ import androidx.core.widget.TextViewCompat;
 
 import com.bumptech.glide.util.Synthetic;
 import com.google.android.material.snackbar.Snackbar;
+import com.liuzhenlin.common.observer.OnOrientationChangeListener;
+import com.liuzhenlin.common.observer.RotationObserver;
+import com.liuzhenlin.common.observer.ScreenNotchSwitchObserver;
+import com.liuzhenlin.common.utils.DisplayCutoutUtils;
+import com.liuzhenlin.common.utils.FileUtils;
+import com.liuzhenlin.common.utils.OSHelper;
+import com.liuzhenlin.common.utils.SystemBarUtils;
+import com.liuzhenlin.common.utils.UiUtils;
 import com.liuzhenlin.floatingmenu.DensityUtils;
 import com.liuzhenlin.galleryviewer.GalleryViewPager;
-import com.liuzhenlin.simrv.Utils;
 import com.liuzhenlin.swipeback.SwipeBackActivity;
 import com.liuzhenlin.swipeback.SwipeBackLayout;
-import com.liuzhenlin.texturevideoview.utils.FileUtils;
-import com.liuzhenlin.texturevideoview.utils.SystemBarUtils;
 import com.liuzhenlin.videos.App;
 import com.liuzhenlin.videos.Consts;
 import com.liuzhenlin.videos.R;
-import com.liuzhenlin.videos.observer.OnOrientationChangeListener;
-import com.liuzhenlin.videos.observer.RotationObserver;
-import com.liuzhenlin.videos.observer.ScreenNotchSwitchObserver;
 import com.liuzhenlin.videos.presenter.IFeedbackPresenter;
-import com.liuzhenlin.videos.utils.DisplayCutoutUtils;
-import com.liuzhenlin.videos.utils.OSHelper;
-import com.liuzhenlin.videos.utils.UiUtils;
 import com.liuzhenlin.videos.view.adapter.GalleryPagerAdapter;
 
 import java.util.ArrayList;
@@ -195,7 +194,7 @@ public class FeedbackActivity extends SwipeBackActivity implements IFeedbackView
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         final Window window = getWindow();
-        if (Utils.isLayoutRtl(window.getDecorView()))
+        if (com.liuzhenlin.simrv.Utils.isLayoutRtl(window.getDecorView()))
             getSwipeBackLayout().setEnabledEdges(SwipeBackLayout.EDGE_RIGHT);
         getSwipeBackLayout().addSwipeListener(new SwipeBackLayout.SwipeListener() {
             int oldState = SwipeBackLayout.STATE_IDLE;
@@ -346,7 +345,7 @@ public class FeedbackActivity extends SwipeBackActivity implements IFeedbackView
             final int dp_20 = DensityUtils.dp2px(this, 20f);
 
             ViewGroup.LayoutParams lp = convertView.getLayoutParams();
-            lp.height = lp.width = com.liuzhenlin.texturevideoview.utils.
+            lp.height = lp.width = com.liuzhenlin.common.utils.
                     Utils.roundFloat((screenWidth - dp_20 * 1.5f) / 3f);
 
             ViewGroup.LayoutParams plp = parent.getLayoutParams();

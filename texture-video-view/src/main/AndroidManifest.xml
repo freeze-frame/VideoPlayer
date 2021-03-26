@@ -21,12 +21,6 @@
             org.videolan" />
 
     <application>
-        <receiver android:name=".receiver.MediaButtonEventReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
-        </receiver>
-
         <service android:name=".service.BackgroundPlaybackControllerService" />
 
         <activity

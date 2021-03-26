@@ -1,0 +1,47 @@
+/*
+ * Created on 2021-3-25 2:59:59 PM.
+ * Copyright © 2021 刘振林. All rights reserved.
+ */
+
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    // Please add below compile options to the build.gradle file of your project module that
+    // depends on this library, too.
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "androidx.appcompat:appcompat:$rootProject.ext.appcompatVersion"
+    api 'com.google.android.material:material:1.3.0'
+    api 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    api 'androidx.palette:palette:1.0.0'
+    api 'androidx.exifinterface:exifinterface:1.3.2'
+
+    testImplementation "junit:junit:$rootProject.ext.testJunitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$rootProject.ext.androidTestJunitVersion"
+}

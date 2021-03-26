@@ -31,7 +31,6 @@
     <string name="doYouNeedToSaveTheEditedContents">是否对已编辑的内容进行保存？</string>
     <string name="doYouNeedToUpdateItSoon">请问您需要立即更新吗？</string>
     <string name="downloadError">下载异常</string>
-    <string name="downloadNotificationChannelName">下载</string>
     <string name="downloading" tools:keep="@string/downloading">正在下载…</string>
     <string name="downloadingUpdates">正在下载更新…</string>
     <string name="drawerBackground">抽屉背景</string>
@@ -48,7 +47,6 @@
     <string name="loadingVideos" tools:keep="@string/loadingVideos">正在载入数据，请稍候…</string>
     <string name="localVideos">本地视频</string>
     <string name="lockScreenOrientation">锁定屏幕</string>
-    <string name="msgNotificationChannelName">消息</string>
     <string name="name">名称：%s</string>
     <string name="newAppDownloaded">新应用下载完成</string>
     <string name="noNetworkConnection">无网络连接！</string>

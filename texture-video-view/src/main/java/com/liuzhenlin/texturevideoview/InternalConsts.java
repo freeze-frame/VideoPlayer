@@ -5,9 +5,6 @@
 
 package com.liuzhenlin.texturevideoview;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import androidx.annotation.RestrictTo;
 
 import static androidx.annotation.RestrictTo.Scope.LIBRARY;
@@ -47,12 +44,4 @@ public class InternalConsts {
     public static final String EXTRA_MEDIA_PROGRESS = "mediaProgress";
     @RestrictTo(LIBRARY)
     public static final String EXTRA_MEDIA_DURATION = "mediaDuration";
-
-    public static Handler getMainThreadHandler() {
-        return NoPreloadHolder.MAIN_THREAD_HANDLER;
-    }
-
-    private static final class NoPreloadHolder {
-        static final Handler MAIN_THREAD_HANDLER = new Handler(Looper.getMainLooper());
-    }
 }

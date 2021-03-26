@@ -27,18 +27,23 @@ import androidx.annotation.RestrictTo;
 
 import com.bumptech.glide.util.Synthetic;
 import com.google.android.material.snackbar.Snackbar;
+import com.liuzhenlin.common.receiver.HeadsetEventsReceiver;
+import com.liuzhenlin.common.receiver.MediaButtonEventHandler;
+import com.liuzhenlin.common.receiver.MediaButtonEventReceiver;
+import com.liuzhenlin.common.utils.UiUtils;
+import com.liuzhenlin.common.utils.Utils;
 import com.liuzhenlin.texturevideoview.bean.AudioTrackInfo;
 import com.liuzhenlin.texturevideoview.bean.SubtitleTrackInfo;
 import com.liuzhenlin.texturevideoview.bean.TrackInfo;
 import com.liuzhenlin.texturevideoview.bean.VideoTrackInfo;
-import com.liuzhenlin.texturevideoview.receiver.HeadsetEventsReceiver;
-import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventHandler;
-import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventReceiver;
-import com.liuzhenlin.texturevideoview.utils.Utils;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.liuzhenlin.texturevideoview.utils.Utils.getTrackTypeForMediaPlayer;
+import static com.liuzhenlin.texturevideoview.utils.Utils.isMediaPlayerPlaybackSpeedAdjustmentSupported;
+import static com.liuzhenlin.texturevideoview.utils.Utils.isMediaPlayerTrackSelectionSupported;
 
 /**
  * A sub implementation class of {@link VideoPlayer} to deal with the audio/video playback logic
@@ -266,7 +271,7 @@ public class SystemVideoPlayer extends VideoPlayer {
                 break;
         }
         if (mVideoView != null) {
-            Utils.showUserCancelableSnackbar(mVideoView, stringRes, Snackbar.LENGTH_SHORT);
+            UiUtils.showUserCancelableSnackbar(mVideoView, stringRes, Snackbar.LENGTH_SHORT);
         } else {
             Toast.makeText(mContext, stringRes, Toast.LENGTH_SHORT).show();
         }
@@ -605,7 +610,7 @@ public class SystemVideoPlayer extends VideoPlayer {
     }
 
     private boolean canSetPlaybackSpeed(float speed) {
-        return Utils.isMediaPlayerPlaybackSpeedAdjustmentSupported() && speed != mPlaybackSpeed;
+        return isMediaPlayerPlaybackSpeedAdjustmentSupported() && speed != mPlaybackSpeed;
     }
 
 //    @Override
@@ -620,14 +625,14 @@ public class SystemVideoPlayer extends VideoPlayer {
 
     private boolean supportTrackSelection() {
         return /*Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN*/
-                Utils.isMediaPlayerTrackSelectionSupported() && mMediaPlayer != null;
+                isMediaPlayerTrackSelectionSupported() && mMediaPlayer != null;
     }
 
     @Override
     public boolean hasTrack(int trackType) {
         if (!supportTrackSelection()) return false;
 
-        trackType = Utils.getTrackTypeForMediaPlayer(trackType);
+        trackType = getTrackTypeForMediaPlayer(trackType);
         if (trackType == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_UNKNOWN) {
             return false;
         }
@@ -819,7 +824,7 @@ public class SystemVideoPlayer extends VideoPlayer {
         try {
             //noinspection StatementWithEmptyBody
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                trackType = Utils.getTrackTypeForMediaPlayer(trackType);
+                trackType = getTrackTypeForMediaPlayer(trackType);
                 if (trackType != MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_UNKNOWN) {
                     index = mMediaPlayer.getSelectedTrack(trackType);
                     if (index >= 0) {

@@ -46,6 +46,15 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.util.Synthetic;
 import com.google.android.material.snackbar.Snackbar;
+import com.liuzhenlin.common.observer.OnOrientationChangeListener;
+import com.liuzhenlin.common.observer.RotationObserver;
+import com.liuzhenlin.common.observer.ScreenNotchSwitchObserver;
+import com.liuzhenlin.common.utils.DisplayCutoutUtils;
+import com.liuzhenlin.common.utils.FileUtils;
+import com.liuzhenlin.common.utils.OSHelper;
+import com.liuzhenlin.common.utils.SystemBarUtils;
+import com.liuzhenlin.common.utils.UiUtils;
+import com.liuzhenlin.common.utils.Utils;
 import com.liuzhenlin.swipeback.SwipeBackActivity;
 import com.liuzhenlin.swipeback.SwipeBackLayout;
 import com.liuzhenlin.texturevideoview.ExoVideoPlayer;
@@ -53,21 +62,12 @@ import com.liuzhenlin.texturevideoview.IVideoPlayer;
 import com.liuzhenlin.texturevideoview.IjkVideoPlayer;
 import com.liuzhenlin.texturevideoview.TextureVideoView;
 import com.liuzhenlin.texturevideoview.VideoPlayer;
-import com.liuzhenlin.texturevideoview.utils.FileUtils;
-import com.liuzhenlin.texturevideoview.utils.SystemBarUtils;
-import com.liuzhenlin.texturevideoview.utils.Utils;
 import com.liuzhenlin.videos.App;
 import com.liuzhenlin.videos.BuildConfig;
 import com.liuzhenlin.videos.Consts;
 import com.liuzhenlin.videos.R;
 import com.liuzhenlin.videos.bean.Video;
-import com.liuzhenlin.videos.observer.OnOrientationChangeListener;
-import com.liuzhenlin.videos.observer.RotationObserver;
-import com.liuzhenlin.videos.observer.ScreenNotchSwitchObserver;
 import com.liuzhenlin.videos.presenter.IVideoPresenter;
-import com.liuzhenlin.videos.utils.DisplayCutoutUtils;
-import com.liuzhenlin.videos.utils.OSHelper;
-import com.liuzhenlin.videos.utils.UiUtils;
 import com.liuzhenlin.videos.utils.VideoUtils2;
 
 import java.io.File;
@@ -79,6 +79,7 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
+import static com.liuzhenlin.texturevideoview.utils.Utils.canUseExoPlayer;
 
 /**
  * @author 刘振林
@@ -280,7 +281,7 @@ public class VideoActivity extends SwipeBackActivity implements IVideoView {
         }
 
         mVideoView = findViewById(R.id.videoview);
-        VideoPlayer videoPlayer = Utils.canUseExoPlayer()
+        VideoPlayer videoPlayer = canUseExoPlayer()
                 ? new ExoVideoPlayer(this) : new IjkVideoPlayer(this);
         mVideoPlayer = videoPlayer;
         videoPlayer.setVideoView(mVideoView);

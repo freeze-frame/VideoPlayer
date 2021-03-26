@@ -49,30 +49,29 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.util.Synthetic;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.liuzhenlin.common.Consts;
+import com.liuzhenlin.common.adapter.BaseAdapter2;
+import com.liuzhenlin.common.utils.BitmapUtils;
+import com.liuzhenlin.common.utils.ColorUtils;
+import com.liuzhenlin.common.utils.Executors;
+import com.liuzhenlin.common.utils.FileUtils;
+import com.liuzhenlin.common.utils.IOUtils;
+import com.liuzhenlin.common.utils.OSHelper;
+import com.liuzhenlin.common.utils.SystemBarUtils;
+import com.liuzhenlin.common.utils.TextViewUtils;
+import com.liuzhenlin.common.utils.UiUtils;
+import com.liuzhenlin.common.view.ScrollDisableListView;
+import com.liuzhenlin.common.view.ScrollDisableViewPager;
+import com.liuzhenlin.common.view.SwipeRefreshLayout;
 import com.liuzhenlin.floatingmenu.DensityUtils;
 import com.liuzhenlin.slidingdrawerlayout.SlidingDrawerLayout;
-import com.liuzhenlin.texturevideoview.utils.BitmapUtils;
-import com.liuzhenlin.texturevideoview.utils.FileUtils;
-import com.liuzhenlin.texturevideoview.utils.SystemBarUtils;
 import com.liuzhenlin.videos.App;
 import com.liuzhenlin.videos.BuildConfig;
-import com.liuzhenlin.videos.Consts;
 import com.liuzhenlin.videos.R;
 import com.liuzhenlin.videos.dao.AppPrefs;
-import com.liuzhenlin.videos.utils.BitmapUtils2;
-import com.liuzhenlin.videos.utils.ColorUtils;
-import com.liuzhenlin.videos.utils.Executors;
-import com.liuzhenlin.videos.utils.IOUtils;
 import com.liuzhenlin.videos.utils.MergeAppUpdateChecker;
-import com.liuzhenlin.videos.utils.OSHelper;
-import com.liuzhenlin.videos.utils.TextViewUtils;
-import com.liuzhenlin.videos.utils.UiUtils;
-import com.liuzhenlin.videos.view.ScrollDisableListView;
-import com.liuzhenlin.videos.view.ScrollDisableViewPager;
-import com.liuzhenlin.videos.view.adapter.BaseAdapter2;
 import com.liuzhenlin.videos.view.fragment.LocalVideosFragment;
 import com.liuzhenlin.videos.view.fragment.OnlineVideosFragment;
-import com.liuzhenlin.videos.view.swiperefresh.SwipeRefreshLayout;
 
 import java.io.File;
 import java.io.IOException;
@@ -321,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return;
             }
 
-            final Bitmap bitmap = BitmapUtils2.decodeRotatedBitmapFormFile(mImagePath);
+            final Bitmap bitmap = BitmapUtils.decodeRotatedBitmapFormFile(mImagePath);
             if (bitmap == null) {
                 return;
             }

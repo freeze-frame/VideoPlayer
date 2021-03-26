@@ -46,7 +46,7 @@ import com.google.android.exoplayer2.text.Cue;
 import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.Util;
-import com.liuzhenlin.texturevideoview.utils.Utils;
+import com.liuzhenlin.common.utils.Utils;
 
 //import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 //import org.checkerframework.checker.nullness.qual.RequiresNonNull;

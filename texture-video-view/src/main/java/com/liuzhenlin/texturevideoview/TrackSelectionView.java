@@ -24,9 +24,9 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bumptech.glide.util.Synthetic;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.liuzhenlin.common.utils.ComparableSparseArray;
+import com.liuzhenlin.common.utils.UiUtils;
 import com.liuzhenlin.texturevideoview.bean.TrackInfo;
-import com.liuzhenlin.texturevideoview.utils.ComparableSparseArray;
-import com.liuzhenlin.texturevideoview.utils.Utils;
 
 import java.util.List;
 
@@ -363,7 +363,7 @@ public class TrackSelectionView extends LinearLayout {
                 default:
                     return;
             }
-            Utils.showUserCancelableSnackbar(
+            UiUtils.showUserCancelableSnackbar(
                     TrackSelectionView.this,
                     getResources().getString(stringRes, trackName),
                     Snackbar.LENGTH_SHORT);

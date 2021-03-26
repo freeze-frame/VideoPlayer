@@ -8,7 +8,7 @@ package com.liuzhenlin.videos
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
 import androidx.fragment.app.Fragment
-import com.liuzhenlin.texturevideoview.utils.FileUtils
+import com.liuzhenlin.common.utils.FileUtils
 import com.liuzhenlin.videos.bean.Video
 import com.liuzhenlin.videos.bean.VideoDirectory
 import com.liuzhenlin.videos.bean.VideoListItem

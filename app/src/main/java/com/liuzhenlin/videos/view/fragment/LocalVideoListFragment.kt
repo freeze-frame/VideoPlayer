@@ -36,12 +36,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomViewTarget
 import com.bumptech.glide.request.transition.Transition
 import com.liuzhenlin.circularcheckbox.CircularCheckBox
+import com.liuzhenlin.common.Consts.EMPTY_STRING
+import com.liuzhenlin.common.Consts.NO_ID
+import com.liuzhenlin.common.adapter.ImageLoadingListAdapter
+import com.liuzhenlin.common.utils.FileUtils
+import com.liuzhenlin.common.utils.UiUtils
+import com.liuzhenlin.common.utils.Utils
+import com.liuzhenlin.common.view.SwipeRefreshLayout
 import com.liuzhenlin.floatingmenu.DensityUtils
 import com.liuzhenlin.simrv.SlidingItemMenuRecyclerView
 import com.liuzhenlin.swipeback.SwipeBackFragment
-import com.liuzhenlin.texturevideoview.adapter.ImageLoadingListAdapter
-import com.liuzhenlin.texturevideoview.utils.FileUtils
-import com.liuzhenlin.texturevideoview.utils.Utils
 import com.liuzhenlin.videos.*
 import com.liuzhenlin.videos.bean.Video
 import com.liuzhenlin.videos.bean.VideoDirectory
@@ -50,11 +54,8 @@ import com.liuzhenlin.videos.dao.IVideoDao
 import com.liuzhenlin.videos.dao.VideoListItemDao
 import com.liuzhenlin.videos.model.LocalVideoListModel
 import com.liuzhenlin.videos.model.OnLoadListener
-import com.liuzhenlin.videos.utils.FileUtils2
-import com.liuzhenlin.videos.utils.UiUtils
 import com.liuzhenlin.videos.utils.VideoUtils2
 import com.liuzhenlin.videos.view.fragment.PackageConsts.*
-import com.liuzhenlin.videos.view.swiperefresh.SwipeRefreshLayout
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.min
@@ -510,7 +511,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
                 if (payload and PAYLOAD_REFRESH_VIDEODIR_SIZE_AND_VIDEO_COUNT != 0) {
                     val vh = holder as VideoDirViewHolder
                     val videos = (item as VideoDirectory).videos
-                    vh.videodirSizeText.text = FileUtils2.formatFileSize(item.size.toDouble())
+                    vh.videodirSizeText.text = FileUtils.formatFileSize(item.size.toDouble())
                     vh.videoCountText.text = getString(R.string.aTotalOfSeveralVideos, videos.size)
                 }
             }
@@ -538,7 +539,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
                     val video = item as Video
 
                     vh.videoNameText.text = item.name
-                    vh.videoSizeText.text = FileUtils2.formatFileSize(item.size.toDouble())
+                    vh.videoSizeText.text = FileUtils.formatFileSize(item.size.toDouble())
                     vh.videoProgressAndDurationText.text =
                             VideoUtils2.concatVideoProgressAndDuration(video.progress, video.duration)
                 }
@@ -549,7 +550,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
                     VideoUtils2.loadVideoThumbIntoFragmentImageView(
                             this@LocalVideoListFragment, vh.videodirImage, videos[0])
                     vh.videodirNameText.text = item.name
-                    vh.videodirSizeText.text = FileUtils2.formatFileSize(item.size.toDouble())
+                    vh.videodirSizeText.text = FileUtils.formatFileSize(item.size.toDouble())
                     vh.videoCountText.text = getString(R.string.aTotalOfSeveralVideos, videos.size)
                 }
             }
@@ -1181,7 +1182,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
 
             val videoSizeText = view.findViewById<TextView>(R.id.text_videoSize)
             ss = SpannableString(getString(
-                    R.string.size, FileUtils2.formatFileSize(item.size.toDouble())))
+                    R.string.size, FileUtils.formatFileSize(item.size.toDouble())))
             ss.setSpan(ForegroundColorSpan(Color.BLACK),
                     0, ss.indexOf(colon) + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             videoSizeText.text = ss
@@ -1218,7 +1219,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
 
             val videodirSizeText = view.findViewById<TextView>(R.id.text_videodirSize)
             ss = SpannableString(getString(
-                    R.string.size, FileUtils2.formatFileSize(item.size.toDouble())))
+                    R.string.size, FileUtils.formatFileSize(item.size.toDouble())))
             ss.setSpan(ForegroundColorSpan(Color.BLACK),
                     0, ss.indexOf(colon) + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             videodirSizeText.text = ss

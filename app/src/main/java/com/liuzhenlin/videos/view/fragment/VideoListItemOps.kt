@@ -14,16 +14,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.util.Preconditions
 import com.google.android.material.snackbar.Snackbar
-import com.liuzhenlin.texturevideoview.utils.FileUtils
-import com.liuzhenlin.texturevideoview.utils.ShareUtils
-import com.liuzhenlin.texturevideoview.utils.URLUtils
+import com.liuzhenlin.common.utils.*
 import com.liuzhenlin.videos.*
 import com.liuzhenlin.videos.bean.Video
 import com.liuzhenlin.videos.bean.VideoDirectory
 import com.liuzhenlin.videos.bean.VideoListItem
 import com.liuzhenlin.videos.dao.VideoListItemDao
-import com.liuzhenlin.videos.utils.SerialExecutor
-import com.liuzhenlin.videos.utils.UiUtils
 import com.liuzhenlin.videos.view.activity.VideoActivity
 import java.io.File
 

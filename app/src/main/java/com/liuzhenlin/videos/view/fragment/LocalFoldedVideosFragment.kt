@@ -22,12 +22,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.liuzhenlin.circularcheckbox.CircularCheckBox
+import com.liuzhenlin.common.Consts.NO_ID
+import com.liuzhenlin.common.adapter.ImageLoadingListAdapter
+import com.liuzhenlin.common.utils.FileUtils
+import com.liuzhenlin.common.view.SwipeRefreshLayout
 import com.liuzhenlin.floatingmenu.DensityUtils
 import com.liuzhenlin.simrv.SlidingItemMenuRecyclerView
 import com.liuzhenlin.simrv.Utils
 import com.liuzhenlin.swipeback.SwipeBackFragment
 import com.liuzhenlin.swipeback.SwipeBackLayout
-import com.liuzhenlin.texturevideoview.adapter.ImageLoadingListAdapter
 import com.liuzhenlin.videos.*
 import com.liuzhenlin.videos.bean.Video
 import com.liuzhenlin.videos.bean.VideoDirectory
@@ -35,10 +38,8 @@ import com.liuzhenlin.videos.dao.VideoListItemDao
 import com.liuzhenlin.videos.model.LocalFoldedVideoListModel
 import com.liuzhenlin.videos.model.OnLoadListener
 import com.liuzhenlin.videos.model.OnReloadVideosListener
-import com.liuzhenlin.videos.utils.FileUtils2
 import com.liuzhenlin.videos.utils.VideoUtils2
 import com.liuzhenlin.videos.view.fragment.PackageConsts.*
-import com.liuzhenlin.videos.view.swiperefresh.SwipeRefreshLayout
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -605,7 +606,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
                 isChecked = video.isChecked
             }
             holder.videoNameText.text = video.name
-            holder.videoSizeText.text = FileUtils2.formatFileSize(video.size.toDouble())
+            holder.videoSizeText.text = FileUtils.formatFileSize(video.size.toDouble())
             holder.videoProgressAndDurationText.text =
                     VideoUtils2.concatVideoProgressAndDuration(video.progress, video.duration)
         }

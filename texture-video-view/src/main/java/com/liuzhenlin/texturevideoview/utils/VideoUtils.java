@@ -21,6 +21,7 @@ import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
 import com.googlecode.mp4parser.authoring.tracks.CroppedTrack;
+import com.liuzhenlin.common.utils.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;

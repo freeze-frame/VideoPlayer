@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="silentNotificationChannelName">无声</string>
+    <string name="downloadNotificationChannelName">下载</string>
+    <string name="msgNotificationChannelName">消息</string>
+    <string name="playbackControlNotificationChannelName">播放控制</string>
+
+    <string name="share">分享</string>
+    <string name="undo">取消</string>
+</resources>

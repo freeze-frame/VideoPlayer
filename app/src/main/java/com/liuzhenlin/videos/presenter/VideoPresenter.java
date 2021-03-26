@@ -18,9 +18,9 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.util.Synthetic;
 import com.google.android.material.snackbar.Snackbar;
+import com.liuzhenlin.common.utils.FileUtils;
+import com.liuzhenlin.common.utils.ShareUtils;
 import com.liuzhenlin.texturevideoview.TextureVideoView;
-import com.liuzhenlin.texturevideoview.utils.FileUtils;
-import com.liuzhenlin.texturevideoview.utils.ShareUtils;
 import com.liuzhenlin.videos.Consts;
 import com.liuzhenlin.videos.Files;
 import com.liuzhenlin.videos.R;
@@ -33,6 +33,8 @@ import com.liuzhenlin.videos.view.fragment.VideoListItemOpsKt;
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
+
+import static com.liuzhenlin.common.Consts.NO_ID;
 
 /**
  * @author 刘振林
@@ -106,7 +108,7 @@ class VideoPresenter extends Presenter<IVideoView> implements IVideoPresenter {
                 for (int i = 0; i < length; i++) {
                     video = buildVideoForUri((Uri) videoUriParcels[i],
                             (String) (videoTitleSerials != null ? videoTitleSerials[i] : null));
-                    if (stateRestore && video.getId() != Consts.NO_ID) {
+                    if (stateRestore && video.getId() != NO_ID) {
                         video.setProgress(
                                 VideoListItemDao.getSingleton(mContext).getVideoProgress(video.getId()));
                     }
@@ -137,7 +139,7 @@ class VideoPresenter extends Presenter<IVideoView> implements IVideoPresenter {
         }
         if (uri != null) {
             video = buildVideoForUri(uri, intent.getStringExtra(Consts.KEY_VIDEO_TITLE));
-            if (stateRestore && video.getId() != Consts.NO_ID) {
+            if (stateRestore && video.getId() != NO_ID) {
                 video.setProgress(
                         VideoListItemDao.getSingleton(mContext).getVideoProgress(video.getId()));
             }
@@ -158,7 +160,7 @@ class VideoPresenter extends Presenter<IVideoView> implements IVideoPresenter {
         Video video = VideoListItemDao.getSingleton(mContext).queryVideoByPath(videoUrl);
         if (video == null) {
             video = new Video();
-            video.setId(Consts.NO_ID);
+            video.setId(NO_ID);
             video.setPath(videoUrl);
             if (videoTitle != null) {
                 video.setName(videoTitle);
@@ -203,7 +205,7 @@ class VideoPresenter extends Presenter<IVideoView> implements IVideoPresenter {
             video.setProgress(mView.getPlayingVideoProgress());
 
             final long id = video.getId();
-            if (id != Consts.NO_ID) {
+            if (id != NO_ID) {
                 VideoListItemDao.getSingleton(mContext).setVideoProgress(id, video.getProgress());
             }
         }
@@ -317,7 +319,7 @@ class VideoPresenter extends Presenter<IVideoView> implements IVideoPresenter {
                         if (selected) {
                             holder.setVideoProgressAndDurationText(mContext.getString(R.string.watching));
                         } else {
-                            if (video.getId() != Consts.NO_ID) {
+                            if (video.getId() != NO_ID) {
                                 holder.setVideoProgressAndDurationText(
                                         VideoUtils2.concatVideoProgressAndDuration(
                                                 video.getProgress(), video.getDuration()));
@@ -345,7 +347,7 @@ class VideoPresenter extends Presenter<IVideoView> implements IVideoPresenter {
             if (selected) {
                 holder.setVideoProgressAndDurationText(mContext.getString(R.string.watching));
             } else {
-                if (video.getId() != Consts.NO_ID) {
+                if (video.getId() != NO_ID) {
                     holder.setVideoProgressAndDurationText(
                             VideoUtils2.concatVideoProgressAndDuration(
                                     video.getProgress(), video.getDuration()));

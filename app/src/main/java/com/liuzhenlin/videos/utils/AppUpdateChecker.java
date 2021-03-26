@@ -38,7 +38,13 @@ import com.bumptech.glide.util.Synthetic;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.liuzhenlin.texturevideoview.utils.Singleton;
+import com.liuzhenlin.common.utils.ActivityUtils;
+import com.liuzhenlin.common.utils.Executors;
+import com.liuzhenlin.common.utils.FileUtils;
+import com.liuzhenlin.common.utils.IOUtils;
+import com.liuzhenlin.common.utils.NotificationChannelManager;
+import com.liuzhenlin.common.utils.Singleton;
+import com.liuzhenlin.common.utils.TextViewUtils;
 import com.liuzhenlin.videos.App;
 import com.liuzhenlin.videos.BuildConfig;
 import com.liuzhenlin.videos.Consts;
@@ -273,7 +279,7 @@ public final class AppUpdateChecker {
                 // 当点确定按钮时从服务器上下载新的apk，然后安装
                 case R.id.btn_confirm:
                     dialog.cancel();
-                    if (FileUtils2.isExternalStorageMounted()) {
+                    if (FileUtils.isExternalStorageMounted()) {
                         mServiceIntent = new Intent(mContext, UpdateAppService.class)
                                 .putExtra(EXTRA_APP_NAME, mAppName)
                                 .putExtra(EXTRA_VERSION_NAME, mVersionName)
@@ -493,7 +499,7 @@ public final class AppUpdateChecker {
                             final String sha1 = strings[INDEX_APP_SHA1];
                             // 如果应用已经下载过了，则直接弹出安装提示通知
                             if (mApk.length() == mApkLength
-                                    && ObjectsCompat.equals(FileUtils2.getFileSha1(mApk), sha1)) {
+                                    && ObjectsCompat.equals(FileUtils.getFileSha1(mApk), sha1)) {
                                 getHandler().post(() -> {
                                     if (!isCancelled()) {
                                         stopServiceAndShowInstallAppPrompt();
@@ -506,7 +512,7 @@ public final class AppUpdateChecker {
                                 mApk.delete();
                             }
                         }
-                        if (FileUtils2.hasEnoughStorageOnDisk(mApkLength)) {
+                        if (FileUtils.hasEnoughStorageOnDisk(mApkLength)) {
                             getHandler().post(() -> {
                                 if (!isCancelled()) {
                                     final int blockSize = mApkLength / COUNT_DOWNLOAD_APP_TASK;
@@ -723,8 +729,8 @@ public final class AppUpdateChecker {
                                     (float) progress / (float) mApkLength * 100f));
                     nv.setTextViewText(R.id.text_charsequenceProgress,
                             mContext.getString(R.string.charsequenceProgress,
-                                    FileUtils2.formatFileSize(progress),
-                                    FileUtils2.formatFileSize(mApkLength)));
+                                    FileUtils.formatFileSize(progress),
+                                    FileUtils.formatFileSize(mApkLength)));
 
                     Notification n;
                     synchronized (mNotificationBuilder) {

@@ -14,12 +14,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.util.Synthetic;
+import com.liuzhenlin.common.utils.ShareUtils;
 import com.liuzhenlin.texturevideoview.IVideoPlayer;
 import com.liuzhenlin.texturevideoview.R;
 import com.liuzhenlin.texturevideoview.SystemVideoPlayer;
 import com.liuzhenlin.texturevideoview.TextureVideoView;
 import com.liuzhenlin.texturevideoview.VideoPlayer;
-import com.liuzhenlin.texturevideoview.utils.ShareUtils;
 
 import java.io.File;
 

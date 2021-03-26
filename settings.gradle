@@ -1,4 +1,5 @@
 include ':app',
+        ':common',
         ':circular-checkbox',
         ':floating-menu',
         ':gallery-viewer',

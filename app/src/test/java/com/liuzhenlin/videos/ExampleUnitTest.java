@@ -1,6 +1,6 @@
 package com.liuzhenlin.videos;
 
-import com.liuzhenlin.videos.utils.FileUtils2;
+import com.liuzhenlin.common.utils.FileUtils;
 
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class ExampleUnitTest {
         final String fileName = "app-release";
         final String extension = ".apk";
 
-        final int splitCount = FileUtils2.splitFile(directory, fileName, extension, 1000 * 1000);
+        final int splitCount = FileUtils.splitFile(directory, fileName, extension, 1000 * 1000);
 
         File[] files = new File[splitCount];
         for (int i = 0; i < splitCount; i++) {
@@ -34,9 +34,9 @@ public class ExampleUnitTest {
 
         File dstFile = new File(directory, fileName + extension);
 
-        FileUtils2.mergeFiles(files, dstFile, false);
+        FileUtils.mergeFiles(files, dstFile, false);
 
         System.out.println(dstFile.length());
-        System.out.println(FileUtils2.getFileSha1(dstFile));
+        System.out.println(FileUtils.getFileSha1(dstFile));
     }
 }

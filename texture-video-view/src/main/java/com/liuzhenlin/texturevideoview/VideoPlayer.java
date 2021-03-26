@@ -26,12 +26,13 @@ import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.material.snackbar.Snackbar;
+import com.liuzhenlin.common.receiver.HeadsetEventsReceiver;
+import com.liuzhenlin.common.receiver.MediaButtonEventHandler;
+import com.liuzhenlin.common.receiver.MediaButtonEventReceiver;
+import com.liuzhenlin.common.utils.FileUtils;
+import com.liuzhenlin.common.utils.TimeUtil;
+import com.liuzhenlin.common.utils.UiUtils;
 import com.liuzhenlin.texturevideoview.bean.TrackInfo;
-import com.liuzhenlin.texturevideoview.receiver.HeadsetEventsReceiver;
-import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventHandler;
-import com.liuzhenlin.texturevideoview.receiver.MediaButtonEventReceiver;
-import com.liuzhenlin.texturevideoview.utils.FileUtils;
-import com.liuzhenlin.texturevideoview.utils.TimeUtil;
 import com.liuzhenlin.texturevideoview.utils.Utils;
 
 import java.io.File;
@@ -194,7 +195,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
                         + Utils.playbackStateIntToString(oldState) + " -> "
                         + Utils.playbackStateIntToString(newState);
                 if (mVideoView != null) {
-                    Utils.showUserCancelableSnackbar(mVideoView, text, Snackbar.LENGTH_LONG);
+                    UiUtils.showUserCancelableSnackbar(mVideoView, text, Snackbar.LENGTH_LONG);
                 } else {
                     Toast.makeText(context, text, Toast.LENGTH_LONG).show();
                 }

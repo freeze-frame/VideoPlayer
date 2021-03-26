@@ -8,11 +8,11 @@ package com.liuzhenlin.videos.model
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.AsyncTask
+import com.liuzhenlin.common.utils.Executors
 import com.liuzhenlin.videos.bean.Video
 import com.liuzhenlin.videos.bean.VideoDirectory
 import com.liuzhenlin.videos.dao.VideoListItemDao
 import com.liuzhenlin.videos.reordered
-import com.liuzhenlin.videos.utils.Executors
 import java.util.*
 
 /**

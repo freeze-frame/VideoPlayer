@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="silentNotificationChannelId" translatable="false">%s__silent_notification_channel</string>
+    <string name="downloadNotificationChannelId" translatable="false">%s__download_notification_channel</string>
+    <string name="msgNotificationChannelId" translatable="false">%s__msg_notification_channel</string>
+    <string name="playbackControlNotificationChannelId" translatable="false">
+        %s__playback_control_notification_channel</string>
+
+    <string name="silentNotificationChannelName">Silent</string>
+    <string name="downloadNotificationChannelName">Download</string>
+    <string name="msgNotificationChannelName">Message</string>
+    <string name="playbackControlNotificationChannelName">Playback Control</string>
+
+    <string name="share">Share</string>
+    <string name="undo">Undo</string>
+</resources>

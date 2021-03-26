@@ -19,9 +19,12 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import com.liuzhenlin.common.utils.URLUtils
+import com.liuzhenlin.common.utils.UiUtils
+import com.liuzhenlin.common.utils.Utils
+import com.liuzhenlin.common.view.SwipeRefreshLayout
 import com.liuzhenlin.floatingmenu.FloatingMenu
 import com.liuzhenlin.slidingdrawerlayout.SlidingDrawerLayout
-import com.liuzhenlin.texturevideoview.utils.URLUtils
 import com.liuzhenlin.videos.COLOR_SELECTOR
 import com.liuzhenlin.videos.R
 import com.liuzhenlin.videos.bean.TV
@@ -30,9 +33,6 @@ import com.liuzhenlin.videos.contextThemedFirst
 import com.liuzhenlin.videos.get
 import com.liuzhenlin.videos.model.OnLoadListener
 import com.liuzhenlin.videos.model.OnlineVideoListModel
-import com.liuzhenlin.videos.utils.UiUtils
-import com.liuzhenlin.videos.utils.Utils
-import com.liuzhenlin.videos.view.swiperefresh.SwipeRefreshLayout
 import java.net.SocketTimeoutException
 import java.util.*
 
@@ -120,8 +120,8 @@ class OnlineVideosFragment : Fragment(), View.OnClickListener,
         mTvList.onItemLongClickListener = mTvListAdapter
         mTvList.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                mDownX = com.liuzhenlin.texturevideoview.utils.Utils.roundFloat(event.rawX)
-                mDownY = com.liuzhenlin.texturevideoview.utils.Utils.roundFloat(event.rawY)
+                mDownX = Utils.roundFloat(event.rawX)
+                mDownY = Utils.roundFloat(event.rawY)
             }
             false
         }

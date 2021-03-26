@@ -39,7 +39,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.liuzhenlin.texturevideoview.utils.Singleton;
+import com.liuzhenlin.common.utils.ActivityUtils;
+import com.liuzhenlin.common.utils.Executors;
+import com.liuzhenlin.common.utils.FileUtils;
+import com.liuzhenlin.common.utils.IOUtils;
+import com.liuzhenlin.common.utils.NotificationChannelManager;
+import com.liuzhenlin.common.utils.Singleton;
+import com.liuzhenlin.common.utils.TextViewUtils;
 import com.liuzhenlin.videos.App;
 import com.liuzhenlin.videos.BuildConfig;
 import com.liuzhenlin.videos.Consts;
@@ -287,8 +293,8 @@ public final class MergeAppUpdateChecker {
                 // 当点确定按钮时从服务器上下载新的apk，然后安装
                 case R.id.btn_confirm:
                     dialog.cancel();
-                    if (FileUtils2.isExternalStorageMounted()) {
-                        if (FileUtils2.hasEnoughStorageOnDisk(mAppLength)) {
+                    if (FileUtils.isExternalStorageMounted()) {
+                        if (FileUtils.hasEnoughStorageOnDisk(mAppLength)) {
                             mServiceIntent = new Intent(mContext, UpdateAppService.class)
                                     .putExtra(EXTRA_APP_NAME, mAppName)
                                     .putExtra(EXTRA_VERSION_NAME, mVersionName)
@@ -449,7 +455,7 @@ public final class MergeAppUpdateChecker {
                     final String sha1 = intent.getStringExtra(EXTRA_APP_SHA1);
                     // 如果应用已经下载过了，则直接弹出安装提示通知
                     if (mApk.length() == mApkLength
-                            && ObjectsCompat.equals(FileUtils2.getFileSha1(mApk), sha1)) {
+                            && ObjectsCompat.equals(FileUtils.getFileSha1(mApk), sha1)) {
                         if (!mCanceled.get()) {
                             stopServiceAndShowInstallAppPrompt();
                         }
@@ -696,8 +702,8 @@ public final class MergeAppUpdateChecker {
                                 (float) progress / (float) mApkLength * 100f));
                 nv.setTextViewText(R.id.text_charsequenceProgress,
                         mContext.getString(R.string.charsequenceProgress,
-                                FileUtils2.formatFileSize(progress),
-                                FileUtils2.formatFileSize(mApkLength)));
+                                FileUtils.formatFileSize(progress),
+                                FileUtils.formatFileSize(mApkLength)));
 
                 Notification n;
                 synchronized (mNotificationBuilder) {
@@ -720,7 +726,7 @@ public final class MergeAppUpdateChecker {
                 enqueueNextTask();
                 if (mDownloadAppPartTasks.isEmpty() && !mCanceled.get()) {
                     Executors.THREAD_POOL_EXECUTOR.execute(() -> {
-                        FileUtils2.mergeFiles(mApkParts, mApk, true);
+                        FileUtils.mergeFiles(mApkParts, mApk, true);
                         if (!mCanceled.get()) {
                             stopServiceAndShowInstallAppPrompt();
                         }

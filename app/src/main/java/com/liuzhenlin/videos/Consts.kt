@@ -42,12 +42,6 @@ internal const val RESULT_CODE_GET_PICTURE = 5
 
 internal const val TOLERANCE_VIDEO_DURATION = 100 // ms
 
-const val NO_ID = -1L
-
-const val EMPTY_STRING = ""
-@JvmField
-val EMPTY_STRING_ARRAY = arrayOf<String>()
-
 private val _COLOR_SELECTOR by lazy(LazyThreadSafetyMode.NONE) { ContextCompat.getColor(App.getInstanceUnsafe()!!, R.color.selectorColor) }
 @JvmField
 internal val COLOR_SELECTOR = _COLOR_SELECTOR

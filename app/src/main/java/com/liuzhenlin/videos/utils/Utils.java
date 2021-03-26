@@ -5,16 +5,12 @@
 
 package com.liuzhenlin.videos.utils;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
 import com.liuzhenlin.videos.Files;
@@ -46,51 +42,5 @@ public class Utils {
             it.setData(Uri.fromFile(apk));
         }
         return it;
-    }
-
-    /**
-     * Copies the given plain <strong>text</strong> onto system clipboard.
-     *
-     * @param context The {@link Context} to get the {@link Context#CLIPBOARD_SERVICE} Service
-     * @param label   User-visible label for the copied text
-     * @param text    The text to copy from
-     */
-    public static void copyPlainTextToClipboard(@NonNull Context context,
-                                                @Nullable String label, @Nullable String text) {
-        ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        // 创建纯文本型ClipData
-        ClipData cd = ClipData.newPlainText(label, text);
-        // 将ClipData内容放到系统剪贴板里
-        cm.setPrimaryClip(cd);
-    }
-
-    /**
-     * Waits for the given action to complete on the thread the handler targets to.
-     */
-    public static void runOnHandlerSync(@NonNull Handler handler, @NonNull Runnable action) {
-        if (Thread.currentThread() != handler.getLooper().getThread()) {
-            final Object lock = new Object();
-            final boolean[] runOver = {false};
-
-            handler.post(() -> {
-                action.run();
-                synchronized (lock) {
-                    runOver[0] = true;
-                    lock.notify();
-                }
-            });
-
-            synchronized (lock) {
-                while (!runOver[0]) {
-                    try {
-                        lock.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        } else {
-            action.run();
-        }
     }
 }

@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.liuzhenlin.texturevideoview.utils.Utils;
+import com.liuzhenlin.common.utils.Utils;
 import com.liuzhenlin.videos.App;
 import com.liuzhenlin.videos.Consts;
 import com.liuzhenlin.videos.R;

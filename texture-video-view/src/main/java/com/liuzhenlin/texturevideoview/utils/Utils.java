@@ -7,32 +7,16 @@ package com.liuzhenlin.texturevideoview.utils;
 
 import android.media.MediaPlayer;
 import android.os.Build;
-import android.os.SystemClock;
 import android.text.TextUtils;
-import android.transition.Transition;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.annotation.StringRes;
-import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.material.snackbar.Snackbar;
 import com.liuzhenlin.texturevideoview.IVideoPlayer;
-import com.liuzhenlin.texturevideoview.R;
 import com.liuzhenlin.texturevideoview.bean.TrackInfo;
-
-import java.math.RoundingMode;
-import java.text.NumberFormat;
 
 import tv.danmaku.ijk.media.player.IjkMediaMeta;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
@@ -43,74 +27,6 @@ import tv.danmaku.ijk.media.player.misc.IjkTrackInfo;
  */
 public class Utils {
     private Utils() {
-    }
-
-    /** Lightweight choice to {@link Math#round(float)} */
-    public static int roundFloat(float value) {
-        return (int) (value > 0 ? value + 0.5f : value - 0.5f);
-    }
-
-    /** Lightweight choice to {@link Math#round(double)} */
-    public static long roundDouble(double value) {
-        return (long) (value > 0 ? value + 0.5 : value - 0.5);
-    }
-
-    /**
-     * Judges if two floating-point numbers (float) are equal, ignoring very small precision errors.
-     */
-    public static boolean areEqualIgnorePrecisionError(float value1, float value2) {
-        return Math.abs(value1 - value2) < 0.0001f;
-    }
-
-    /**
-     * Judges if two floating-point numbers (double) are equal, ignoring very small precision errors.
-     */
-    public static boolean areEqualIgnorePrecisionError(double value1, double value2) {
-        return Math.abs(value1 - value2) < 0.0001d;
-    }
-
-    /**
-     * Returns the string representation of a floating point number rounded up to 2 fraction digits.
-     */
-    public static String roundDecimalUpTo2FractionDigitsString(double value) {
-        return roundDecimalToString(value, 2);
-    }
-
-    /**
-     * See {@link #roundDecimalToString(double, int, int, boolean)
-     *             roundDecimalToString(value, 0, maxFractionDigits, false)}
-     */
-    public static String roundDecimalToString(double value, int maxFractionDigits) {
-        return roundDecimalToString(value, 0, maxFractionDigits);
-    }
-
-    /**
-     * See {@link #roundDecimalToString(double, int, int, boolean)
-     *             roundDecimalToString(value, minFractionDigits, maxFractionDigits, false)}
-     */
-    public static String roundDecimalToString(double value, int minFractionDigits, int maxFractionDigits) {
-        return roundDecimalToString(value, minFractionDigits, maxFractionDigits, false);
-    }
-
-    /**
-     * Rounds a floating point number up to {@code maxFractionDigits} fraction digits and at least
-     * {@code minFractionDigits} digits, then returns it as a string.
-     *
-     * @param value             the decimal to be rounded half up
-     * @param minFractionDigits see the parameter of {@link NumberFormat#setMinimumFractionDigits(int)}
-     * @param maxFractionDigits see the parameter of {@link NumberFormat#setMaximumFractionDigits(int)}
-     * @param groupingUsed      see the parameter of {@link NumberFormat#setGroupingUsed(boolean)}
-     * @return the equivalent string representation of the rounded decimal.
-     */
-    public static String roundDecimalToString(double value,
-                                              int minFractionDigits, int maxFractionDigits,
-                                              boolean groupingUsed) {
-        NumberFormat nf = NumberFormat.getNumberInstance();
-        nf.setGroupingUsed(groupingUsed);
-        nf.setMinimumFractionDigits(minFractionDigits);
-        nf.setMaximumFractionDigits(maxFractionDigits);
-        nf.setRoundingMode(RoundingMode.HALF_UP);
-        return nf.format(value);
     }
 
     /**
@@ -338,130 +254,5 @@ public class Utils {
     @SuppressWarnings("JavadocReference")
     public static boolean canUseVlcPlayer() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
-    }
-
-    /**
-     * Creates a new MotionEvent with {@link MotionEvent#ACTION_CANCEL} action being performed,
-     * filling in a subset of the basic motion values. Those not specified here are:
-     * <ul>
-     * <li>down time (current milliseconds since boot)</li>
-     * <li>event time (current milliseconds since boot)</li>
-     * <li>x and y coordinates of this event (always 0)</li>
-     * <li>
-     * The state of any meta/modifier keys that were in effect when the event was generated (always 0)
-     * </li>
-     * </ul>
-     */
-    @NonNull
-    public static MotionEvent obtainCancelEvent() {
-        final long now = SystemClock.uptimeMillis();
-        return MotionEvent.obtain(now, now, MotionEvent.ACTION_CANCEL, 0.0f, 0.0f, 0);
-    }
-
-    /**
-     * Walks up the hierarchy for the given `view` to determine if it is inside a scrolling container.
-     */
-    public static boolean isInScrollingContainer(@NonNull View view) {
-        ViewParent p = view.getParent();
-        while (p instanceof ViewGroup) {
-            if (((ViewGroup) p).shouldDelayChildPressedState()) {
-                return true;
-            }
-            p = p.getParent();
-        }
-        return false;
-    }
-
-    /**
-     * Indicates whether or not the view's layout direction is right-to-left.
-     * This is resolved from layout attribute and/or the inherited value from its parent
-     *
-     * @return true if the layout direction is right-to-left
-     */
-    public static boolean isLayoutRtl(@NonNull View view) {
-        return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL;
-    }
-
-    /**
-     * Converts script specific gravity to absolute horizontal values,
-     * leaving the vertical values unchanged.
-     * <p>
-     * if horizontal direction is LTR, then START will set LEFT and END will set RIGHT.
-     * if horizontal direction is RTL, then START will set RIGHT and END will set LEFT.
-     *
-     * @param parent  The parent view where to get the layout direction.
-     * @param gravity The gravity to convert to absolute values.
-     * @return gravity converted to absolute horizontal & original vertical values.
-     */
-    public static int getAbsoluteGravity(@NonNull View parent, int gravity) {
-        final int layoutDirection = ViewCompat.getLayoutDirection(parent);
-        return GravityCompat.getAbsoluteGravity(gravity, layoutDirection);
-    }
-
-    /**
-     * Converts script specific gravity to absolute horizontal values.
-     * <p>
-     * if horizontal direction is LTR, then START will set LEFT and END will set RIGHT.
-     * if horizontal direction is RTL, then START will set RIGHT and END will set LEFT.
-     *
-     * @param parent  The parent view where to get the layout direction.
-     * @param gravity The gravity to convert to absolute horizontal values.
-     * @return gravity converted to absolute horizontal values.
-     */
-    public static int getAbsoluteHorizontalGravity(@NonNull View parent, int gravity) {
-        return getAbsoluteGravity(parent, gravity) & Gravity.HORIZONTAL_GRAVITY_MASK;
-    }
-
-    /**
-     * Includes a set of children of the given `parent` ViewGroup (not necessary to be the root of
-     * the transition) for the given Transition object to skip the others while it is running on a
-     * view hierarchy.
-     */
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
-    public static void includeChildrenForTransition(
-            @NonNull Transition transition, @NonNull ViewGroup parent, @Nullable View... children) {
-        outsider:
-        for (int i = 0, childCount = parent.getChildCount(); i < childCount; i++) {
-            View child = parent.getChildAt(i);
-            if (children != null) {
-                for (View child2 : children) {
-                    if (child2 == child) continue outsider;
-                }
-            }
-            transition.excludeTarget(child, true);
-        }
-    }
-
-    public static void showUserCancelableSnackbar(
-            @NonNull View view, @StringRes int resId, @Snackbar.Duration int duration) {
-        showUserCancelableSnackbar(view, resId, false, duration);
-    }
-
-    public static void showUserCancelableSnackbar(
-            @NonNull View view,
-            @StringRes int resId,
-            boolean shownTextSelectable,
-            @Snackbar.Duration int duration) {
-        showUserCancelableSnackbar(view, view.getResources().getText(resId), shownTextSelectable, duration);
-    }
-
-    public static void showUserCancelableSnackbar(
-            @NonNull View view, @NonNull CharSequence text, @Snackbar.Duration int duration) {
-        showUserCancelableSnackbar(view, text, false, duration);
-    }
-
-    public static void showUserCancelableSnackbar(
-            @NonNull View view,
-            @NonNull CharSequence text,
-            boolean shownTextSelectable,
-            @Snackbar.Duration int duration) {
-        Snackbar snackbar = Snackbar.make(view, text, duration);
-
-        TextView snackbarText = snackbar.getView().findViewById(R.id.snackbar_text);
-        snackbarText.setMaxLines(Integer.MAX_VALUE);
-        snackbarText.setTextIsSelectable(shownTextSelectable);
-
-        snackbar.setAction(R.string.undo, v -> snackbar.dismiss());
-        snackbar.show();
     }
 }

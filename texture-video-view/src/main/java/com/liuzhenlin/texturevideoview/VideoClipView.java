@@ -36,8 +36,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.util.Synthetic;
 import com.google.android.exoplayer2.util.Util;
-import com.liuzhenlin.texturevideoview.utils.BitmapUtils;
-import com.liuzhenlin.texturevideoview.utils.Utils;
+import com.liuzhenlin.common.utils.BitmapUtils;
+import com.liuzhenlin.common.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
