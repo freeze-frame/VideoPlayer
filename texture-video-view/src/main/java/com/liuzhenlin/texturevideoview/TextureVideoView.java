@@ -1200,8 +1200,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
      */
     public void setCanSkipToPrevious(boolean able) {
         if (able != canSkipToPrevious()) {
-            mPrivateFlags = mPrivateFlags & ~PFLAG_CAN_SKIP_TO_PREVIOUS
-                    | (able ? PFLAG_CAN_SKIP_TO_PREVIOUS : 0);
+            mPrivateFlags ^= PFLAG_CAN_SKIP_TO_PREVIOUS;
 
             if (mChooseEpisodeButton != null) {
                 mChooseEpisodeButton.setVisibility((!able && !canSkipToNext()) ? GONE : VISIBLE);
@@ -1226,8 +1225,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
      */
     public void setCanSkipToNext(boolean able) {
         if (able != canSkipToNext()) {
-            mPrivateFlags = mPrivateFlags & ~PFLAG_CAN_SKIP_TO_NEXT
-                    | (able ? PFLAG_CAN_SKIP_TO_NEXT : 0);
+            mPrivateFlags ^= PFLAG_CAN_SKIP_TO_NEXT;
 
             if (mSkipNextButton != null) {
                 mSkipNextButton.setVisibility(able ? VISIBLE : GONE);
@@ -1314,8 +1312,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
      */
     public void setClipViewBounds(boolean clip) {
         if (clip != isClipViewBounds()) {
-            mPrivateFlags = mPrivateFlags & ~PFLAG_CLIP_VIEW_BOUNDS
-                    | (clip ? PFLAG_CLIP_VIEW_BOUNDS : 0);
+            mPrivateFlags ^= PFLAG_CLIP_VIEW_BOUNDS;
             if (clip) {
                 ViewCompat.setBackground(this, null);
             } else {
@@ -1356,8 +1353,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         }
 
         if (fullscreen != isInFullscreenMode()) {
-            mPrivateFlags = mPrivateFlags & ~PFLAG_IN_FULLSCREEN_MODE
-                    | (fullscreen ? PFLAG_IN_FULLSCREEN_MODE : 0);
+            mPrivateFlags ^= PFLAG_IN_FULLSCREEN_MODE;
             if (fullscreen) {
                 mTitleText.setText(mTitle);
                 if (isControlsShowing()) {
@@ -1420,8 +1416,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
         if (stretched == isVideoStretchedToFitFullscreenLayout()) {
             return;
         }
-        mPrivateFlags = mPrivateFlags & ~PFLAG_VIDEO_STRETCHED_TO_FIT_FULLSCREEN_LAYOUT
-                | (stretched ? PFLAG_VIDEO_STRETCHED_TO_FIT_FULLSCREEN_LAYOUT : 0);
+        mPrivateFlags ^= PFLAG_VIDEO_STRETCHED_TO_FIT_FULLSCREEN_LAYOUT;
         if (checkSwitch && mMoreView != null) {
             Checkable toggle = mMoreView.findViewById(R.id.btn_stretchVideo);
             if (stretched != toggle.isChecked()) {
@@ -1595,12 +1590,11 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
     public void onVisibilityAggregated(boolean isVisible) {
         super.onVisibilityAggregated(isVisible);
 
-        // Update our internal visibility tracking so we can detect changes
         final boolean oldVisible = (mPrivateFlags & PFLAG_AGGREGATED_VISIBLE) != 0;
-        mPrivateFlags = (mPrivateFlags & ~PFLAG_AGGREGATED_VISIBLE)
-                | (isVisible ? PFLAG_AGGREGATED_VISIBLE : 0);
-
         if (isVisible != oldVisible) {
+            // Update our internal visibility tracking so we can detect changes
+            mPrivateFlags ^= PFLAG_AGGREGATED_VISIBLE;
+
             final Surface usedSurface = mUsedSurface;
             // Uses the previously created Surface when this view becomes visible again
             if (isVisible && usedSurface == null) {

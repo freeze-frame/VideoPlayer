@@ -499,8 +499,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
     @Override
     public void setAudioAllowedToPlayInBackground(boolean allowed) {
         if (allowed != isAudioAllowedToPlayInBackground()) {
-            mInternalFlags = mInternalFlags & ~$FLAG_AUDIO_ALLOWED_TO_PLAY_IN_BACKGROUND
-                    | (allowed ? $FLAG_AUDIO_ALLOWED_TO_PLAY_IN_BACKGROUND : 0);
+            mInternalFlags ^= $FLAG_AUDIO_ALLOWED_TO_PLAY_IN_BACKGROUND;
             if (mVideoView != null) {
                 mVideoView.onAudioAllowedToPlayInBackgroundChanged(allowed);
             }
@@ -523,8 +522,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
     @Override
     public void setSingleVideoLoopPlayback(boolean looping) {
         if (looping != isSingleVideoLoopPlayback()) {
-            mInternalFlags = mInternalFlags & ~$FLAG_SINGLE_VIDEO_LOOP_PLAYBACK
-                    | (looping ? $FLAG_SINGLE_VIDEO_LOOP_PLAYBACK : 0);
+            mInternalFlags ^= $FLAG_SINGLE_VIDEO_LOOP_PLAYBACK;
             if (mVideoView != null) {
                 mVideoView.onSingleVideoLoopPlaybackModeChanged(looping);
             }
@@ -726,9 +724,7 @@ public abstract class VideoPlayer implements IVideoPlayer {
     protected void onVideoBufferingStateChanged(boolean buffering) {
         //noinspection DoubleNegation
         if (((mInternalFlags & $FLAG_VIDEO_IS_BUFFERING) != 0) != buffering) {
-            mInternalFlags = buffering
-                    ? mInternalFlags | $FLAG_VIDEO_IS_BUFFERING
-                    : mInternalFlags & ~$FLAG_VIDEO_IS_BUFFERING;
+            mInternalFlags ^= $FLAG_VIDEO_IS_BUFFERING;
 
             if (mVideoView != null) {
                 mVideoView.onVideoBufferingStateChanged(buffering);

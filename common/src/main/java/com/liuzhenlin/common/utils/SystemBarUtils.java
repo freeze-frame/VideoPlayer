@@ -293,13 +293,9 @@ public class SystemBarUtils {
             darkFlag.setAccessible(true);
             final int flag = darkFlag.getInt(null);
 
-            final int flags;
-            if (light) {
-                flags = origin | flag;
-            } else {
-                flags = origin & ~flag;
-            }
-            if (flags != origin) {
+            //noinspection DoubleNegation
+            if (light != ((origin & flag) != 0)) {
+                int flags = origin ^ flag;
                 meizuFlags.setInt(lp, flags);
                 window.setAttributes(lp);
             }

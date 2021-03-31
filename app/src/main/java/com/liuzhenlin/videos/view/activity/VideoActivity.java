@@ -571,10 +571,9 @@ public class VideoActivity extends SwipeBackActivity implements IVideoView {
                     notchSupportOnEMUI, notchSupportOnMIUI) {
                 @Override
                 public void onNotchChange(boolean selfChange, boolean hidden) {
-                    final int old = mPrivateFlags;
-                    mPrivateFlags = (mPrivateFlags & ~PFLAG_SCREEN_NOTCH_HIDDEN) |
-                            (hidden ? PFLAG_SCREEN_NOTCH_HIDDEN : 0);
-                    if (mPrivateFlags != old) {
+                    //noinspection DoubleNegation
+                    if (hidden != ((mPrivateFlags & PFLAG_SCREEN_NOTCH_HIDDEN) != 0)) {
+                        mPrivateFlags ^= PFLAG_SCREEN_NOTCH_HIDDEN;
                         resizeVideoView();
                     }
                 }
@@ -585,8 +584,10 @@ public class VideoActivity extends SwipeBackActivity implements IVideoView {
         mRotationObserver = new RotationObserver(mHandler, this) {
             @Override
             public void onRotationChange(boolean selfChange, boolean enabled) {
-                mPrivateFlags = (mPrivateFlags & ~PFLAG_DEVICE_SCREEN_ROTATION_ENABLED) |
-                        (enabled ? PFLAG_DEVICE_SCREEN_ROTATION_ENABLED : 0);
+                //noinspection DoubleNegation
+                if (enabled != ((mPrivateFlags & PFLAG_DEVICE_SCREEN_ROTATION_ENABLED) != 0)) {
+                    mPrivateFlags ^= PFLAG_DEVICE_SCREEN_ROTATION_ENABLED;
+                }
             }
         };
         mOnOrientationChangeListener = new OnOrientationChangeListener(this, mDeviceOrientation) {
