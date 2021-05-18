@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import com.liuzhenlin.common.Consts;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Various different executors used in Videos
@@ -35,13 +36,13 @@ public class Executors {
     /**
      * An {@link Executor} to be used with async task with no limit on the queue size.
      */
-    public static final Executor THREAD_POOL_EXECUTOR = ParallelThreadExecutor.getSingleton();
+    public static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = ParallelThreadExecutor.getSingleton();
 
     /**
      * An {@link Executor} that executes tasks one at a time in serial order.
      * This serialization is global to a particular process.
      */
-    public static final Executor SERIAL_EXECUTOR = new SerialExecutor();
+    public static final SerialExecutor SERIAL_EXECUTOR = new SerialExecutor();
 
     /**
      * Returns the executor for running tasks on the main thread.
