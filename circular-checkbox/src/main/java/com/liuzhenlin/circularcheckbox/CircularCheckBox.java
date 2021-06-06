@@ -52,13 +52,13 @@ public class CircularCheckBox extends View implements Checkable {
 
     private final Paint mRingPaint;
     //private final RectF mRingBounds = new RectF();
-    /*synthetic*/ float mDrawingRingOuterCircleScale = 1.0f;
-    /*synthetic*/ float mDrawingRingInnerCircleScale;
-    /*synthetic*/ float mStrokeInnerCircleScale; // Ring inner circle scale when this view is unchecked
+    private float mDrawingRingOuterCircleScale = 1.0f;
+    private float mDrawingRingInnerCircleScale;
+    private float mStrokeInnerCircleScale; // Ring inner circle scale when this view is unchecked
     private float mStrokeWidth;  // Ring width when this view is unchecked
-    /*synthetic*/ int mCheckedRingColor;
-    /*synthetic*/ int mStrokeColor; // Ring color when this check box is unchecked
-    /*synthetic*/ int mRingColor;
+    private int mCheckedRingColor;
+    private int mStrokeColor; // Ring color when this check box is unchecked
+    private int mRingColor;
 
     private final Paint mUncheckedSolidPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -69,7 +69,7 @@ public class CircularCheckBox extends View implements Checkable {
     private final Path mTickPath = new Path();
     private float mTickLeftPartLength, mTickRightPartLength, mTickLength;
     private float mTickStrokeWidth;
-    /*synthetic*/ boolean mNeedDrawTick;
+    private boolean mNeedDrawTick;
 
     private ValueAnimator mAnimator;
     protected static final Interpolator sLinearInterpolator = new LinearInterpolator();
@@ -78,21 +78,13 @@ public class CircularCheckBox extends View implements Checkable {
     private int mDuration; // ms
     private static final int DEF_DURATION = 256; // ms
 
-    private final Runnable mDrawTickRunnable = new Runnable() {
-        @Override
-        public void run() {
-            mNeedDrawTick = true;
-            invalidate();
-        }
+    private final Runnable mDrawTickRunnable = () -> {
+        mNeedDrawTick = true;
+        invalidate();
     };
-    private final Runnable mRedrawRunnable = new Runnable() {
-        @Override
-        public void run() {
-            invalidate();
-        }
-    };
+    private final Runnable mRedrawRunnable = this::invalidate;
 
-    /*synthetic*/ Runnable mPostedSetCheckedRunnable;
+    private Runnable mPostedSetCheckedRunnable;
 
     private OnCheckedChangeListener mListener;
 
@@ -350,12 +342,9 @@ public class CircularCheckBox extends View implements Checkable {
                         startCheckedAnimation();
 
                     } else if (mPostedSetCheckedRunnable == null) {
-                        mPostedSetCheckedRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                mPostedSetCheckedRunnable = null;
-                                startCheckedAnimation();
-                            }
+                        mPostedSetCheckedRunnable = () -> {
+                            mPostedSetCheckedRunnable = null;
+                            startCheckedAnimation();
                         };
                         post(mPostedSetCheckedRunnable);
                     }
@@ -539,7 +528,7 @@ public class CircularCheckBox extends View implements Checkable {
         }
     }
 
-    /*synthetic*/ void startCheckedAnimation() {
+    private void startCheckedAnimation() {
         cancelRunningAnimationAndRemoveDrawTickPendingActions();
 
         initAnimatorIfNeeded();
@@ -587,28 +576,25 @@ public class CircularCheckBox extends View implements Checkable {
             }
         };
         mAnimator.addListener(listener);
-        mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                if (defValues[0] != mStrokeInnerCircleScale) {
-                    defValues[0] = mStrokeInnerCircleScale;
-                    // Update values holder
-                    listener.onAnimationStart(animation);
-                }
-
-                mDrawingRingOuterCircleScale = (float) animation.getAnimatedValue(
-                        PROPERTY_DRAWING_RING_OUTER_CIRCLE_SCALE);
-                mDrawingRingInnerCircleScale = (float) animation.getAnimatedValue(
-                        PROPERTY_DRAWING_RING_INNER_CIRCLE_SCALE);
-                if (mIsChecked) {
-                    mRingColor = Utils.getGradientColor(mStrokeColor, mCheckedRingColor,
-                            1.0f - mDrawingRingInnerCircleScale / defValues[0]);
-                } else {
-                    mRingColor = Utils.getGradientColor(mCheckedRingColor, mStrokeColor,
-                            mDrawingRingInnerCircleScale / defValues[0]);
-                }
-                invalidate();
+        mAnimator.addUpdateListener(animation -> {
+            if (defValues[0] != mStrokeInnerCircleScale) {
+                defValues[0] = mStrokeInnerCircleScale;
+                // Update values holder
+                listener.onAnimationStart(animation);
             }
+
+            mDrawingRingOuterCircleScale = (float) animation.getAnimatedValue(
+                    PROPERTY_DRAWING_RING_OUTER_CIRCLE_SCALE);
+            mDrawingRingInnerCircleScale = (float) animation.getAnimatedValue(
+                    PROPERTY_DRAWING_RING_INNER_CIRCLE_SCALE);
+            if (mIsChecked) {
+                mRingColor = Utils.getGradientColor(mStrokeColor, mCheckedRingColor,
+                        1.0f - mDrawingRingInnerCircleScale / defValues[0]);
+            } else {
+                mRingColor = Utils.getGradientColor(mCheckedRingColor, mStrokeColor,
+                        mDrawingRingInnerCircleScale / defValues[0]);
+            }
+            invalidate();
         });
     }
 

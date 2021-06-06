@@ -20,6 +20,7 @@ import com.google.android.exoplayer2.video.VideoDecoderOutputBuffer;
 // TODO(b/139174707): Delete this class once binaries in WVVp9OpusPlaybackTest are updated to depend
 // on VideoDecoderOutputBuffer. Also mark VideoDecoderOutputBuffer as final and remove proguard
 // config for VpxOutputBuffer.
+
 /**
  * Video output buffer, populated by {@link VpxDecoder}.
  *

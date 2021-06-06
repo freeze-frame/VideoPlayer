@@ -495,6 +495,7 @@ public final class MergeAppUpdateChecker {
             }
         }
 
+        @SuppressLint("UnspecifiedImmutableFlag")
         @Synthetic RemoteViews createNotificationView() {
             RemoteViews nv = new RemoteViews(mPkgName, R.layout.notification_download_app);
             nv.setOnClickPendingIntent(R.id.btn_cancel_danv,
@@ -574,6 +575,7 @@ public final class MergeAppUpdateChecker {
 
             String channelId = NotificationChannelManager.getMessageNotificationChannelId(mContext);
             String title = mContext.getString(R.string.newAppDownloaded);
+            @SuppressLint("UnspecifiedImmutableFlag")
             PendingIntent pi = PendingIntent.getActivity(mContext, 0, it, 0);
             mNotificationManager.notify(
                     ID_NOTIFICATION,

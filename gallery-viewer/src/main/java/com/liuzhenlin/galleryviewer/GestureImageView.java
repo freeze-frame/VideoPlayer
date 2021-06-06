@@ -173,15 +173,15 @@ public class GestureImageView extends AppCompatImageView {
     private static final String PROPERTY_IMAGE_TRANSLATIONS = "image_translations";
 
     /*synthetic*/ ValueAnimator mImageTransformer;
-    /*synthetic*/ PointF mFromScales, mToScales;
+    private PointF mFromScales, mToScales;
     private PointF mFromTranslations, mToTranslations;
-    /*synthetic*/ float mLastAnimatedTransX, mLastAnimatedTransY;
+    private float mLastAnimatedTransX, mLastAnimatedTransY;
 
     /**
      * The scaling pivot point (relative to current view) of the image
      * while {@link #mImageTransformer} is running to scale it.
      */
-    /*synthetic*/ PointF mImageScalingPivot;
+    private PointF mImageScalingPivot;
 
     public GestureImageView(Context context) {
         this(context, null);
@@ -290,7 +290,7 @@ public class GestureImageView extends AppCompatImageView {
 
         mFitWidthImageScale = (float) width / imgWidth;
         mFitCenterImageScale = Math.min(mFitWidthImageScale, (float) height / imgHeight);
-        mImageMinScale = mFitCenterImageScale * 1f / 5f;
+        mImageMinScale = mFitCenterImageScale / 5f;
         mImageMaxScale = mFitCenterImageScale * 5f;
         if (mFitWidthImageScale == mFitCenterImageScale) {
             mDoubleTapMagnifiedImageScale = mImageMaxScale / 2f;
@@ -870,25 +870,22 @@ public class GestureImageView extends AppCompatImageView {
                 PropertyValuesHolder.ofObject(PROPERTY_IMAGE_TRANSLATIONS,
                         new PointFEvaluator(), mFromTranslations, mToTranslations));
         mImageTransformer.setInterpolator(sDecelerateInterpolator);
-        mImageTransformer.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mImageMatrix.getValues(mImageMatrixValues);
-                final float scaleX = mImageMatrixValues[Matrix.MSCALE_X];
-                final float scaleY = mImageMatrixValues[Matrix.MSCALE_Y];
+        mImageTransformer.addUpdateListener(animation -> {
+            mImageMatrix.getValues(mImageMatrixValues);
+            final float scaleX = mImageMatrixValues[Matrix.MSCALE_X];
+            final float scaleY = mImageMatrixValues[Matrix.MSCALE_Y];
 
-                PointF scales = (PointF) animation.getAnimatedValue(PROPERTY_IMAGE_SCALES);
-                PointF translations = (PointF) animation.getAnimatedValue(PROPERTY_IMAGE_TRANSLATIONS);
-                mImageMatrix.postScale(scales.x / scaleX, scales.y / scaleY,
-                        mImageScalingPivot.x, mImageScalingPivot.y);
-                mImageMatrix.postTranslate(
-                        (translations.x - mLastAnimatedTransX) * (scales.x / mToScales.x),
-                        (translations.y - mLastAnimatedTransY) * (scales.y / mToScales.y));
-                setImageMatrix(mImageMatrix);
+            PointF scales = (PointF) animation.getAnimatedValue(PROPERTY_IMAGE_SCALES);
+            PointF translations = (PointF) animation.getAnimatedValue(PROPERTY_IMAGE_TRANSLATIONS);
+            mImageMatrix.postScale(scales.x / scaleX, scales.y / scaleY,
+                    mImageScalingPivot.x, mImageScalingPivot.y);
+            mImageMatrix.postTranslate(
+                    (translations.x - mLastAnimatedTransX) * (scales.x / mToScales.x),
+                    (translations.y - mLastAnimatedTransY) * (scales.y / mToScales.y));
+            setImageMatrix(mImageMatrix);
 
-                mLastAnimatedTransX = translations.x;
-                mLastAnimatedTransY = translations.y;
-            }
+            mLastAnimatedTransX = translations.x;
+            mLastAnimatedTransY = translations.y;
         });
     }
 

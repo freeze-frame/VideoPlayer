@@ -253,6 +253,7 @@ public class VideoActivity extends SwipeBackActivity implements IVideoView {
             //noinspection rawtypes
             TextureVideoView.PlayListAdapter adapter = mVideoView.getPlayListAdapter();
             if (needPlaylist && adapter != null) {
+                //noinspection NotifyDataSetChanged
                 adapter.notifyDataSetChanged();
             }
             //noinspection unchecked
@@ -994,6 +995,7 @@ public class VideoActivity extends SwipeBackActivity implements IVideoView {
         // This is the PendingIntent that is invoked when a user clicks on the action item.
         // You need to use distinct request codes for play, pause, fast forward, and fast rewind,
         // or the PendingIntent won't be properly updated.
+        @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent intent = PendingIntent.getBroadcast(
                 this,
                 requestCode,

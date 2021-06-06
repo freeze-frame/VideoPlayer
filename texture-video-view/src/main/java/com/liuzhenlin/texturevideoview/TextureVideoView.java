@@ -92,7 +92,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.util.Synthetic;
 import com.google.android.exoplayer2.source.MediaSourceFactory;
-import com.google.android.exoplayer2.text.CaptionStyleCompat;
 import com.google.android.exoplayer2.text.Cue;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.material.snackbar.Snackbar;
@@ -589,7 +588,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                 // within an outside touch event stream till the up event is reached, in which, instead,
                 // we will dismiss it manually.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    //noinspection JavaReflectionMemberAccess
+                    //noinspection JavaReflectionMemberAccess,PrivateApi
                     sPopupDecorViewField = PopupWindow.class.getDeclaredField("mDecorView");
                     sPopupDecorViewField.setAccessible(true);
                 } else {
@@ -604,7 +603,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
             }
 */
             try {
-                //noinspection JavaReflectionMemberAccess
+                //noinspection JavaReflectionMemberAccess,PrivateApi
                 sPopupOnDismissListenerField = PopupWindow.class.getDeclaredField("mOnDismissListener");
                 sPopupOnDismissListenerField.setAccessible(true);
             } catch (NoSuchFieldException e) {
@@ -2172,7 +2171,7 @@ public class TextureVideoView extends AbsTextureVideoView implements ViewHostEve
                                     final int length = text.length();
                                     final StringBuilder sb = new StringBuilder();
                                     for (int i = 0; i < length; i++) {
-                                        sb.append(text.substring(i, i + 1));
+                                        sb.append(text.charAt(i));
                                         if (i < length - 1) sb.append("\n");
                                     }
                                     shareButton.setText(sb);

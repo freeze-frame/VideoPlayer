@@ -604,6 +604,7 @@ public class SwipeBackLayout extends FrameLayout {
                             prefragment.setTransitionEnabled(false);
 
                         mFragment.setTransitionEnabled(false);
+                        //noinspection deprecation
                         ((Fragment) mFragment).requireFragmentManager().popBackStackImmediate();
                         mFragment.setTransitionEnabled(true);
 

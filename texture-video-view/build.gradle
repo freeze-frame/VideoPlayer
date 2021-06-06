@@ -21,12 +21,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    // Please add below compile options to the build.gradle file of your project module that
-    // depends on this library, too.
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
 }
 
 dependencies {
@@ -34,8 +28,8 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$rootProject.ext.appcompatVersion"
     api project(':common')
     api 'androidx.constraintlayout:constraintlayout:2.0.4'
-    api 'androidx.recyclerview:recyclerview:1.1.0'
-    api 'androidx.media:media:1.2.1'
+    api 'androidx.recyclerview:recyclerview:1.2.1'
+    api 'androidx.media:media:1.3.1'
 
     api "com.google.android.exoplayer:exoplayer-core:$rootProject.ext.exoplayer2Version"
     api "com.google.android.exoplayer:exoplayer-dash:$rootProject.ext.exoplayer2Version"

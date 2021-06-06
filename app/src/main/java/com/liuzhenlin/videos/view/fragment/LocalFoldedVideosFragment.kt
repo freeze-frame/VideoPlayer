@@ -5,6 +5,7 @@
 
 package com.liuzhenlin.videos.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -503,6 +504,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
                         }.reordered())
             }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun onReloadDirectoryVideos(videos: List<Video>?) {
         if (videos == null || videos.isEmpty()) {
             if (mVideos.isNotEmpty()) {

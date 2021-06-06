@@ -331,6 +331,7 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
                 refreshList(false)
             } else Unit
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun refreshList(searchTextChanged: Boolean) {
         var searchedVideos: MutableList<Video>? = null
         if (mSearchText.isNotEmpty()) {
@@ -452,7 +453,7 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
             val text = SpannableString(name)
             var fromIndex = 0
             for (char in mSearchText.toCharArray()) {
-                val start = name.toLowerCase().indexOf(char.toLowerCase(), fromIndex)
+                val start = name.lowercase().indexOf(char.lowercase(), fromIndex)
                 text.setSpan(ForegroundColorSpan(COLOR_ACCENT),
                         start, start + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 fromIndex = start + 1

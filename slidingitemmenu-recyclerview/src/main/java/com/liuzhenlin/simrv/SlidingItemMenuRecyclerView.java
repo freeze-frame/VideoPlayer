@@ -782,13 +782,10 @@ public class SlidingItemMenuRecyclerView extends RecyclerView {
                 }
             };
             addListener(listener);
-            addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    final float deltaTransX = (float) animation.getAnimatedValue();
-                    parent.baseTranslateItemViewXBy(itemView, deltaTransX - cachedDeltaTransX);
-                    cachedDeltaTransX = deltaTransX;
-                }
+            addUpdateListener(animation -> {
+                final float deltaTransX = (float) animation.getAnimatedValue();
+                parent.baseTranslateItemViewXBy(itemView, deltaTransX - cachedDeltaTransX);
+                cachedDeltaTransX = deltaTransX;
             });
         }
 

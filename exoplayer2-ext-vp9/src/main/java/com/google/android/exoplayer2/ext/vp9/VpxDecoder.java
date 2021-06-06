@@ -18,8 +18,10 @@ package com.google.android.exoplayer2.ext.vp9;
 import static androidx.annotation.VisibleForTesting.PACKAGE_PRIVATE;
 
 import android.view.Surface;
+
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.decoder.CryptoInfo;
 import com.google.android.exoplayer2.decoder.DecoderInputBuffer;
@@ -30,6 +32,7 @@ import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoDecoderInputBuffer;
 import com.google.android.exoplayer2.video.VideoDecoderOutputBuffer;
+
 import java.nio.ByteBuffer;
 
 /** Vpx decoder. */

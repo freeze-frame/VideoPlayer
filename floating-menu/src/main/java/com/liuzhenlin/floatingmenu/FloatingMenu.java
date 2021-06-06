@@ -53,15 +53,15 @@ public class FloatingMenu extends PopupWindow {
     private final int mScreenWidth;
     private final int mScreenHeight;
 
-    /*synthetic*/ final List<MenuItem> mMenuItems = new ArrayList<>();
+    private final List<MenuItem> mMenuItems = new ArrayList<>();
 
-    /*synthetic*/ LinearLayout mMenuLayout;
+    private LinearLayout mMenuLayout;
 
     // Match the width of the contentView of this menu
     private static final int DEFAULT_ITEM_WIDTH = ViewGroup.LayoutParams.MATCH_PARENT;
 
-    /*synthetic*/ OnItemClickListener mOnItemClickListener;
-    /*synthetic*/ OnItemLongClickListener mOnItemLongClickListener;
+    private OnItemClickListener mOnItemClickListener;
+    private OnItemLongClickListener mOnItemLongClickListener;
 
     private View.OnClickListener mOnClickListener;
     private View.OnLongClickListener mOnLongClickListener;
@@ -290,15 +290,12 @@ public class FloatingMenu extends PopupWindow {
             mOnClickListener = null;
 
         } else if (mOnClickListener == null) {
-            mOnClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final int position = mMenuLayout.indexOfChild(v);
-                    if (position != -1) {
-                        dismiss();
-                        if (mOnItemClickListener != null) {
-                            mOnItemClickListener.onClick(mMenuItems.get(position), position);
-                        }
+            mOnClickListener = v -> {
+                final int position = mMenuLayout.indexOfChild(v);
+                if (position != -1) {
+                    dismiss();
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onClick(mMenuItems.get(position), position);
                     }
                 }
             };
@@ -314,19 +311,16 @@ public class FloatingMenu extends PopupWindow {
             mOnLongClickListener = null;
 
         } else if (mOnLongClickListener == null) {
-            mOnLongClickListener = new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    final int position = mMenuLayout.indexOfChild(v);
-                    if (position != -1) {
-//                        dismiss();
-                        if (mOnItemLongClickListener != null) {
-                            return mOnItemLongClickListener.onLongClick(
-                                    mMenuItems.get(position), position);
-                        }
+            mOnLongClickListener = v -> {
+                final int position = mMenuLayout.indexOfChild(v);
+                if (position != -1) {
+//                    dismiss();
+                    if (mOnItemLongClickListener != null) {
+                        return mOnItemLongClickListener.onLongClick(
+                                mMenuItems.get(position), position);
                     }
-                    return false;
                 }
+                return false;
             };
         }
         for (int i = mMenuLayout.getChildCount() - 1; i >= 0; i--) {

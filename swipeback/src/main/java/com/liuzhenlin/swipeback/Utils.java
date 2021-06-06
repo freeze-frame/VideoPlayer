@@ -91,7 +91,7 @@ public class Utils {
             }
         }
         if (translucentConversionListener != null) {
-            //noinspection JavaReflectionMemberAccess, JavaReflectionInvocation
+            //noinspection JavaReflectionMemberAccess,JavaReflectionInvocation
             Activity.class
                     .getMethod("convertToTranslucent", translucentConversionListener)
                     .invoke(activity, (Object) null);

@@ -266,7 +266,7 @@ public class ExoVideoPlayer extends VideoPlayer {
             setPlaybackSpeed(mUserPlaybackSpeed);
             mExoPlayer.setRepeatMode(
                     isSingleVideoLoopPlayback() ? Player.REPEAT_MODE_ONE : Player.REPEAT_MODE_OFF);
-            mExoPlayer.addListener(new Player.EventListener() {
+            mExoPlayer.addListener(new Player.Listener() {
                 @SuppressLint("SwitchIntDef")
                 @Override
                 public void onPlaybackStateChanged(int state) {
@@ -301,9 +301,10 @@ public class ExoVideoPlayer extends VideoPlayer {
                     onVideoDurationChanged(duration == C.TIME_UNSET ? TIME_UNSET : (int) duration);
                 }
 
+                @SuppressWarnings("deprecation")
                 @Override
                 public void onPositionDiscontinuity(int reason) {
-                    if (reason == Player.DISCONTINUITY_REASON_PERIOD_TRANSITION) {
+                    if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION) {
                         onVideoRepeat();
                     }
                 }
@@ -330,8 +331,8 @@ public class ExoVideoPlayer extends VideoPlayer {
                         pauseInternal(false);
                     }
                 }
-            });
-            mExoPlayer.addVideoListener(new com.google.android.exoplayer2.video.VideoListener() {
+
+                @SuppressWarnings("deprecation")
                 @Override
                 public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
                     final int[] videoSize = VideoUtils.correctedVideoSize(
@@ -397,7 +398,8 @@ public class ExoVideoPlayer extends VideoPlayer {
     /*package*/ MediaSourceFactory obtainMediaSourceFactory(Uri uri) {
         if (mMediaSourceFactory != null) return mMediaSourceFactory;
 
-        @C.ContentType int type = Util.inferContentType(uri, null);
+        int type = Util.inferContentType(uri, null);
+        //noinspection SwitchIntDef
         switch (type) {
             case C.TYPE_DASH:
                 if (mTmpMediaSourceFactory instanceof DashMediaSource.Factory) {

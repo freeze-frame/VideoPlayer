@@ -88,6 +88,7 @@ public class SwipeBackFragment extends Fragment implements ISwipeBackFragment {
     @Nullable
     @Override
     public ISwipeBackFragment getPreviousFragment() {
+        //noinspection deprecation
         FragmentManager fm = getFragmentManager();
         if (fm == null) return null;
 

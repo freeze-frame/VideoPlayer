@@ -179,6 +179,7 @@ public class App extends Application {
                         if (screenWidth   > screenHeight) {
                             screenWidth  ^= screenHeight;
                             screenHeight ^= screenWidth;
+                            screenWidth  ^= screenHeight;
                         }
                         //@formatter:on
                         mRealScreenWidth = screenWidth;

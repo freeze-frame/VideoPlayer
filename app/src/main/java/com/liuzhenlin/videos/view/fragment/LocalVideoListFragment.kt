@@ -5,6 +5,7 @@
 
 package com.liuzhenlin.videos.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -232,7 +233,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
         super.onStop()
         val activity = contextThemedFirst as? Activity
         if (activity?.isFinishing == false && !isRemoving && !isDetached) {
-            (mVideoObserver ?: VideoObserver(view!!.rootView.handler)).startWatching()
+            (mVideoObserver ?: VideoObserver(requireView().rootView.handler)).startWatching()
         }
     }
 
@@ -382,6 +383,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun onReloadVideoListItems(items: List<VideoListItem>?) {
         if (items == null || items.isEmpty()) {
             if (mVideoListItems.isNotEmpty()) {
@@ -1079,7 +1081,7 @@ class LocalVideoListFragment : SwipeBackFragment(),
         view.tag = items
         view[0].tag = onDeleteAction
 
-        val fadedContentView = this.view!!.rootView as FrameLayout // DecorView
+        val fadedContentView = requireView().rootView as FrameLayout // DecorView
 
         mDeleteItemsWindow = PopupWindow(view,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)

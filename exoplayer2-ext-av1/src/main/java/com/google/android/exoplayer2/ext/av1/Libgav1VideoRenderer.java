@@ -19,7 +19,9 @@ import static com.google.android.exoplayer2.decoder.DecoderReuseEvaluation.REUSE
 
 import android.os.Handler;
 import android.view.Surface;
+
 import androidx.annotation.Nullable;
+
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.RendererCapabilities;

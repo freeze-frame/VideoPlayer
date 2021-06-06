@@ -235,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mFragmentViewPager = findViewById(R.id.viewpager_fragments);
         mFragmentViewPager.setScrollEnabled(false);
+        //noinspection deprecation
         mFragmentViewPager.setAdapter(
                 new FragmentPagerAdapter(getSupportFragmentManager(),
                         FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -265,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                //noinspection ConstantConditions
+                //noinspection ConstantConditions,deprecation
                 Fragment fragment = ((FragmentPagerAdapter) mFragmentViewPager.getAdapter())
                         .getItem(position);
                 if (fragment instanceof LocalVideosFragment) {
@@ -518,7 +519,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (position == 0) {
                 final int baseId = sDrawerListItemIDs[0];
                 if (!TextUtils.isEmpty(mCheckUpdateResultText)) {
-                    return 31 * baseId + mCheckUpdateResultText.hashCode();
+                    return 31L * baseId + mCheckUpdateResultText.hashCode();
                 }
                 return baseId;
             }

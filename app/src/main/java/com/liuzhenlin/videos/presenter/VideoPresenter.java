@@ -359,7 +359,7 @@ class VideoPresenter extends Presenter<IVideoView> implements IVideoPresenter {
 
         @Override
         public void loadItemImages(@NonNull IVideoView.PlaylistViewHolder holder) {
-            Video video = mVideos[holder.getAdapterPosition()];
+            Video video = mVideos[holder.getBindingAdapterPosition()];
             holder.loadVideoThumb(video);
         }
 

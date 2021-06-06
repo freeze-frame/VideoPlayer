@@ -29,7 +29,8 @@
 
         <activity
             android:name=".view.activity.RequireExternalStoragePermissionActivity"
-            android:theme="@style/ActivityStyle_Translucent">
+            android:theme="@style/ActivityStyle_Translucent"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
