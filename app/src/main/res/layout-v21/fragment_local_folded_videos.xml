@@ -10,14 +10,14 @@
         android:id="@+id/simrv_foldedVideoList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/frame_videoOptions"
         android:scrollbars="vertical" />
 
     <include
+        android:id="@+id/divider_videoOptionsFrame"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         layout="@layout/divider_horizontal_opaque"
-        android:layout_alignBottom="@id/simrv_foldedVideoList" />
+        android:layout_above="@+id/frame_videoOptions" />
 
     <LinearLayout
         android:id="@id/frame_videoOptions"

@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.FloatRange;
@@ -53,6 +54,21 @@ public class UiUtils {
         if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
             mlp.setMargins(left, top, right, bottom);
+        }
+    }
+
+    public static void requestRuleForRelativeLayoutChild(@NonNull View view, int verb, int subject) {
+        if (view.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
+            lp.addRule(verb, subject);
+            view.setLayoutParams(lp);
+        }
+    }
+
+    public static void setRuleForRelativeLayoutChild(@NonNull View view, int verb, int subject) {
+        if (view.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
+            lp.addRule(verb, subject);
         }
     }
 

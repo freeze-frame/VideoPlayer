@@ -1041,11 +1041,12 @@ class LocalVideoListFragment : SwipeBackFragment(),
         val cancel = view.findViewById<TextView>(R.id.btn_cancel)
         cancel.id = R.id.btn_cancel_deleteVideoListItemDialog
         cancel.setOnClickListener(this)
-        val lp = cancel.layoutParams as RelativeLayout.LayoutParams
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            lp.addRule(RelativeLayout.START_OF, R.id.btn_confirm_deleteVideoListItemDialog)
+            UiUtils.setRuleForRelativeLayoutChild(cancel,
+                    RelativeLayout.START_OF, R.id.btn_confirm_deleteVideoListItemDialog)
         } else {
-            lp.addRule(RelativeLayout.LEFT_OF, R.id.btn_confirm_deleteVideoListItemDialog)
+            UiUtils.setRuleForRelativeLayoutChild(cancel,
+                    RelativeLayout.LEFT_OF, R.id.btn_confirm_deleteVideoListItemDialog)
         }
 
         val confirm = view.findViewById<TextView>(R.id.btn_ok)

@@ -12,10 +12,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -26,6 +23,7 @@ import com.liuzhenlin.circularcheckbox.CircularCheckBox
 import com.liuzhenlin.common.Consts.NO_ID
 import com.liuzhenlin.common.adapter.ImageLoadingListAdapter
 import com.liuzhenlin.common.utils.FileUtils
+import com.liuzhenlin.common.utils.UiUtils
 import com.liuzhenlin.common.view.SwipeRefreshLayout
 import com.liuzhenlin.floatingmenu.DensityUtils
 import com.liuzhenlin.simrv.SlidingItemMenuRecyclerView
@@ -75,6 +73,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
     private lateinit var mBackButton: ImageButton
     private lateinit var mCancelButton: Button
     private lateinit var mSelectAllButton: Button
+    private lateinit var mOptionsFrameTopDivider: View
     private lateinit var mVideoOptionsFrame: ViewGroup
     private lateinit var mDeleteButton: TextView
     private lateinit var mRenameButton: TextView
@@ -217,6 +216,7 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
         mBackButton = actionbar.findViewById(R.id.btn_back)
         mCancelButton = actionbar.findViewById(R.id.btn_cancel)
         mSelectAllButton = actionbar.findViewById(R.id.btn_selectAll)
+        mOptionsFrameTopDivider = contentView.findViewById(R.id.divider_videoOptionsFrame)
         mVideoOptionsFrame = contentView.findViewById(R.id.frame_videoOptions)
         mDeleteButton = contentView.findViewById(R.id.btn_delete_videoListOptions)
         mRenameButton = contentView.findViewById(R.id.btn_rename)
@@ -408,12 +408,15 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
                     || mInteractionCallback.isRefreshLayoutRefreshing) {
                 false
             } else {
+                UiUtils.setRuleForRelativeLayoutChild(mRecyclerView,
+                        RelativeLayout.ABOVE, mOptionsFrameTopDivider.id)
+                mRecyclerView.isItemDraggable = false
+                mInteractionCallback.isRefreshLayoutEnabled = false
                 mBackButton.visibility = View.GONE
                 mCancelButton.visibility = View.VISIBLE
                 mSelectAllButton.visibility = View.VISIBLE
+                mOptionsFrameTopDivider.visibility = View.VISIBLE
                 mVideoOptionsFrame.visibility = View.VISIBLE
-                mRecyclerView.isItemDraggable = false
-                mInteractionCallback.isRefreshLayoutEnabled = false
 
                 mRecyclerView.post {
                     val itemBottom = (v.parent as View).bottom
@@ -470,12 +473,14 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
         }
 
     private fun hideMultiselectVideoControls() {
+        UiUtils.setRuleForRelativeLayoutChild(mRecyclerView, RelativeLayout.ABOVE,  /* false */ 0)
+        mRecyclerView.isItemDraggable = true
+        mInteractionCallback.isRefreshLayoutEnabled = true
         mBackButton.visibility = View.VISIBLE
         mCancelButton.visibility = View.GONE
         mSelectAllButton.visibility = View.GONE
+        mOptionsFrameTopDivider.visibility = View.GONE
         mVideoOptionsFrame.visibility = View.GONE
-        mRecyclerView.isItemDraggable = true
-        mInteractionCallback.isRefreshLayoutEnabled = true
 
         for (video in mVideos) {
             video.isChecked = false
