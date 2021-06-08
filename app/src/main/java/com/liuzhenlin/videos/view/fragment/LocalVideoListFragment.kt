@@ -442,8 +442,10 @@ class LocalVideoListFragment : SwipeBackFragment(),
 
         fun startWatching() {
             mVideoObserver = this
+            // notifyForDescendants should be true here, for fear of Uris like
+            // content://media/external/video/media/83 not notifying us.
             contextRequired.applicationContext.contentResolver
-                    .registerContentObserver(IVideoDao.VIDEO_URI, false, this)
+                    .registerContentObserver(IVideoDao.VIDEO_URI, true, this)
         }
 
         fun stopWatching() {
