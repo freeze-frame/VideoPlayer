@@ -179,11 +179,6 @@ class LocalFoldedVideosFragment : SwipeBackFragment(), View.OnClickListener, Vie
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        App.getInstanceUnsafe()?.refWatcher?.watch(this)
-    }
-
     override fun onDetach() {
         super.onDetach()
         mLifecycleCallback?.onFragmentDetached(this)

@@ -18,8 +18,6 @@ import com.bumptech.glide.Glide;
 import com.liuzhenlin.common.utils.SystemBarUtils;
 import com.liuzhenlin.common.utils.Utils;
 import com.liuzhenlin.floatingmenu.DensityUtils;
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 
 import java.io.File;
 
@@ -40,8 +38,6 @@ public class App extends Application {
 
     private volatile int mVideoThumbWidth = -1;
 
-    private RefWatcher mRefWatcher;
-
 //    static {
 //        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 //    }
@@ -55,14 +51,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
-        mRefWatcher = LeakCanary.install(this);
-
         sApp = this;
         mStatusHeight = SystemBarUtils.getStatusHeight(this);
         registerComponentCallbacks(Glide.get(this));
@@ -200,10 +188,5 @@ public class App extends Application {
             }
         }
         return mVideoThumbWidth;
-    }
-
-    @NonNull
-    public RefWatcher getRefWatcher() {
-        return mRefWatcher;
     }
 }

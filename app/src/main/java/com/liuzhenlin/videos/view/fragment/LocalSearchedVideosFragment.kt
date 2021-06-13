@@ -289,11 +289,6 @@ class LocalSearchedVideosFragment : Fragment(), View.OnClickListener, View.OnLon
         mInteractionCallback.setOnRefreshLayoutChildScrollUpCallback(null)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        App.getInstanceUnsafe()?.refWatcher?.watch(this)
-    }
-
     override fun onDetach() {
         super.onDetach()
         mLifecycleCallback?.onFragmentDetached(this)
