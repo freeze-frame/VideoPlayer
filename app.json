@@ -4,8 +4,8 @@
     "applicationId": "com.liuzhenlin.videos",
     "minSdkVersion": 14,
     "targetSdkVersion": 29,
-    "versionCode": 39,
-    "versionName": "1.9.3",
+    "versionCode": 40,
+    "versionName": "1.9.4",
     "appLink": "https://raw.githubusercontent.com/ApksHolder/Videos/release/app-release.apk",
     "appPartLinks": [
       "https://gitee.com/lzl_s/Videos-Server/raw/master/app/Android/app-release1.apk",
@@ -20,12 +20,22 @@
       "https://gitee.com/lzl_s/Videos-Server/raw/master/app/Android/app-release10.apk",
       "https://gitee.com/lzl_s/Videos-Server/raw/master/app/Android/app-release11.apk",
       "https://gitee.com/lzl_s/Videos-Server/raw/master/app/Android/app-release12.apk",
-      "https://gitee.com/lzl_s/Videos-Server/raw/master/app/Android/app-release13.apk"
+      "https://gitee.com/lzl_s/Videos-Server/raw/master/app/Android/app-release13.apk",
+      "https://gitee.com/lzl_s/Videos-Server/raw/master/app/Android/app-release14.apk",
+      "https://gitee.com/lzl_s/Videos-Server/raw/master/app/Android/app-release15.apk"
     ],
-    "appLength": 12504536,
-    "appSha1": "46cbb5d30a528ae5c86ac26369016be2dd606866",
+    "appLength": 14314062,
+    "appSha1": "8f51a307d2ff8aa59f0f92ccb411f0825ff9368f",
     "updateLogs": [
-      "1. 修复意见反馈使用的发送方代理邮箱因存在安全性问题被紧急替换后导致的反馈信息无法向外发送的问题"
+      "1. 修复在首页列表加载完成时如果提前打开了视频搜索页或文件夹视频页会引起应用奔溃的问题",
+      "2. 修复在线视频页在加载列表失败时加载图标不消失的问题",
+      "3. 优化在通知栏显示的应用小图标样式及后台播放控制通知中显示的默认视频缩略图",
+      "4. 优化列表缩略图的加载，使UI更加顺滑",
+      "5. 将在主线程执行的一些耗时操作放到工作线程，避免UI出现无响应",
+      "6. 解决部分用户手机在安装应用后打开会立即闪退的问题（扫描视频时报错引起）",
+      "7. 修复在新应用下载完成时弹出的安装提示通知有时会立即消失的问题",
+      "8. 解决取消下载应用更新后进度通知仍然可能会再次显示在通知栏的问题",
+      "9. 修复视频数据在后台发生改变后返回应用，列表可能不会自动刷新的问题"
     ],
     "promptDialogAnchorActivityClsName": "com.liuzhenlin.videos.view.activity.MainActivity"
   },

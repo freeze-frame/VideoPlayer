@@ -20,23 +20,25 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void test() {
-        final String directory = "/Users/liuzhenlin/AppData/AndroidStudio/projects/Videos/app/release";
-        final String fileName = "app-release";
-        final String extension = ".apk";
+    public void splitAndMergeFile() {
+        String directory = "/Users/liuzhenlin/Android/projects/Videos/app/release";
+        String fileName = "app-release";
+        String extension = ".apk";
+        File file = new File(directory, fileName + extension);
+        long fileLength = file.length();
+        String fileSha1 = FileUtils.getFileSha1(file);
 
-        final int splitCount = FileUtils.splitFile(directory, fileName, extension, 1000 * 1000);
-
-        File[] files = new File[splitCount];
+        int splitCount = FileUtils.splitFile(directory, fileName, extension, 1000 * 1000);
+        File[] splits = new File[splitCount];
         for (int i = 0; i < splitCount; i++) {
-            files[i] = new File(directory, fileName + (i + 1) + extension);
+            splits[i] = new File(directory, fileName + (i + 1) + extension);
         }
+        FileUtils.mergeFiles(splits, file, false);
 
-        File dstFile = new File(directory, fileName + extension);
-
-        FileUtils.mergeFiles(files, dstFile, false);
-
-        System.out.println(dstFile.length());
-        System.out.println(FileUtils.getFileSha1(dstFile));
+        assertEquals(fileLength, file.length());
+        assertEquals(fileSha1, FileUtils.getFileSha1(file));
+        System.out.println("splitCount= " + splitCount + "\n"
+                + "fileLength= " + fileLength + "\n"
+                + "fileSha1= " + fileSha1);
     }
 }

@@ -133,7 +133,7 @@
     <string name="youHaveNotCommitted">You Have Not Committed</string>
 
     <string name="appName_chinese" translatable="false">视频</string>
-    <string name="version" translatable="false">1.9.4-beta02</string>
+    <string name="version" translatable="false">1.9.4</string>
     <string name="copyright" translatable="false">Copyright © 2017–present 刘振林.\nAll rights reserved.</string>
     <string name="projectLink" translatable="false">https://github.com/lzls/Videos</string>
     <string name="pictureCount" translatable="false">%d/3</string>
